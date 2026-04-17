@@ -1,7 +1,7 @@
 package br.com.anima.nuPrecin.specification;
 
 import br.com.anima.nuPrecin.entity.Exemplo;
-import br.com.anima.nuPrecin.enuns.ExemploEnum;
+import br.com.anima.nuPrecin.enums.ExemploEnum;
 import org.springframework.data.jpa.domain.Specification;
 
 public class ExemploSpecification {

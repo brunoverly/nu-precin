@@ -1,6 +1,6 @@
 package br.com.anima.nuPrecin.entity;
 
-import br.com.anima.nuPrecin.enuns.ExemploEnum;
+import br.com.anima.nuPrecin.enums.ExemploEnum;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;

@@ -1,6 +1,6 @@
 package br.com.anima.nuPrecin.dto;
 
-import br.com.anima.nuPrecin.enuns.ExemploEnum;
+import br.com.anima.nuPrecin.enums.ExemploEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 

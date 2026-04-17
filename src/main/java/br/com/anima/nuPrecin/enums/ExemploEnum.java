@@ -1,4 +1,4 @@
-package br.com.anima.nuPrecin.enuns;
+package br.com.anima.nuPrecin.enums;
 
 public enum ExemploEnum {
     A,
