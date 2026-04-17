@@ -11,15 +11,11 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ExemploMapper {
 
-     //-> Converte DTO de entrada para entidade
      Exemplo toEntity(ExemploRequestDto dto);
 
-     //-> Converte entidade para DTO de saída
      ExemploResponseDto toResponse(Exemplo entity);
 
-     //-> Converte lista de entidades para lista de DTOs
      List<ExemploResponseDto> toResponseList(List<Exemplo> entities);
 
-     //-> Atualiza uma entidade já existente (PUT / PATCH) com base no DTO
      void updateEntityFromDto(ExemploRequestDto dto, @MappingTarget Exemplo entity);
 }
