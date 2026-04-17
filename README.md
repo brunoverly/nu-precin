@@ -1,7 +1,7 @@
 <div align="center">
 
 # 🛒 nuPrecin
-### API colaborativa para cadastro e comparação de preços e promoções
+### APP colaborativo para cadastro e comparação de preços e promoções
 
 ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)

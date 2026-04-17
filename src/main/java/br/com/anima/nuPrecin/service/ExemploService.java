@@ -30,9 +30,6 @@ public class ExemploService {
     public ResponseEntity<ExemploResponseDto> create(ExemploRequestDto dto){
         Exemplo exemplo = exemploRepository.save(exemploMapper.toEntity(dto));
 
-        System.out.println(dto.exemploEnum());
-        System.out.println(exemplo.getExemploEnum());
-
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -43,7 +40,7 @@ public class ExemploService {
     }
 
     public ResponseEntity<ExemploResponseDto> findById(Long id) {
-        Exemplo exemplo = exemploRepository.findById(id)
+        Exemplo exemplo = exemploRepository.findByIdAtivo(id)
                 .orElseThrow(() -> new EntityNotFoundException("exemplo com id {"+ id + "} não localizado no banco"));
         return ResponseEntity.ok(exemploMapper.toResponse(exemplo));
     }
@@ -78,7 +75,7 @@ public class ExemploService {
 
     public ResponseEntity delete(Long id) {
         Exemplo exemplo = exemploRepository.findByIdAtivo(id)
-                .orElseThrow(() -> new EntityNotFoundException("entidade com o id {" + id + "} não localizada no banco, ou já consta como desativada"));
+                .orElseThrow(() -> new EntityNotFoundException("entidade com o id {" + id + "} não localizada no banco"));
 
         exemplo.setAtivo(false);
         exemploRepository.save(exemplo);
