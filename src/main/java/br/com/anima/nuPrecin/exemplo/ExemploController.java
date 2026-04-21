@@ -1,8 +1,7 @@
-package br.com.anima.nuPrecin.controller;
+package br.com.anima.nuPrecin.exemplo;
 
-import br.com.anima.nuPrecin.dto.ExemploRequestDto;
-import br.com.anima.nuPrecin.dto.ExemploResponseDto;
-import br.com.anima.nuPrecin.service.ExemploService;
+import br.com.anima.nuPrecin.exemplo.dto.ExemploRequestDto;
+import br.com.anima.nuPrecin.exemplo.dto.ExemploResponseDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,6 +9,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/exemplos")
@@ -19,12 +21,19 @@ public class ExemploController {
 
     @PostMapping
     public ResponseEntity<ExemploResponseDto> create(@RequestBody @Valid ExemploRequestDto dto) {
-        return exemploService.create(dto);
+        ExemploResponseDto exemploResponseDto = exemploService.create(dto);
+        URI uri = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(exemploResponseDto.id())
+                .toUri();
+
+        return ResponseEntity.created(uri).body(exemploResponseDto);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ExemploResponseDto> findById(@PathVariable Long id) {
-        return exemploService.findById(id);
+        return ResponseEntity.ok().body(exemploService.findById(id));
     }
 
     @GetMapping
@@ -39,12 +48,14 @@ public class ExemploController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ExemploResponseDto> update(@PathVariable Long id, @RequestBody @Valid ExemploRequestDto dto) {
-        return exemploService.update(id, dto);
+        return ResponseEntity.ok().body(exemploService.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
-        return exemploService.delete(id);
+        exemploService.delete(id);
+
+        return ResponseEntity.noContent().build();
     }
 }
 

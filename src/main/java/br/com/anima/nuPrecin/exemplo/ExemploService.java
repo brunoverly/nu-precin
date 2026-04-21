@@ -1,12 +1,8 @@
-package br.com.anima.nuPrecin.service;
+package br.com.anima.nuPrecin.exemplo;
 
 
-import br.com.anima.nuPrecin.dto.ExemploRequestDto;
-import br.com.anima.nuPrecin.dto.ExemploResponseDto;
-import br.com.anima.nuPrecin.entity.Exemplo;
-import br.com.anima.nuPrecin.mapper.ExemploMapper;
-import br.com.anima.nuPrecin.repository.ExemploRepository;
-import br.com.anima.nuPrecin.specification.ExemploSpecification;
+import br.com.anima.nuPrecin.exemplo.dto.ExemploRequestDto;
+import br.com.anima.nuPrecin.exemplo.dto.ExemploResponseDto;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,22 +23,16 @@ public class ExemploService {
     private ExemploMapper exemploMapper;
 
 
-    public ResponseEntity<ExemploResponseDto> create(ExemploRequestDto dto){
+    public ExemploResponseDto create(ExemploRequestDto dto){
         Exemplo exemplo = exemploRepository.save(exemploMapper.toEntity(dto));
 
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(exemplo.getId())
-                .toUri();
-
-        return ResponseEntity.created(uri).body(exemploMapper.toResponse(exemplo));
+        return exemploMapper.toResponse(exemplo);
     }
 
-    public ResponseEntity<ExemploResponseDto> findById(Long id) {
+    public ExemploResponseDto findById(Long id) {
         Exemplo exemplo = exemploRepository.findByIdAtivo(id)
                 .orElseThrow(() -> new EntityNotFoundException("exemplo com id {"+ id + "} não localizado no banco"));
-        return ResponseEntity.ok(exemploMapper.toResponse(exemplo));
+        return exemploMapper.toResponse(exemplo);
     }
 
     public Page<ExemploResponseDto> findAll(Pageable pageable, String nome, Integer numero, String exemploEnum) {
@@ -56,10 +46,9 @@ public class ExemploService {
         Page<ExemploResponseDto> exemplosDto = exemplos.map(exemploMapper::toResponse);
 
         return exemplosDto;
-
     }
 
-    public ResponseEntity<ExemploResponseDto> update(Long id, @Valid ExemploRequestDto dto) {
+    public ExemploResponseDto update(Long id, @Valid ExemploRequestDto dto) {
         Exemplo exemplo = exemploRepository.findByIdAtivo(id)
                 .orElseThrow(() -> new EntityNotFoundException("entidade com o id {" + id + "} não localizada no banco"));
 
@@ -69,18 +58,14 @@ public class ExemploService {
 
         exemploRepository.save(exemplo);
 
-        return ResponseEntity.ok(exemploMapper.toResponse(exemplo));
-
+        return exemploMapper.toResponse(exemplo);
     }
 
-    public ResponseEntity delete(Long id) {
+    public void delete(Long id) {
         Exemplo exemplo = exemploRepository.findByIdAtivo(id)
                 .orElseThrow(() -> new EntityNotFoundException("entidade com o id {" + id + "} não localizada no banco"));
 
         exemplo.setAtivo(false);
         exemploRepository.save(exemplo);
-
-        return ResponseEntity.noContent().build();
-
     }
 }

@@ -1,6 +1,5 @@
-package br.com.anima.nuPrecin.repository;
+package br.com.anima.nuPrecin.exemplo;
 
-import br.com.anima.nuPrecin.entity.Exemplo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;

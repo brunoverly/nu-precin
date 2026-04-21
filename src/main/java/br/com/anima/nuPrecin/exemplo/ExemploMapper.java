@@ -1,8 +1,7 @@
-package br.com.anima.nuPrecin.mapper;
+package br.com.anima.nuPrecin.exemplo;
 
-import br.com.anima.nuPrecin.dto.ExemploRequestDto;
-import br.com.anima.nuPrecin.dto.ExemploResponseDto;
-import br.com.anima.nuPrecin.entity.Exemplo;
+import br.com.anima.nuPrecin.exemplo.dto.ExemploRequestDto;
+import br.com.anima.nuPrecin.exemplo.dto.ExemploResponseDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 

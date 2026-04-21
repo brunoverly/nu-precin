@@ -1,6 +1,6 @@
-package br.com.anima.nuPrecin.dto;
+package br.com.anima.nuPrecin.exemplo.dto;
 
-import br.com.anima.nuPrecin.enums.ExemploEnum;
+import br.com.anima.nuPrecin.exemplo.ExemploEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 

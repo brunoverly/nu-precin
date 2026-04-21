@@ -1,6 +1,6 @@
-package br.com.anima.nuPrecin.dto;
+package br.com.anima.nuPrecin.exemplo.dto;
 
-import br.com.anima.nuPrecin.enums.ExemploEnum;
+import br.com.anima.nuPrecin.exemplo.ExemploEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 
@@ -9,6 +9,6 @@ public record ExemploResponseDto(
          String nome,
          Integer numero,
          ExemploEnum exemploEnum,
-         @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+         @JsonFormat(pattern = "dd-MM-yyyy'T'HH:mm:ss")
          LocalDateTime dataHorarioCriado) {
 }
