@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: nuPrecin
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+  datasource:
+    url: jdbc:postgresql://localhost:5432/seubanco
+    username: seu usuário do banco de dados
+    password: sua senha do banco de dados
+server:
+  error:
+    include-stacktrace: never
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
