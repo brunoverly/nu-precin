@@ -220,8 +220,9 @@ A aplicação segue uma arquitetura em camadas, segmentada por domínio:
 
 ## 🚀 Próximos Passos (Evolução MVP)
 - Integração com API externa de leitura de código de barras e QR Code (fallback de criação de produto).
-- Cache com Redis para listagens quentes e promoções ativas.
+- Cache com Redis para busca de produtos e promoções ativas.
 - Testes unitários e de integração (JUnit + Mockito + Testcontainers).
 - Autenticação social com Google (OAuth2).
-- Documentação com Swagger OpenApi.
-- Pipeline CI/CD para validação automática de migrations e build.
+- Observabilidade com logs (SLF4J) e metrics (Micrometer).
+- Documentação com Swagger (OpenApi).
+- Implementação de refresh token JWT, e link temporário para atualização de senha.
