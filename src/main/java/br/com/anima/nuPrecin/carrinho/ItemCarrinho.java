@@ -1,8 +1,10 @@
 package br.com.anima.nuPrecin.carrinho;
 
-import br.com.anima.nuPrecin.produto.Produto;
+import br.com.anima.nuPrecin.promocao.Promocao;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "itens_carrinho")
@@ -17,19 +19,26 @@ public class ItemCarrinho {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer quantidade;
-    private boolean ativo;
+    private Integer quantidadeItem;
+    private BigDecimal precoItem;
+    private BigDecimal precoTotal;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_promocao")
+    private Promocao promocao;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_carrinho")
     private Carrinho carrinho;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_produto")
-    private Produto produto;
-
     @PrePersist
-    public void onCreate() {
-        this.ativo = true;
+    @PreUpdate
+    public void calcularPrecoTotal() {
+        if (precoItem != null && quantidadeItem != null) {
+            this.precoTotal = precoItem.multiply(java.math.BigDecimal.valueOf(quantidadeItem));
+        } else {
+            this.precoTotal = BigDecimal.ZERO;
+        }
     }
 }
+

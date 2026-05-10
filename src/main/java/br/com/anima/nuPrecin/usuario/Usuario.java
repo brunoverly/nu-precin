@@ -35,9 +35,8 @@ public class Usuario {
     @Builder.Default
     private List<Promocao> promocoes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "usuario")
-    @Builder.Default
-    private List<Carrinho> carrinhos = new ArrayList<>();
+    @OneToOne(mappedBy = "usuario")
+    private Carrinho carrinho;
 
     @OneToMany(mappedBy = "usuario")
     @Builder.Default

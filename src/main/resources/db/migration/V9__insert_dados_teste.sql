@@ -47,13 +47,6 @@ INSERT INTO carrinhos (id, nome, data_cadastro, ativo, id_usuario) VALUES
 (4, 'Limpeza de Casa - Diego', NOW() - INTERVAL '2 day', TRUE, 4),
 (5, 'Snacks da Empresa - Eduarda', NOW() - INTERVAL '1 day', TRUE, 5);
 
-INSERT INTO itens_carrinho (id, quantidade, ativo, id_carrinho, id_produto) VALUES
-(1, 2, TRUE, 1, 1),
-(2, 3, TRUE, 2, 2),
-(3, 4, TRUE, 3, 3),
-(4, 5, TRUE, 4, 4),
-(5, 6, TRUE, 5, 5);
-
 INSERT INTO votos (id, voto, data_voto, ativo, id_usuario, id_promocao) VALUES
 (1, 'POSITIVO', NOW() - INTERVAL '5 day', TRUE, 2, 1),
 (2, 'POSITIVO', NOW() - INTERVAL '4 day', TRUE, 3, 1),
@@ -68,5 +61,4 @@ SELECT setval('estabelecimentos_id_seq', (SELECT MAX(id) FROM estabelecimentos))
 SELECT setval('produtos_id_seq', (SELECT MAX(id) FROM produtos));
 SELECT setval('promocoes_id_seq', (SELECT MAX(id) FROM promocoes));
 SELECT setval('carrinhos_id_seq', (SELECT MAX(id) FROM carrinhos));
-SELECT setval('itens_carrinho_id_seq', (SELECT MAX(id) FROM itens_carrinho));
 SELECT setval('votos_id_seq', (SELECT MAX(id) FROM votos));

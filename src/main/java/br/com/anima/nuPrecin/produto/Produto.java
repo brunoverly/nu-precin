@@ -1,12 +1,8 @@
 package br.com.anima.nuPrecin.produto;
 
-import br.com.anima.nuPrecin.carrinho.ItemCarrinho;
 import br.com.anima.nuPrecin.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -34,13 +30,8 @@ public class Produto {
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
-    @OneToMany(mappedBy = "produto")
-    @Builder.Default
-    private List<ItemCarrinho> itensCarrinho = new ArrayList<>();
- 
-  @PrePersist
+    @PrePersist
     public void prePersist(){
-    
         this.ativo = true;
     }
 }
