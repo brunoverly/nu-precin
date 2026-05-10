@@ -1,17 +1,22 @@
-CREATE TABLE produtos (
+-- V5: create table promocoes
+CREATE TABLE IF NOT EXISTS promocoes (
     id BIGSERIAL PRIMARY KEY,
-    nome VARCHAR(250) NOT NULL,
-    descricao VARCHAR(500) NOT NULL,
-    marca VARCHAR(250) NOT NULL,
-    codigo_de_barras VARCHAR(100) NOT NULL,
-    qr_code VARCHAR(250),
-    imagem VARCHAR(500),
-    categoria VARCHAR(100) NOT NULL,
+    preco_original NUMERIC(12, 2),
+    preco_promocao NUMERIC(12, 2),
+    data_criacao TIMESTAMP,
+    data_atualizacao TIMESTAMP,
+    data_inicio TIMESTAMP,
+    data_fim TIMESTAMP,
     ativo BOOLEAN,
-    id_usuario BIGINT NOT NULL,
-    CONSTRAINT fk_produto_usuario
-        FOREIGN KEY (id_usuario) REFERENCES usuarios (id)
+    id_produto BIGINT,
+    id_estabelecimento BIGINT,
+    id_usuario BIGINT,
+    CONSTRAINT fk_promocao_produto FOREIGN KEY (id_produto) REFERENCES produtos (id),
+    CONSTRAINT fk_promocao_estabelecimento FOREIGN KEY (id_estabelecimento) REFERENCES estabelecimentos (id),
+    CONSTRAINT fk_promocao_usuario FOREIGN KEY (id_usuario) REFERENCES usuarios (id)
 );
 
-CREATE INDEX idx_produtos_usuario ON produtos (id_usuario);
-CREATE INDEX idx_produtos_codigo_barras ON produtos (codigo_de_barras);
+CREATE INDEX IF NOT EXISTS idx_promocoes_ativo ON promocoes (ativo);
+CREATE INDEX IF NOT EXISTS idx_promocoes_produto ON promocoes (id_produto);
+CREATE INDEX IF NOT EXISTS idx_promocoes_estabelecimento ON promocoes (id_estabelecimento);
+CREATE INDEX IF NOT EXISTS idx_promocoes_usuario ON promocoes (id_usuario);

@@ -1,11 +1,9 @@
-CREATE TABLE usuarios (
+-- V2: create table enderecos
+CREATE TABLE IF NOT EXISTS enderecos (
     id BIGSERIAL PRIMARY KEY,
-    nome VARCHAR(250),
-    email VARCHAR(250),
-    foto VARCHAR(500),
-    senha VARCHAR(250),
-    data_cadastro TIMESTAMP,
-    ativo BOOLEAN
+    logradouro VARCHAR(250),
+    bairro VARCHAR(250),
+    cidade VARCHAR(250),
+    estado VARCHAR(100)
 );
 
-CREATE INDEX idx_usuarios_email ON usuarios (email);

@@ -1,17 +1,17 @@
-CREATE TABLE estabelecimentos (
+-- V4: create table produtos
+CREATE TABLE IF NOT EXISTS produtos (
     id BIGSERIAL PRIMARY KEY,
-    nome VARCHAR(250),
-    tipo VARCHAR(100),
-    foto VARCHAR(500),
-    telefone VARCHAR(50),
+    nome VARCHAR(250) NOT NULL,
+    descricao VARCHAR(500) NOT NULL,
+    marca VARCHAR(250) NOT NULL,
+    codigo_de_barras VARCHAR(100) NOT NULL,
+    qr_code VARCHAR(250),
+    imagem VARCHAR(500),
+    categoria VARCHAR(100) NOT NULL,
     ativo BOOLEAN,
-    id_endereco BIGINT NOT NULL,
     id_usuario BIGINT NOT NULL,
-    CONSTRAINT fk_estabelecimento_endereco
-        FOREIGN KEY (id_endereco) REFERENCES enderecos (id),
-    CONSTRAINT fk_estabelecimento_usuario
-        FOREIGN KEY (id_usuario) REFERENCES usuarios (id)
+    CONSTRAINT fk_produto_usuario FOREIGN KEY (id_usuario) REFERENCES usuarios (id)
 );
 
-CREATE INDEX idx_estabelecimentos_endereco ON estabelecimentos (id_endereco);
-CREATE INDEX idx_estabelecimentos_usuario ON estabelecimentos (id_usuario);
+CREATE INDEX IF NOT EXISTS idx_produtos_usuario ON produtos (id_usuario);
+CREATE INDEX IF NOT EXISTS idx_produtos_codigo_barras ON produtos (codigo_de_barras);

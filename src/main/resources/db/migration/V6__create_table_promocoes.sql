@@ -1,24 +1,12 @@
-CREATE TABLE promocoes (
+-- V6: create table carrinhos
+CREATE TABLE IF NOT EXISTS carrinhos (
     id BIGSERIAL PRIMARY KEY,
-    preco_original NUMERIC(12, 2),
-    preco_promocao NUMERIC(12, 2),
-    data_criacao TIMESTAMP,
-    data_atualizacao TIMESTAMP,
-    data_inicio TIMESTAMP,
-    data_fim TIMESTAMP,
+    data_cadastro TIMESTAMP,
     ativo BOOLEAN,
-    id_produto BIGINT,
-    id_estabelecimento BIGINT,
     id_usuario BIGINT,
-    CONSTRAINT fk_promocao_produto
-        FOREIGN KEY (id_produto) REFERENCES produtos (id),
-    CONSTRAINT fk_promocao_estabelecimento
-        FOREIGN KEY (id_estabelecimento) REFERENCES estabelecimentos (id),
-    CONSTRAINT fk_promocao_usuario
-        FOREIGN KEY (id_usuario) REFERENCES usuarios (id)
+    preco_total NUMERIC(19,2),
+    CONSTRAINT fk_carrinho_usuario FOREIGN KEY (id_usuario) REFERENCES usuarios (id)
 );
 
-CREATE INDEX idx_promocoes_ativo ON promocoes (ativo);
-CREATE INDEX idx_promocoes_produto ON promocoes (id_produto);
-CREATE INDEX idx_promocoes_estabelecimento ON promocoes (id_estabelecimento);
-CREATE INDEX idx_promocoes_usuario ON promocoes (id_usuario);
+CREATE UNIQUE INDEX IF NOT EXISTS uq_carrinhos_usuario ON carrinhos (id_usuario);
+CREATE INDEX IF NOT EXISTS idx_carrinhos_usuario ON carrinhos (id_usuario);
