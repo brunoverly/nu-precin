@@ -139,7 +139,6 @@ A aplicação segue uma arquitetura em camadas, segmentada por domínio:
 ## 🔌 Endpoints (Resumo)
 
 ### Auth
-- `POST /v1/auth` → cadastra usuário (retorna token JWT)
 - `POST /v1/auth/login` → autentica usuário (retorna token JWT)
 
 ### Usuarios
