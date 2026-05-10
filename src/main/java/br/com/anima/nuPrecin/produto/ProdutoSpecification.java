@@ -22,7 +22,7 @@ public class ProdutoSpecification {
             }
             try {
                 ProdutoEnum valorEnum = ProdutoEnum.valueOf(produtoEnumStr);
-                return cb.equal(root.get("produtoEnum"), valorEnum);
+                return cb.equal(root.get("categoria"), valorEnum);
             } catch (IllegalArgumentException e) {
                 return null;
             }

@@ -1,6 +1,6 @@
 package br.com.anima.nuPrecin.produto;
 
-import br.com.anima.nuPrecin.produto.ProdutoEnum;
+import br.com.anima.nuPrecin.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,10 +25,13 @@ public class Produto {
     @Enumerated(EnumType.STRING)
     private ProdutoEnum categoria;
     private boolean ativo;
- 
-  @PrePersist
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario")
+    private Usuario usuario;
+
+    @PrePersist
     public void prePersist(){
-    
         this.ativo = true;
     }
 }

@@ -1,6 +1,7 @@
 package br.com.anima.nuPrecin.promocao.dto;
 
 import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
@@ -19,8 +20,8 @@ public record PromocaoRequestDto(
         @NotNull(message = "Campo obrigatório")
         @Future(message = "Data de término precisa ser futura")
         LocalDateTime dataFim,
-        @NotNull(message = "Campo obrigatório")
-        Long idProduto,
+        @NotBlank(message = "Campo obrigatório")
+        String codigoBarras,
         @NotNull(message = "Campo obrigatório")
         Long idEstabelecimento,
         @NotNull(message = "Campo obrigatório")

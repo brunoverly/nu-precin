@@ -10,21 +10,31 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
-@RequestMapping("/produtos")
+@RequestMapping("v1/produtos")
 public class ProdutoController {
     @Autowired
     private ProdutoService produtoService;
 
     @PostMapping
     public ResponseEntity<ProdutoResponseDto> create(@RequestBody @Valid ProdutoRequestDto dto) {
-        return produtoService.create(dto);
+        ProdutoResponseDto produtoResponseDto = produtoService.create(dto);
+        URI uri = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(produtoResponseDto.id())
+                .toUri();
+
+        return ResponseEntity.created(uri).body(produtoResponseDto);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProdutoResponseDto> findById(@PathVariable Long id) {
-        return produtoService.findById(id);
+        return ResponseEntity.ok().body(produtoService.findById(id));
     }
 
     @GetMapping
@@ -39,12 +49,12 @@ public class ProdutoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ProdutoResponseDto> update(@PathVariable Long id, @RequestBody @Valid ProdutoRequestDto dto) {
-        return produtoService.update(id, dto);
+        return ResponseEntity.ok().body(produtoService.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable Long id) {
-        return produtoService.delete(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        produtoService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
-

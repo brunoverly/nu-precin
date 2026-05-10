@@ -1,13 +1,12 @@
 package br.com.anima.nuPrecin.produto;
 
 public enum ProdutoEnum {
-    bebida,
-    alimento,
-    limpeza,
-    eletronico,
-    lazer,
-    ferramenta,
-    vestimenta,
-    outro,
-
+    BEBIDA,
+    ALIMENTO,
+    LIMPEZA,
+    ELETRONICO,
+    LAZER,
+    FERRAMENTA,
+    VESTIMENTA,
+    OUTRO,
 }

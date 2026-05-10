@@ -1,7 +1,13 @@
 package br.com.anima.nuPrecin.promocao;
 
+import br.com.anima.nuPrecin.estabelecimento.Estabelecimento;
+import br.com.anima.nuPrecin.estabelecimento.EstabelecimentoRepository;
+import br.com.anima.nuPrecin.produto.Produto;
+import br.com.anima.nuPrecin.produto.ProdutoRepository;
 import br.com.anima.nuPrecin.promocao.dto.PromocaoRequestDto;
 import br.com.anima.nuPrecin.promocao.dto.PromocaoResponseDto;
+import br.com.anima.nuPrecin.usuario.Usuario;
+import br.com.anima.nuPrecin.usuario.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +22,12 @@ import java.time.LocalDateTime;
 public class PromocaoService {
     @Autowired
     private PromocaoRepository repository;
-//    @Autowired
-//    private EstabelecimentoRepository estabelecimentoRepository;
-//    @Autowired
-//    private ProdutoRepository produtoRepository;
-//    @Autowired
-//    private UsuarioRepository usuarioRepository;
+    @Autowired
+    private EstabelecimentoRepository estabelecimentoRepository;
+    @Autowired
+    private ProdutoRepository produtoRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
     private PromocaoMapper mapper;
@@ -36,20 +42,12 @@ public class PromocaoService {
     public PromocaoResponseDto create(@Valid PromocaoRequestDto dto) {
         validarDadosPromocao(dto);
 
-//        Estabelecimento estabelecimento = estabelecimentoRepository.findById(dto.idEstabelecimento())
-//                .orElseThrow(() -> new EntityNotFoundException("Estabelecimento com id{" + dto.idEstabelecimento() +"} não localizado no sistema."));
-//        promocao.setEstabelecimento(estabelecimento);
-//        Usuario usuario = usuarioRepository.findById(dto.idUsuario())
-//                .orElseThrow(() -> new EntityNotFoundException("Usuário com id{" + dto.idUsuario() +"} não localizado no sistema."));
-//                        promocao.setUsuario(usuario);
-//        Produto produto = produtoRepository.findById(dto.idProduto())
-//                .orElseThrow(() -> new EntityNotFoundException("Produto com id{" + dto.idProduto() +"} não localizado no sistema."));
-//        promocao.setProduto(produto);
+        DependenciasPromocao dependencias = buscarDependencias(dto.codigoBarras(), dto.idEstabelecimento(), dto.idUsuario());
 
         Promocao promocao = mapper.toEntity(dto);
-//        promocao.setEstabelecimento(estabelecimento);
-//        promocao.setUsuario(usuario);
-//        promocao.setProduto(produto);
+        promocao.setProduto(dependencias.produto());
+        promocao.setEstabelecimento(dependencias.estabelecimento());
+        promocao.setUsuario(dependencias.usuario());
 
         repository.save(promocao);
 
@@ -66,21 +64,12 @@ public class PromocaoService {
         if(dto.precoPromocao() != null) promocao.setPrecoPromocao(dto.precoPromocao());
         if(dto.dataInicio() != null) promocao.setDataInicio(dto.dataInicio());
         if(dto.dataFim() != null) promocao.setDataFim(dto.dataFim());
-        if(dto.idEstabelecimento() != null) {
-//        Estabelecimento estabelecimento = estabelecimentoRepository.findById(dto.idEstabelecimento())
-//                .orElseThrow(() -> new EntityNotFoundException("Estabelecimento com id{" + dto.idEstabelecimento() +"} não localizado no sistema."));
-//        promocao.setEstabelecimento(estabelecimento);
-        }
-        if(dto.idUsuario() != null) {
-//        Usuario usuario = usuarioRepository.findById(dto.idUsuario())
-//                .orElseThrow(() -> new EntityNotFoundException("Usuário com id{" + dto.idUsuario() +"} não localizado no sistema."));
-//                        promocao.setUsuario(usuario);
-        }
-        if(dto.idProduto() != null) {
-//        Produto produto = produtoRepository.findById(dto.idProduto())
-//                .orElseThrow(() -> new EntityNotFoundException("Produto com id{" + dto.idProduto() +"} não localizado no sistema."));
-//        promocao.setProduto(produto);
-        }
+
+        DependenciasPromocao dependencias = buscarDependencias(dto.codigoBarras(), dto.idEstabelecimento(), dto.idUsuario());
+        promocao.setProduto(dependencias.produto());
+        promocao.setEstabelecimento(dependencias.estabelecimento());
+        promocao.setUsuario(dependencias.usuario());
+
         promocao.setDataAtualizacao(LocalDateTime.now());
         repository.save(promocao);
         return mapper.toResponse(promocao);
@@ -111,5 +100,19 @@ public class PromocaoService {
         if(dto.dataFim().isBefore(dto.dataInicio())){
             throw new IllegalArgumentException("Data de término da promoção deve ser maior que a data de início.");
         }
+    }
+
+    private DependenciasPromocao buscarDependencias(String codigoBarras, Long idEstabelecimento, Long idUsuario) {
+        Produto produto = produtoRepository.findByCodigoDeBarrasAndAtivoTrue(codigoBarras)
+                .orElseThrow(() -> new EntityNotFoundException("produto com código de barras {" + codigoBarras + "} não localizado no banco"));
+        Estabelecimento estabelecimento = estabelecimentoRepository.findByIdAndAtivoTrue(idEstabelecimento)
+                .orElseThrow(() -> new EntityNotFoundException("estabelecimento com id {" + idEstabelecimento + "} não localizado no banco"));
+        Usuario usuario = usuarioRepository.findByIdAndAtivoTrue(idUsuario)
+                .orElseThrow(() -> new EntityNotFoundException("usuário com id {" + idUsuario + "} não localizado no banco"));
+
+        return new DependenciasPromocao(produto, estabelecimento, usuario);
+    }
+
+    private record DependenciasPromocao(Produto produto, Estabelecimento estabelecimento, Usuario usuario) {
     }
 }

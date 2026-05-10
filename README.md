@@ -199,11 +199,6 @@ Já configurado:
 - Não inventar estrutura nova
 - O projeto deve ser homogêneo
 
-### 🗃️ Banco
-- `ddl-auto: validate`
-- 👉 JPA **NÃO** cria tabela
-- 👉 Flyway é responsável
-
 ---
 
 ## 🎯 Resumo rápido
