@@ -13,3 +13,4 @@ CREATE TABLE IF NOT EXISTS itens_carrinho (
 
 CREATE INDEX IF NOT EXISTS idx_itens_carrinho_promocao ON itens_carrinho (id_promocao);
 CREATE INDEX IF NOT EXISTS idx_itens_carrinho_carrinho ON itens_carrinho (id_carrinho);
+

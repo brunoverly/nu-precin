@@ -20,3 +20,4 @@ CREATE INDEX IF NOT EXISTS idx_promocoes_ativo ON promocoes (ativo);
 CREATE INDEX IF NOT EXISTS idx_promocoes_produto ON promocoes (id_produto);
 CREATE INDEX IF NOT EXISTS idx_promocoes_estabelecimento ON promocoes (id_estabelecimento);
 CREATE INDEX IF NOT EXISTS idx_promocoes_usuario ON promocoes (id_usuario);
+

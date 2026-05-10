@@ -14,3 +14,4 @@ CREATE TABLE IF NOT EXISTS estabelecimentos (
 
 CREATE INDEX IF NOT EXISTS idx_estabelecimentos_endereco ON estabelecimentos (id_endereco);
 CREATE INDEX IF NOT EXISTS idx_estabelecimentos_usuario ON estabelecimentos (id_usuario);
+

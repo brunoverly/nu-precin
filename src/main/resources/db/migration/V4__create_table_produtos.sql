@@ -15,3 +15,4 @@ CREATE TABLE IF NOT EXISTS produtos (
 
 CREATE INDEX IF NOT EXISTS idx_produtos_usuario ON produtos (id_usuario);
 CREATE INDEX IF NOT EXISTS idx_produtos_codigo_barras ON produtos (codigo_de_barras);
+

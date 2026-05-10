@@ -2,23 +2,23 @@
 
 -- Usuarios
 INSERT INTO usuarios (id, nome, email, foto, senha, data_cadastro, ativo)
-SELECT 1, 'Ana Souza', 'ana.souza@nuprecin.com', 'https://images.example.com/users/ana.jpg', 'senha_teste_ana', NOW() - INTERVAL '60 day', TRUE
+SELECT 1, 'Ana Souza', 'ana.souza@nuprecin.com', 'https://images.example.com/users/ana.jpg', '$2a$12$aCBdNOlWL7Q1T1k24EPAEu25IUUN5nB52JdtnsZXHATaPT7w0.k8y', NOW() - INTERVAL '60 day', TRUE
 WHERE NOT EXISTS (SELECT 1 FROM usuarios WHERE id = 1);
 
 INSERT INTO usuarios (id, nome, email, foto, senha, data_cadastro, ativo)
-SELECT 2, 'Bruno Lima', 'bruno.lima@nuprecin.com', 'https://images.example.com/users/bruno.jpg', 'senha_teste_bruno', NOW() - INTERVAL '55 day', TRUE
+SELECT 2, 'Bruno Lima', 'bruno.lima@nuprecin.com', 'https://images.example.com/users/bruno.jpg', '$2a$12$aCBdNOlWL7Q1T1k24EPAEu25IUUN5nB52JdtnsZXHATaPT7w0.k8y', NOW() - INTERVAL '55 day', TRUE
 WHERE NOT EXISTS (SELECT 1 FROM usuarios WHERE id = 2);
 
 INSERT INTO usuarios (id, nome, email, foto, senha, data_cadastro, ativo)
-SELECT 3, 'Carla Mendes', 'carla.mendes@nuprecin.com', 'https://images.example.com/users/carla.jpg', 'senha_teste_carla', NOW() - INTERVAL '48 day', TRUE
+SELECT 3, 'Carla Mendes', 'carla.mendes@nuprecin.com', 'https://images.example.com/users/carla.jpg', '$2a$12$aCBdNOlWL7Q1T1k24EPAEu25IUUN5nB52JdtnsZXHATaPT7w0.k8y', NOW() - INTERVAL '48 day', TRUE
 WHERE NOT EXISTS (SELECT 1 FROM usuarios WHERE id = 3);
 
 INSERT INTO usuarios (id, nome, email, foto, senha, data_cadastro, ativo)
-SELECT 4, 'Diego Alves', 'diego.alves@nuprecin.com', 'https://images.example.com/users/diego.jpg', 'senha_teste_diego', NOW() - INTERVAL '35 day', TRUE
+SELECT 4, 'Diego Alves', 'diego.alves@nuprecin.com', 'https://images.example.com/users/diego.jpg', '$2a$12$aCBdNOlWL7Q1T1k24EPAEu25IUUN5nB52JdtnsZXHATaPT7w0.k8y', NOW() - INTERVAL '35 day', TRUE
 WHERE NOT EXISTS (SELECT 1 FROM usuarios WHERE id = 4);
 
 INSERT INTO usuarios (id, nome, email, foto, senha, data_cadastro, ativo)
-SELECT 5, 'Eduarda Rocha', 'eduarda.rocha@nuprecin.com', 'https://images.example.com/users/eduarda.jpg', 'senha_teste_eduarda', NOW() - INTERVAL '20 day', TRUE
+SELECT 5, 'Eduarda Rocha', 'eduarda.rocha@nuprecin.com', 'https://images.example.com/users/eduarda.jpg', '$2a$12$aCBdNOlWL7Q1T1k24EPAEu25IUUN5nB52JdtnsZXHATaPT7w0.k8y', NOW() - INTERVAL '20 day', TRUE
 WHERE NOT EXISTS (SELECT 1 FROM usuarios WHERE id = 5);
 
 -- Enderecos

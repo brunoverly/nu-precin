@@ -7,3 +7,4 @@ CREATE TABLE IF NOT EXISTS enderecos (
     estado VARCHAR(100)
 );
 
+

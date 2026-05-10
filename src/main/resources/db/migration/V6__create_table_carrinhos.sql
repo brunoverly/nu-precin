@@ -10,3 +10,4 @@ CREATE TABLE IF NOT EXISTS carrinhos (
 
 CREATE UNIQUE INDEX IF NOT EXISTS uq_carrinhos_usuario ON carrinhos (id_usuario);
 CREATE INDEX IF NOT EXISTS idx_carrinhos_usuario ON carrinhos (id_usuario);
+
