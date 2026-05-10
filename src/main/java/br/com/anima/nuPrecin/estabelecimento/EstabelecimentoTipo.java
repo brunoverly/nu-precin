@@ -1,6 +1,6 @@
 package br.com.anima.nuPrecin.estabelecimento;
 
-public enum EstabelecimentoEnum {
+public enum EstabelecimentoTipo {
     MERCADO,
     SUPERMERCADO,
     ATACADAO

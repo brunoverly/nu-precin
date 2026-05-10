@@ -3,19 +3,15 @@ package br.com.anima.nuPrecin.produto;
 
 import br.com.anima.nuPrecin.produto.dto.ProdutoRequestDto;
 import br.com.anima.nuPrecin.produto.dto.ProdutoResponseDto;
-import br.com.anima.nuPrecin.produto.Produto;
-import br.com.anima.nuPrecin.produto.ProdutoMapper;
-import br.com.anima.nuPrecin.produto.ProdutoSpecification;
+import br.com.anima.nuPrecin.usuario.Usuario;
+import br.com.anima.nuPrecin.usuario.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import java.net.URI;
 
 
 @Service
@@ -25,24 +21,24 @@ public class ProdutoService {
     private ProdutoRepository produtoRepository;
     @Autowired
     private ProdutoMapper produtoMapper;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
 
-    public ResponseEntity<ProdutoResponseDto> create(ProdutoRequestDto dto){
-        Produto produto = produtoRepository.save(produtoMapper.toEntity(dto));
+    public ProdutoResponseDto create(ProdutoRequestDto dto){
+        Usuario usuario = usuarioRepository.findByIdAndAtivoTrue(dto.idUsuario())
+                .orElseThrow(() -> new EntityNotFoundException("usuário com id {" + dto.idUsuario() + "} não localizado no banco"));
 
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(produto.getId())
-                .toUri();
-
-        return ResponseEntity.created(uri).body(produtoMapper.toResponse(produto));
+        Produto produto = produtoMapper.toEntity(dto);
+        produto.setUsuario(usuario);
+        produto = produtoRepository.save(produto);
+        return produtoMapper.toResponse(produto);
     }
 
-    public ResponseEntity<ProdutoResponseDto> findById(Long id) {
+    public ProdutoResponseDto findById(Long id) {
         Produto produto = produtoRepository.findByIdAtivo(id)
                 .orElseThrow(() -> new EntityNotFoundException("produto com id {"+ id + "} não localizado no banco"));
-        return ResponseEntity.ok(produtoMapper.toResponse(produto));
+        return produtoMapper.toResponse(produto);
     }
 
     public Page<ProdutoResponseDto> findAll(Pageable pageable, String nome, String marca, String categoria) {
@@ -59,28 +55,31 @@ public class ProdutoService {
 
     }
 
-    public ResponseEntity<ProdutoResponseDto> update(Long id, @Valid ProdutoRequestDto dto) {
+    public ProdutoResponseDto update(Long id, @Valid ProdutoRequestDto dto) {
         Produto produto = produtoRepository.findByIdAtivo(id)
                 .orElseThrow(() -> new EntityNotFoundException("entidade com o id {" + id + "} não localizada no banco"));
 
+        Usuario usuario = usuarioRepository.findByIdAndAtivoTrue(dto.idUsuario())
+                .orElseThrow(() -> new EntityNotFoundException("usuário com id {" + dto.idUsuario() + "} não localizado no banco"));
+
         produto.setNome(dto.nome());
+        produto.setDescricao(dto.descricao());
         produto.setMarca(dto.marca());
+        produto.setCodigoDeBarras(dto.codigoDeBarras());
         produto.setCategoria(dto.categoria());
+        produto.setUsuario(usuario);
 
         produtoRepository.save(produto);
 
-        return ResponseEntity.ok(produtoMapper.toResponse(produto));
+        return produtoMapper.toResponse(produto);
 
     }
 
-    public ResponseEntity delete(Long id) {
+    public void delete(Long id) {
         Produto produto = produtoRepository.findByIdAtivo(id)
                 .orElseThrow(() -> new EntityNotFoundException("entidade com o id {" + id + "} não localizada no banco"));
 
         produto.setAtivo(false);
         produtoRepository.save(produto);
-
-        return ResponseEntity.noContent().build();
-
     }
 }

@@ -11,6 +11,7 @@ public record ProdutoResponseDto(
          String qrCode,
          String imagem,
          ProdutoEnum categoria,
+         Long idUsuario,
          boolean ativo) {
 
     
