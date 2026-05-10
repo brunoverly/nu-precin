@@ -1,0 +1,1289 @@
+{
+  "info": {
+    "_postman_id": "5e6848ef-0602-4dda-8fef-5c74b009aac9",
+    "name": "NuPrecin",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "38230853"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\" : \"ana.souza@nuprecin.com\",\n    \"senha\" : \"123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Estabelecimento",
+      "item": [
+        {
+          "name": "Cadastrar",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo\": \"SUPERMERCADO\",\n  \"nome\": \"BH\",\n  \"foto\": \"https://yt3.googleusercontent.com/svcELrpTjKyxn1EWDJnSnUxPybqMrp7wyjCWYgH-oI1MHS7jC2IGNEWiuFz1XoAltHEgCpEarA=s900-c-k-c0x00ffffff-no-rj\",\n  \"telefone\": \"1133331100\",\n  \"endereco\": {\n    \"logradouro\": \"Av. Nova, 1000\",\n    \"bairro\": \"Centro\",\n    \"cidade\": \"São Paulo\",\n    \"estado\": \"SP\"\n  },\n  \"idUsuario\": 2\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1/estabelecimentos",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "estabelecimentos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo\": \"SUPERMERCADO\",\n  \"nome\": \"BH\",\n  \"foto\": \"https://yt3.googleusercontent.com/svcELrpTjKyxn1EWDJnSnUxPybqMrp7wyjCWYgH-oI1MHS7jC2IGNEWiuFz1XoAltHEgCpEarA=s900-c-k-c0x00ffffff-no-rj\",\n  \"telefone\": \"1133331100\",\n  \"endereco\": {\n    \"logradouro\": \"Av. Nova, 1000\",\n    \"bairro\": \"Centro\",\n    \"cidade\": \"São Paulo\",\n    \"estado\": \"SP\"\n  },\n  \"idUsuario\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/estabelecimentos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "estabelecimentos",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar todos",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/v1/estabelecimentos",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "estabelecimentos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar por id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/v1/estabelecimentos",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "estabelecimentos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar com filtro",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/v1/estabelecimentos?nome=bh&tipo=supermercado&page=0&size=20&sort=nome,asc",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "estabelecimentos"
+              ],
+              "query": [
+                {
+                  "key": "nome",
+                  "value": "bh"
+                },
+                {
+                  "key": "tipo",
+                  "value": "supermercado"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                },
+                {
+                  "key": "sort",
+                  "value": "nome,asc"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Apagar",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/v1/estabelecimentos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "estabelecimentos",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Produto",
+      "item": [
+        {
+          "name": "Cadastrar",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Arroz 5kg\",\n  \"descricao\": \"Arroz tipo 4 pacote 5kg\",\n  \"marca\": \"Tio João\",\n  \"categoria\": \"ALIMENTO\",\n  \"codigoDeBarras\": \"7891234567890\",\n  \"idUsuario\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1/produtos",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "produtos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Arroz 5kg\",\n  \"descricao\": \"Arroz tipo 1 pacote 5kg\",\n  \"marca\": \"Tio João\",\n  \"categoria\": \"ALIMENTO\",\n  \"codigoDeBarras\": \"7891234567890\",\n  \"idUsuario\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1produtos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1produtos",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar todos",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/v1/produtos",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "produtos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar por id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/v1/produtos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "produtos",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar com filtro",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/v1/produtos?nome=arroz&marca=Tio João&categoria=ALIMENTO&page=0&size=20&sort=nome,asc",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "produtos"
+              ],
+              "query": [
+                {
+                  "key": "nome",
+                  "value": "arroz"
+                },
+                {
+                  "key": "marca",
+                  "value": "Tio João"
+                },
+                {
+                  "key": "categoria",
+                  "value": "ALIMENTO"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                },
+                {
+                  "key": "sort",
+                  "value": "nome,asc"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Apagar",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1produtos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1produtos",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Usuario",
+      "item": [
+        {
+          "name": "Cadastrar",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Maria Oliveira\",\n  \"email\": \"maria.oliveira@exemplo.com\",\n  \"foto\": \"https://exemplo.com/fotos/maria.jpg\",\n  \"senha\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1/usuarios",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "usuarios"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Maria Oliveira santos\",\n  \"email\": \"maria.oliveira@exemplo.com\",\n  \"foto\": \"https://exemplo.com/fotos/maria.jpg\",\n  \"senha\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1usuarios/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1usuarios",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar todos",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/v1/usuarios",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "usuarios"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar por id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/v1/usuarios",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "usuarios"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Apagar",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/v1/usuarios/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "usuarios",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Promocao",
+      "item": [
+        {
+          "name": "Cadastrar",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"precoOriginal\": 25.90,\n  \"precoPromocao\": 19.90,\n  \"dataInicio\": \"2026-12-01T08:00:00\",\n  \"dataFim\": \"2026-12-10T23:59:59\",\n  \"codigoBarras\": \"7891234567890\",\n  \"idEstabelecimento\": 1,\n  \"idUsuario\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1/promocoes",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "promocoes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"precoOriginal\": 25.90,\n  \"precoPromocao\": 19.90,\n  \"dataInicio\": \"2026-12-01T08:00:00\",\n  \"dataFim\": \"2026-12-10T23:59:59\",\n  \"codigoBarras\": \"7891234567890\",\n  \"idEstabelecimento\": 1,\n  \"idUsuario\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1/promocoes/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "promocoes",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar todos",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/v1/promocoes?idProduto=1&idEstabelecimento=1&idUsuario=1&page=0&size=20&sort=dataInicio,asc",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "promocoes"
+              ],
+              "query": [
+                {
+                  "key": "idProduto",
+                  "value": "1"
+                },
+                {
+                  "key": "idEstabelecimento",
+                  "value": "1"
+                },
+                {
+                  "key": "idUsuario",
+                  "value": "1"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                },
+                {
+                  "key": "sort",
+                  "value": "dataInicio,asc"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar por id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/v1/promocoes/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "promocoes",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar com filtro",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/v1/promocoes?idProduto=1&idEstabelecimento=1&idUsuario=1&page=0&size=20&sort=dataInicio,asc",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "promocoes"
+              ],
+              "query": [
+                {
+                  "key": "idProduto",
+                  "value": "1"
+                },
+                {
+                  "key": "idEstabelecimento",
+                  "value": "1"
+                },
+                {
+                  "key": "idUsuario",
+                  "value": "1"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                },
+                {
+                  "key": "sort",
+                  "value": "dataInicio,asc"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Apagar",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/v1/promocoes/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "promocoes",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Voto",
+      "item": [
+        {
+          "name": "Cadastrar",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"voto\": \"NEGATIVO\",\n  \"idUsuario\": 2,\n  \"idPromocao\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1/votos",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "votos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar todos",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/v1/votos",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "votos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar por id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/v1/votos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "votos",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Busca com filtro",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/v1/votos?agruparPor=promocao&dataInicio=2026-05-01T00:00:00&dataFim=2026-05-31T23:59:59&voto=POSITIVO&ordenacao=desc",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "votos"
+              ],
+              "query": [
+                {
+                  "key": "agruparPor",
+                  "value": "promocao"
+                },
+                {
+                  "key": "dataInicio",
+                  "value": "2026-05-01T00:00:00"
+                },
+                {
+                  "key": "dataFim",
+                  "value": "2026-05-31T23:59:59"
+                },
+                {
+                  "key": "voto",
+                  "value": "POSITIVO"
+                },
+                {
+                  "key": "ordenacao",
+                  "value": "desc"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Apagar",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/v1/votos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "votos",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Carrinho",
+      "item": [
+        {
+          "name": "Adicionar",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idPromocao\": 1,\n  \"quantidadeItem\": 2,\n  \"precoItem\": 5.50,\n  \"idUsuario\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1/carrinhos",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "carrinhos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idPromocao\": 1,\n  \"quantidadeItem\": 2,\n  \"precoItem\": 5.50,\n  \"idUsuario\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/v1/carrinhos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "carrinhos",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar por id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/v1/carrinhos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "carrinhos",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar por id usuario",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/v1/carrinhos/usuario/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "carrinhos",
+                "usuario",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Apagar",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJudV9wcmVjaW4iLCJzdWIiOiJhbmEuc291emFAbnVwcmVjaW4uY29tIiwicm9sZSI6IlVTRVIiLCJleHAiOjE3Nzg1MzA3NzR9.57ZzPT1OUe26XgGG9Jm8eRIjJQaILwCbhXgF3wpq-ew",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/v1/carrinhos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "v1",
+                "carrinhos",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
