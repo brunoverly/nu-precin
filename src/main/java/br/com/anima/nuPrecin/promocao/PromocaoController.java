@@ -13,7 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/promocoes")
+@RequestMapping("v1/promocoes")
 public class PromocaoController {
     @Autowired
     private PromocaoService service;

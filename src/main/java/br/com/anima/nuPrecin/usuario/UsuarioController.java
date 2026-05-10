@@ -14,7 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/usuarios")
+@RequestMapping("v1/usuarios")
 public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;

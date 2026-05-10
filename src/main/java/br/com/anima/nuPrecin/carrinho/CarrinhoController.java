@@ -11,7 +11,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/carrinhos")
+@RequestMapping("v1/carrinhos")
 public class CarrinhoController {
     @Autowired
     private CarrinhoService carrinhoService;

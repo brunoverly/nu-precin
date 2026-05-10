@@ -26,10 +26,26 @@ public class EstabelecimentoService {
     private EstabelecimentoMapper estabelecimentoMapper;
 
     public EstabelecimentoResponseDto create(@Valid EstabelecimentoRequestDto dto) {
-        Endereco endereco = enderecoRepository.findById(dto.idEndereco())
-                .orElseThrow(() -> new EntityNotFoundException("endereço com id {" + dto.idEndereco() + "} não localizado no banco"));
+        // resolve usuario
         Usuario usuario = usuarioRepository.findByIdAndAtivoTrue(dto.idUsuario())
                 .orElseThrow(() -> new EntityNotFoundException("usuário com id {" + dto.idUsuario() + "} não localizado no banco"));
+
+        // resolve endereco: prefer idEndereco se informado; senão use endereco embutido
+        Endereco endereco = null;
+        if (dto.idEndereco() != null) {
+            endereco = enderecoRepository.findById(dto.idEndereco())
+                    .orElseThrow(() -> new EntityNotFoundException("endereço com id {" + dto.idEndereco() + "} não localizado no banco"));
+        } else if (dto.endereco() != null) {
+            Endereco novo = Endereco.builder()
+                    .logradouro(dto.endereco().logradouro())
+                    .bairro(dto.endereco().bairro())
+                    .cidade(dto.endereco().cidade())
+                    .estado(dto.endereco().estado())
+                    .build();
+            endereco = enderecoRepository.save(novo);
+        } else {
+            throw new IllegalArgumentException("Informe idEndereco ou o objeto endereco no payload");
+        }
 
         Estabelecimento estabelecimento = estabelecimentoMapper.toEntity(dto);
         estabelecimento.setEndereco(endereco);
@@ -58,11 +74,36 @@ public class EstabelecimentoService {
     public EstabelecimentoResponseDto update(Long id, @Valid EstabelecimentoRequestDto dto) {
         Estabelecimento estabelecimento = estabelecimentoRepository.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new EntityNotFoundException("estabelecimento com id {" + id + "} não localizado no banco"));
-
-        Endereco endereco = enderecoRepository.findById(dto.idEndereco())
-                .orElseThrow(() -> new EntityNotFoundException("endereço com id {" + dto.idEndereco() + "} não localizado no banco"));
+        // resolve usuario
         Usuario usuario = usuarioRepository.findByIdAndAtivoTrue(dto.idUsuario())
                 .orElseThrow(() -> new EntityNotFoundException("usuário com id {" + dto.idUsuario() + "} não localizado no banco"));
+
+        // resolve endereco: id takes precedence, else embedded endereco; if embedded, update existing endereco or create new
+        Endereco endereco = null;
+        if (dto.idEndereco() != null) {
+            endereco = enderecoRepository.findById(dto.idEndereco())
+                    .orElseThrow(() -> new EntityNotFoundException("endereço com id {" + dto.idEndereco() + "} não localizado no banco"));
+        } else if (dto.endereco() != null) {
+            // if estabelecimento already has endereco, update its fields; else create new
+            if (estabelecimento.getEndereco() != null) {
+                Endereco eExist = estabelecimento.getEndereco();
+                eExist.setLogradouro(dto.endereco().logradouro());
+                eExist.setBairro(dto.endereco().bairro());
+                eExist.setCidade(dto.endereco().cidade());
+                eExist.setEstado(dto.endereco().estado());
+                endereco = enderecoRepository.save(eExist);
+            } else {
+                Endereco novo = Endereco.builder()
+                        .logradouro(dto.endereco().logradouro())
+                        .bairro(dto.endereco().bairro())
+                        .cidade(dto.endereco().cidade())
+                        .estado(dto.endereco().estado())
+                        .build();
+                endereco = enderecoRepository.save(novo);
+            }
+        } else {
+            throw new IllegalArgumentException("Informe idEndereco ou o objeto endereco no payload");
+        }
 
         estabelecimentoMapper.updateEntityFromDto(dto, estabelecimento);
         estabelecimento.setEndereco(endereco);

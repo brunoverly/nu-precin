@@ -1,7 +1,10 @@
 package br.com.anima.nuPrecin.estabelecimento.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+
+import br.com.anima.nuPrecin.endereco.dto.EnderecoRequestDto;
 
 public record EstabelecimentoRequestDto(
         @NotBlank(message = "tipo é obrigatório")
@@ -11,8 +14,10 @@ public record EstabelecimentoRequestDto(
         String foto,
         @NotBlank(message = "telefone é obrigatório")
         String telefone,
-        @NotNull(message = "idEndereco é obrigatório")
+        // idEndereco agora é opcional: se não informado, é possível enviar o objeto endereco embutido
         Long idEndereco,
+        @Valid
+        EnderecoRequestDto endereco,
         @NotNull(message = "idUsuario é obrigatório")
         Long idUsuario
 ) {

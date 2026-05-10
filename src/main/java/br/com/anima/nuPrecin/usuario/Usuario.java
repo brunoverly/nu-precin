@@ -6,9 +6,13 @@ import br.com.anima.nuPrecin.promocao.Promocao;
 import br.com.anima.nuPrecin.voto.Voto;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -19,7 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode(of = "id")
-public class Usuario {
+public class Usuario implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -46,9 +50,39 @@ public class Usuario {
     @Builder.Default
     private List<Voto> votos = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
+    private UsuarioRole role;
+
     @PrePersist
     public void onCreate() {
         this.dataCadastro = LocalDateTime.now();
         this.ativo = true;
+        this.role = UsuarioRole.USER;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if(this.role == UsuarioRole.ADMIN) {
+            return List.of(
+                    new SimpleGrantedAuthority("ROLE_ADMIN"),
+                    new SimpleGrantedAuthority("ROLE_USER")
+            );
+        }
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.senha;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

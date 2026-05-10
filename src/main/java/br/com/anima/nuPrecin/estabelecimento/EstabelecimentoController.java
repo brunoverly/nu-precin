@@ -14,7 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/estabelecimentos")
+@RequestMapping("v1/estabelecimentos")
 public class EstabelecimentoController {
     @Autowired
     private EstabelecimentoService estabelecimentoService;
