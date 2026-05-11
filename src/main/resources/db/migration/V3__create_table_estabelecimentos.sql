@@ -1,4 +1,3 @@
--- V3: create table estabelecimentos
 CREATE TABLE IF NOT EXISTS estabelecimentos (
     id BIGSERIAL PRIMARY KEY,
     nome VARCHAR(250),

@@ -1,8 +1,6 @@
 package br.com.anima.nuPrecin.carrinho;
 
-import br.com.anima.nuPrecin.promocao.Promocao;
 import br.com.anima.nuPrecin.usuario.Usuario;
-import java.util.stream.Collectors;
 import jakarta.persistence.*;
 import lombok.*;
 

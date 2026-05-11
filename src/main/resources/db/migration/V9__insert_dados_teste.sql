@@ -1,6 +1,3 @@
--- V9: insert sample data (idempotent) - excludes exemplos domain
-
--- Usuarios
 INSERT INTO usuarios (id, nome, email, foto, senha, data_cadastro, ativo)
 SELECT 1, 'Ana Souza', 'ana.souza@nuprecin.com', 'https://images.example.com/users/ana.jpg', '$2a$12$aCBdNOlWL7Q1T1k24EPAEu25IUUN5nB52JdtnsZXHATaPT7w0.k8y', NOW() - INTERVAL '60 day', TRUE
 WHERE NOT EXISTS (SELECT 1 FROM usuarios WHERE id = 1);
@@ -21,7 +18,6 @@ INSERT INTO usuarios (id, nome, email, foto, senha, data_cadastro, ativo)
 SELECT 5, 'Eduarda Rocha', 'eduarda.rocha@nuprecin.com', 'https://images.example.com/users/eduarda.jpg', '$2a$12$aCBdNOlWL7Q1T1k24EPAEu25IUUN5nB52JdtnsZXHATaPT7w0.k8y', NOW() - INTERVAL '20 day', TRUE
 WHERE NOT EXISTS (SELECT 1 FROM usuarios WHERE id = 5);
 
--- Enderecos
 INSERT INTO enderecos (id, logradouro, bairro, cidade, estado)
 SELECT 1, 'Av. Paulista, 1578', 'Bela Vista', 'Sao Paulo', 'SP'
 WHERE NOT EXISTS (SELECT 1 FROM enderecos WHERE id = 1);
@@ -42,7 +38,6 @@ INSERT INTO enderecos (id, logradouro, bairro, cidade, estado)
 SELECT 5, 'Av. Joao Pessoa, 900', 'Centro Historico', 'Porto Alegre', 'RS'
 WHERE NOT EXISTS (SELECT 1 FROM enderecos WHERE id = 5);
 
--- Estabelecimentos
 INSERT INTO estabelecimentos (id, nome, tipo, foto, telefone, ativo, id_endereco, id_usuario)
 SELECT 1, 'Supermercado Boa Compra', 'SUPERMERCADO', 'https://images.example.com/estab/boa-compra.jpg', '1133331100', TRUE, 1, 1
 WHERE NOT EXISTS (SELECT 1 FROM estabelecimentos WHERE id = 1);
@@ -63,7 +58,6 @@ INSERT INTO estabelecimentos (id, nome, tipo, foto, telefone, ativo, id_endereco
 SELECT 5, 'Mercado Estacao Sul', 'MERCADO', 'https://images.example.com/estab/estacao-sul.jpg', '5133889900', TRUE, 5, 5
 WHERE NOT EXISTS (SELECT 1 FROM estabelecimentos WHERE id = 5);
 
--- Produtos
 INSERT INTO produtos (id, nome, descricao, marca, codigo_de_barras, qr_code, imagem, categoria, ativo, id_usuario)
 SELECT 1, 'Arroz Tipo 1 5kg', 'Arroz branco tipo 1 pacote de 5kg', 'Tio Joao', '7896006716112', 'QR-ARROZ-001', 'https://images.example.com/prod/arroz.jpg', 'ALIMENTO', TRUE, 1
 WHERE NOT EXISTS (SELECT 1 FROM produtos WHERE id = 1);
@@ -84,7 +78,6 @@ INSERT INTO produtos (id, nome, descricao, marca, codigo_de_barras, qr_code, ima
 SELECT 5, 'Chocolate ao Leite 90g', 'Chocolate ao leite em barra 90g', 'Lacta', '7622210712785', 'QR-CHOC-005', 'https://images.example.com/prod/chocolate.jpg', 'ALIMENTO', TRUE, 5
 WHERE NOT EXISTS (SELECT 1 FROM produtos WHERE id = 5);
 
--- Promocoes
 INSERT INTO promocoes (id, preco_original, preco_promocao, data_criacao, data_atualizacao, data_inicio, data_fim, ativo, id_produto, id_estabelecimento, id_usuario)
 SELECT 1, 29.90, 24.99, NOW() - INTERVAL '7 day', NOW() - INTERVAL '7 day', NOW() - INTERVAL '6 day', NOW() + INTERVAL '10 day', TRUE, 1, 1, 1
 WHERE NOT EXISTS (SELECT 1 FROM promocoes WHERE id = 1);
@@ -105,7 +98,6 @@ INSERT INTO promocoes (id, preco_original, preco_promocao, data_criacao, data_at
 SELECT 5, 7.99, 5.99, NOW() - INTERVAL '3 day', NOW() - INTERVAL '2 day', NOW() - INTERVAL '2 day', NOW() + INTERVAL '5 day', TRUE, 5, 5, 5
 WHERE NOT EXISTS (SELECT 1 FROM promocoes WHERE id = 5);
 
--- Carrinhos (insert with minimal columns consistent with current schema)
 INSERT INTO carrinhos (id, data_cadastro, ativo, id_usuario, preco_total)
 SELECT 1, NOW() - INTERVAL '5 day', TRUE, 1, COALESCE((SELECT SUM(preco_total) FROM itens_carrinho WHERE id_carrinho = 1), 0)
 WHERE NOT EXISTS (SELECT 1 FROM carrinhos WHERE id = 1);
@@ -126,7 +118,6 @@ INSERT INTO carrinhos (id, data_cadastro, ativo, id_usuario, preco_total)
 SELECT 5, NOW() - INTERVAL '1 day', TRUE, 5, COALESCE((SELECT SUM(preco_total) FROM itens_carrinho WHERE id_carrinho = 5), 0)
 WHERE NOT EXISTS (SELECT 1 FROM carrinhos WHERE id = 5);
 
--- Votos
 INSERT INTO votos (id, voto, data_voto, ativo, id_usuario, id_promocao)
 SELECT 1, 'POSITIVO', NOW() - INTERVAL '5 day', TRUE, 2, 1
 WHERE NOT EXISTS (SELECT 1 FROM votos WHERE id = 1);
@@ -147,7 +138,6 @@ INSERT INTO votos (id, voto, data_voto, ativo, id_usuario, id_promocao)
 SELECT 5, 'POSITIVO', NOW() - INTERVAL '1 day', TRUE, 4, 5
 WHERE NOT EXISTS (SELECT 1 FROM votos WHERE id = 5);
 
--- Reset sequences to max(id)
 SELECT setval('usuarios_id_seq', (SELECT COALESCE(MAX(id), 0) FROM usuarios));
 SELECT setval('enderecos_id_seq', (SELECT COALESCE(MAX(id), 0) FROM enderecos));
 SELECT setval('estabelecimentos_id_seq', (SELECT COALESCE(MAX(id), 0) FROM estabelecimentos));

@@ -7,8 +7,11 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface PromocaoMapper {
+
     Promocao toEntity(PromocaoRequestDto dto);
+
     PromocaoResponseDto toResponse(Promocao entity);
+
     List<PromocaoResponseDto> toResponseList(List<Promocao> entity);
 
 }

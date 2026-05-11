@@ -1,4 +1,3 @@
--- V2: create table enderecos
 CREATE TABLE IF NOT EXISTS enderecos (
     id BIGSERIAL PRIMARY KEY,
     logradouro VARCHAR(250),

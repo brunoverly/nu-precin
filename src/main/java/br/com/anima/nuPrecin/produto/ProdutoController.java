@@ -2,7 +2,6 @@ package br.com.anima.nuPrecin.produto;
 
 import br.com.anima.nuPrecin.produto.dto.ProdutoRequestDto;
 import br.com.anima.nuPrecin.produto.dto.ProdutoResponseDto;
-import br.com.anima.nuPrecin.produto.ProdutoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

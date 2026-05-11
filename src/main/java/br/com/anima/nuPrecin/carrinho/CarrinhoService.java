@@ -34,12 +34,10 @@ public class CarrinhoService {
                     return c;
                 });
 
-        // create item and attach
         ItemCarrinho item = carrinhoMapper.toItemEntity(dto);
         item.setPromocao(promocao);
         item.setCarrinho(carrinho);
 
-        // add item to cart
         carrinho.getItens().add(item);
 
         carrinhoRepository.save(carrinho);
@@ -71,7 +69,6 @@ public class CarrinhoService {
                     throw new IllegalArgumentException("usuário com id {" + dto.idUsuario() + "} já possui carrinho ativo");
                 });
 
-        // Replace existing items with the single item from dto (simpler behaviour)
         carrinho.getItens().clear();
         ItemCarrinho item = carrinhoMapper.toItemEntity(dto);
         item.setPromocao(promocao);

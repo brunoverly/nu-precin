@@ -1,4 +1,3 @@
--- V1: create table usuarios (migrated from previous exemplos migration file location)
 CREATE TABLE IF NOT EXISTS usuarios (
     id BIGSERIAL PRIMARY KEY,
     nome VARCHAR(250),

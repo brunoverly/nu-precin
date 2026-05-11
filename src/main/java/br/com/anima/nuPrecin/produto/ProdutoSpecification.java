@@ -1,7 +1,5 @@
 package br.com.anima.nuPrecin.produto;
 
-import br.com.anima.nuPrecin.produto.Produto;
-import br.com.anima.nuPrecin.produto.ProdutoEnum;
 import org.springframework.data.jpa.domain.Specification;
 
 public class ProdutoSpecification {

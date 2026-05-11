@@ -1,4 +1,3 @@
--- V6: create table carrinhos
 CREATE TABLE IF NOT EXISTS carrinhos (
     id BIGSERIAL PRIMARY KEY,
     data_cadastro TIMESTAMP,

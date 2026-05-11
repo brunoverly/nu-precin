@@ -1,5 +1,3 @@
-
--- V7: create table itens_carrinho
 CREATE TABLE IF NOT EXISTS itens_carrinho (
     id BIGSERIAL PRIMARY KEY,
     quantidade_item INTEGER,

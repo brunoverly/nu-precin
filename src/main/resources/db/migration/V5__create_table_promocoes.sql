@@ -1,4 +1,3 @@
--- V5: create table promocoes
 CREATE TABLE IF NOT EXISTS promocoes (
     id BIGSERIAL PRIMARY KEY,
     preco_original NUMERIC(12, 2),

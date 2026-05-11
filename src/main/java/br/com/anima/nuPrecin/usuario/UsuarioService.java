@@ -21,7 +21,6 @@ public class UsuarioService {
 
     public UsuarioResponseDto create(@Valid UsuarioRequestDto dto) {
         Usuario usuario = usuarioMapper.toEntity(dto);
-        // encode password before saving
         usuario.setSenha(passwordEncoder.encode(dto.senha()));
         usuario = usuarioRepository.save(usuario);
         return usuarioMapper.toResponse(usuario);
@@ -47,7 +46,6 @@ public class UsuarioService {
                 .orElseThrow(() -> new EntityNotFoundException("usuário com id {" + id + "} não localizado no banco"));
 
         usuarioMapper.updateEntityFromDto(dto, usuario);
-        // encode password on update as well
         usuario.setSenha(passwordEncoder.encode(dto.senha()));
         usuarioRepository.save(usuario);
 

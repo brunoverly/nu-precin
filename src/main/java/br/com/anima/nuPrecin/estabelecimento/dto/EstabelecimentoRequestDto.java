@@ -14,7 +14,6 @@ public record EstabelecimentoRequestDto(
         String foto,
         @NotBlank(message = "telefone é obrigatório")
         String telefone,
-        // idEndereco agora é opcional: se não informado, é possível enviar o objeto endereco embutido
         Long idEndereco,
         @Valid
         EnderecoRequestDto endereco,

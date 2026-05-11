@@ -9,6 +9,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface EnderecoMapper {
+
     Endereco toEntity(EnderecoRequestDto dto);
 
     EnderecoResponseDto toResponse(Endereco entity);

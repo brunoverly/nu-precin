@@ -1,4 +1,3 @@
--- V8: create table votos
 CREATE TABLE IF NOT EXISTS votos (
     id BIGSERIAL PRIMARY KEY,
     voto VARCHAR(50),

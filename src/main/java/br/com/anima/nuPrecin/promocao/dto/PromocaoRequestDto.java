@@ -8,23 +8,23 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public record PromocaoRequestDto(
-        @NotNull(message = "Campo obrigatório")
-        @Positive(message = "Preço original deve ser maior que zero")
+        @NotNull(message = "preço original é obrigatório")
+        @Positive(message = "preço original deve ser maior que zero")
         BigDecimal precoOriginal,
-        @NotNull(message = "Campo obrigatório")
-        @Positive(message = "Preço promocional deve ser maior que zero")
+        @NotNull(message = "preço promocional é obrigatório")
+        @Positive(message = "preço promocional deve ser maior que zero")
         BigDecimal precoPromocao,
-        @NotNull(message = "Campo obrigatório")
-        @Future(message = "Data de inicio precisa ser futura")
+        @NotNull(message = "data de inicio é obrigatório")
+        @Future(message = "data de inicio precisa ser futura")
         LocalDateTime dataInicio,
-        @NotNull(message = "Campo obrigatório")
-        @Future(message = "Data de término precisa ser futura")
+        @NotNull(message = "data de término é obrigatório")
+        @Future(message = "data de término precisa ser futura")
         LocalDateTime dataFim,
-        @NotBlank(message = "Campo obrigatório")
+        @NotBlank(message = "código de barras é obrigatório")
         String codigoBarras,
-        @NotNull(message = "Campo obrigatório")
+        @NotNull(message = "idEstabelecimento é obrigatório")
         Long idEstabelecimento,
-        @NotNull(message = "Campo obrigatório")
+        @NotNull(message = "idUsuario é obrigatório")
         Long idUsuario
 ) {
 }

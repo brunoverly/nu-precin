@@ -1,4 +1,3 @@
--- V4: create table produtos
 CREATE TABLE IF NOT EXISTS produtos (
     id BIGSERIAL PRIMARY KEY,
     nome VARCHAR(250) NOT NULL,
