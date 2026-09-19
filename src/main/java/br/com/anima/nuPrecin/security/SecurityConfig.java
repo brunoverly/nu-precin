@@ -28,6 +28,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/v1/auth/**").permitAll()
+                        .requestMatchers("/actuator/health").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
@@ -60,4 +61,3 @@ public class SecurityConfig {
         return LocalDateTime.now().atZone(ZoneOffset.UTC).toInstant();
     }
 }
-
