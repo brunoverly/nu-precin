@@ -26,6 +26,12 @@ services:
       - key: EMAIL_CONFIRMATION_SECRET
         generateValue: true
 
+      - key: BREVO_API_KEY
+        sync: false
+
+      - key: BREVO_FROM_EMAIL
+        sync: false
+
       - key: CORS_ALLOWED_ORIGINS
         value: "*"
 

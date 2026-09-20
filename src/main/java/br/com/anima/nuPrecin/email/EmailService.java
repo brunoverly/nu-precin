@@ -2,7 +2,6 @@ package br.com.anima.nuPrecin.email;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
@@ -18,13 +17,13 @@ public class EmailService {
     @Autowired
     private SpringTemplateEngine templateEngine;
 
-    @Value("${RESEND_API_KEY:}")
+    @Value("${BREVO_API_KEY:}")
     private String apiKey;
 
-    @Value("${RESEND_FROM_EMAIL:onboarding@resend.dev}")
+    @Value("${BREVO_FROM_EMAIL:}")
     private String from;
 
-    private final RestClient restClient = RestClient.create("https://api.resend.com");
+    private final RestClient restClient = RestClient.create("https://api.brevo.com");
 
     public void enviarCodigoConfirmacao(
             String email,
@@ -83,19 +82,24 @@ public class EmailService {
         );
 
         if (apiKey.isBlank()) {
-            throw new IllegalStateException("RESEND_API_KEY não configurada.");
+            throw new IllegalStateException("BREVO_API_KEY não configurada.");
+        }
+
+        if (from.isBlank()) {
+            throw new IllegalStateException("BREVO_FROM_EMAIL não configurado.");
         }
 
         try {
             restClient.post()
-                    .uri("/emails")
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
+                    .uri("/v3/smtp/email")
+                    .header("api-key", apiKey)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(new ResendEmailRequest(
-                            from,
-                            List.of(email),
+                    .body(new BrevoEmailRequest(
+                            new BrevoSender("NuPrecin", from),
+                            List.of(new BrevoRecipient(email)),
                             assunto,
-                            html
+                            html,
+                            "Seu código é: " + codigo
                     ))
                     .retrieve()
                     .toBodilessEntity();
@@ -107,11 +111,23 @@ public class EmailService {
         }
     }
 
-    private record ResendEmailRequest(
-            String from,
-            List<String> to,
+    private record BrevoEmailRequest(
+            BrevoSender sender,
+            List<BrevoRecipient> to,
             String subject,
-            String html
+            String htmlContent,
+            String textContent
+    ) {
+    }
+
+    private record BrevoSender(
+            String name,
+            String email
+    ) {
+    }
+
+    private record BrevoRecipient(
+            String email
     ) {
     }
 }
