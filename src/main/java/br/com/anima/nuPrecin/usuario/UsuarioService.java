@@ -33,6 +33,11 @@ public class UsuarioService {
 
     @Transactional
     public UsuarioResponseDto create(@Valid UsuarioRequestDto dto) {
+        if (!currentUserService.isAdmin()) {
+            throw new AcessoNaoAutorizadoException(
+                    "Somente administradores podem criar usuários diretamente.");
+        }
+
         String email = normalizarEmail(dto.email());
         if (usuarioRepository.existsByEmailIgnoreCase(email)) {
             throw new DadosDuplicadosException("E-mail já cadastrado.");

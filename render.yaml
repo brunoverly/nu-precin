@@ -23,6 +23,9 @@ services:
       - key: KEY_TOKEN_ISSUER
         value: nuprecin-render
 
+      - key: EMAIL_CONFIRMATION_SECRET
+        generateValue: true
+
       - key: CORS_ALLOWED_ORIGINS
         value: "*"
 

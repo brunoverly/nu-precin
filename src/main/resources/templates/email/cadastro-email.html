@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="x-apple-disable-message-reformatting">
+    <meta name="format-detection" content="telephone=no,address=no,email=no,date=no">
+    <meta name="color-scheme" content="light dark">
+    <meta name="supported-color-schemes" content="light dark">
+
+    <title>Seu código de acesso</title>
+
+    <!-- Importando fonte similar à do app (escondido do Outlook para evitar bug do Times New Roman) -->
+    <!--[if !mso]><!-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!--<![endif]-->
+
+    <!--[if mso]>
+    <noscript>
+        <xml>
+            <o:OfficeDocumentSettings>
+                <o:PixelsPerInch>96</o:PixelsPerInch>
+            </o:OfficeDocumentSettings>
+        </xml>
+    </noscript>
+    <style>
+        * { font-family: Arial, sans-serif !important; }
+        td { mso-line-height-rule: exactly; }
+    </style>
+    <![endif]-->
+
+    <style>
+        /* Reset básico e Tipografia de Sistema/App */
+        html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #F5F8F7; /* Fundo gelo do app */
+        }
+
+        table { border-collapse: collapse !important; }
+        img { border: 0; line-height: 100%; outline: none; text-decoration: none; }
+        a { color: #16745f; text-decoration: none; }
+
+        /* Responsividade */
+        @media only screen and (max-width: 600px) {
+            .main-container { width: 100% !important; padding: 0 !important; }
+            .content-box { padding: 40px 24px !important; border-radius: 24px !important; }
+            .code-box { width: 44px !important; height: 56px !important; font-size: 24px !important; }
+            .code-spacer { width: 6px !important; }
+            .title { font-size: 22px !important; }
+            .security-card { padding: 16px !important; }
+        }
+
+        /* Dark Mode Settings */
+        @media (prefers-color-scheme: dark) {
+            body, .bg-body { background-color: #111111 !important; }
+            .content-box { background-color: #1A1C1C !important; border-color: #2A2D2D !important; box-shadow: none !important; }
+            .text-main { color: #ffffff !important; }
+            .text-muted { color: #A0AAB0 !important; }
+            .text-dark { color: #F5F8F7 !important; }
+            .code-box {
+                background-color: #212625 !important;
+                border-color: #2A3331 !important;
+                color: #29C29D !important;
+            }
+            .security-card { background-color: #212625 !important; border-color: #2A3331 !important; }
+            .icon-box { background-color: #163028 !important; }
+            .icon-stroke { stroke: #29C29D !important; }
+            .footer-text { color: #71717a !important; }
+            .accent-text { color: #29C29D !important; }
+        }
+    </style>
+</head>
+
+<body class="bg-body" style="margin:0; padding:0; background-color:#F5F8F7; -webkit-font-smoothing: antialiased;">
+
+<!-- PREHEADER -->
+<div style="display:none; font-size:1px; line-height:1px; max-height:0; max-width:0; opacity:0; overflow:hidden; mso-hide:all;">
+    Use o código <span th:text="${codigo}">4821</span> para confirmar sua conta. Válido por <span th:text="${validade}">10</span> minutos.
+    &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+</div>
+
+<table class="bg-body" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F5F8F7;">
+    <tr>
+        <td align="center" style="padding: 48px 16px;">
+
+            <!--[if mso]>
+            <table role="presentation" width="560" cellpadding="0" cellspacing="0" border="0"><tr><td>
+            <![endif]-->
+
+            <table class="main-container" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%; max-width:560px;">
+
+                <!-- LOGO CENTRALIZADA -->
+                <tr>
+                    <td align="center" style="padding-bottom: 32px;">
+                        <span class="text-dark" style="font-size:26px; font-weight:700; letter-spacing:-0.5px; color:#1C201F;">
+                            Nu <span class="accent-text" style="color:#16745f;">Precin</span>
+                        </span>
+                    </td>
+                </tr>
+
+                <!-- CAIXA PRINCIPAL -->
+                <tr>
+                    <td class="content-box" style="background-color:#ffffff; border-radius:32px; padding:48px; box-shadow: 0 12px 32px rgba(22, 116, 95, 0.04);">
+
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+
+                            <!-- TÍTULO -->
+                            <tr>
+                                <td class="title text-main" align="center" style="font-size: 24px; font-weight: 600; color: #1C201F; padding-bottom: 16px; letter-spacing: -0.3px;">
+                                    Verificação de conta
+                                </td>
+                            </tr>
+
+                            <!-- GREETING -->
+                            <tr>
+                                <td class="text-muted" align="center" style="font-size: 15px; line-height: 1.6; color: #687073; padding-bottom: 40px;">
+                                    Olá, <strong class="text-main" style="color: #1C201F; font-weight: 600;" th:text="${nome}">Jonatas</strong>.<br>
+                                    Cole o código abaixo no seu aplicativo para confirmar sua identidade e acessar sua conta.
+                                </td>
+                            </tr>
+
+                            <!-- CÓDIGO (Caixas com o raio e cores do app) -->
+                            <tr>
+                                <td align="center" style="padding-bottom: 24px;">
+                                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
+                                        <tr>
+                                            <td class="code-box accent-text" align="center" valign="middle" style="width: 52px; height: 64px; background-color: #F1F6F5; border: 1px solid #DFEBE8; border-radius: 16px; font-size: 26px; font-weight: 600; color: #16745f;" th:text="${#strings.substring(codigo, 0, 1)}">4</td>
+                                            <td class="code-spacer" style="width: 8px;"></td>
+                                            <td class="code-box accent-text" align="center" valign="middle" style="width: 52px; height: 64px; background-color: #F1F6F5; border: 1px solid #DFEBE8; border-radius: 16px; font-size: 26px; font-weight: 600; color: #16745f;" th:text="${#strings.substring(codigo, 1, 2)}">8</td>
+                                            <td class="code-spacer" style="width: 8px;"></td>
+                                            <td class="code-box accent-text" align="center" valign="middle" style="width: 52px; height: 64px; background-color: #F1F6F5; border: 1px solid #DFEBE8; border-radius: 16px; font-size: 26px; font-weight: 600; color: #16745f;" th:text="${#strings.substring(codigo, 2, 3)}">2</td>
+                                            <td class="code-spacer" style="width: 8px;"></td>
+                                            <td class="code-box accent-text" align="center" valign="middle" style="width: 52px; height: 64px; background-color: #F1F6F5; border: 1px solid #DFEBE8; border-radius: 16px; font-size: 26px; font-weight: 600; color: #16745f;" th:text="${#strings.substring(codigo, 3, 4)}">1</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <!-- TEMPO DE EXPIRAÇÃO -->
+                            <tr>
+                                <td align="center" class="text-muted" style="padding-bottom: 48px;">
+                                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
+                                        <tr>
+                                            <td style="padding-right: 8px; padding-top: 2px;">
+                                                <!--[if !mso]><!-->
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="icon-stroke" stroke="#16745f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <circle cx="12" cy="12" r="10"></circle>
+                                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                                </svg>
+                                                <!--<![endif]-->
+                                            </td>
+                                            <td style="font-size: 14px; color: #687073;">
+                                                Válido por <strong class="text-main" style="color: #1C201F; font-weight: 600;" th:text="${validade + ' minutos'}">10 minutos</strong>.
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <!-- AVISO DE SEGURANÇA (Imitando o design da lista do Perfil) -->
+                            <tr>
+                                <td>
+                                    <table class="security-card" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; border: 1px solid #EBEFEF; border-radius: 20px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.01);">
+                                        <tr>
+                                            <td valign="middle" style="width: 56px;">
+                                                <!-- Ícone igual ao do app (com fundo verde menta) -->
+                                                <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                                                    <tr>
+                                                        <td class="icon-box" align="center" valign="middle" style="width: 44px; height: 44px; background-color: #EBF3F1; border-radius: 14px;">
+                                                            <!--[if !mso]><!-->
+                                                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="icon-stroke" stroke="#16745f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                                            </svg>
+                                                            <!--<![endif]-->
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                            <td class="text-muted" valign="middle" style="font-size: 13px; line-height: 1.5; color: #687073; padding-left: 12px;">
+                                                <strong class="text-main" style="color: #1C201F; font-size: 14px; display: block; padding-bottom: 2px;">Dica de Segurança</strong>
+                                                O Nu Precin nunca solicitará este código fora do app.
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+
+                        </table>
+                    </td>
+                </tr>
+
+                <!-- FOOTER -->
+                <tr>
+                    <td class="footer-text" align="center" style="padding: 32px 16px 24px; font-size: 12px; line-height: 1.6; color: #9CA8AB;">
+                        Enviado para <strong th:text="${email}">usuario@email.com</strong>.<br>
+                        Se não foi você, basta ignorar este e-mail.<br><br>
+                        &copy; 2026 Nu Precin.
+                    </td>
+                </tr>
+
+            </table>
+
+            <!--[if mso]>
+            </td></tr></table>
+            <![endif]-->
+
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
