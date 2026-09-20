@@ -23,6 +23,19 @@ public interface DesafioVerificacaoRepository extends JpaRepository<DesafioVerif
                                           @Param("idCadastroPendente") Long idCadastroPendente,
                                           @Param("agora") LocalDateTime agora);
 
+    @Modifying
+    @Query("""
+            UPDATE DesafioVerificacao d
+               SET d.invalidadoEm = :agora
+             WHERE d.tipo = :tipo
+               AND d.usuario.id = :idUsuario
+               AND d.usadoEm IS NULL
+               AND d.invalidadoEm IS NULL
+            """)
+    int invalidarDesafiosAtivosDoUsuario(@Param("tipo") DesafioTipo tipo,
+                                         @Param("idUsuario") Long idUsuario,
+                                         @Param("agora") LocalDateTime agora);
+
     @Query("""
             SELECT d
               FROM DesafioVerificacao d
@@ -34,4 +47,16 @@ public interface DesafioVerificacaoRepository extends JpaRepository<DesafioVerif
     Optional<DesafioVerificacao> buscarDesafioAtivoDoCadastro(
             @Param("tipo") DesafioTipo tipo,
             @Param("idCadastroPendente") Long idCadastroPendente);
+
+    @Query("""
+            SELECT d
+              FROM DesafioVerificacao d
+             WHERE d.tipo = :tipo
+               AND d.usuario.id = :idUsuario
+               AND d.usadoEm IS NULL
+               AND d.invalidadoEm IS NULL
+            """)
+    Optional<DesafioVerificacao> buscarDesafioAtivoDoUsuario(
+            @Param("tipo") DesafioTipo tipo,
+            @Param("idUsuario") Long idUsuario);
 }

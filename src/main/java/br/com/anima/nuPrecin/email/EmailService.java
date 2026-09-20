@@ -28,11 +28,50 @@ public class EmailService {
             String codigo,
             int validadeMinutos) {
 
+        enviarCodigo(
+                email,
+                nome,
+                codigo,
+                validadeMinutos,
+                "Verificação de conta",
+                "Cole o código abaixo no seu aplicativo para confirmar sua identidade e acessar sua conta.",
+                "Código de confirmação - NuPrecin"
+        );
+    }
+
+    public void enviarCodigoResetSenha(
+            String email,
+            String nome,
+            String codigo,
+            int validadeMinutos) {
+
+        enviarCodigo(
+                email,
+                nome,
+                codigo,
+                validadeMinutos,
+                "Redefinição de senha",
+                "Cole o código abaixo no seu aplicativo para criar uma nova senha.",
+                "Código para redefinir sua senha - NuPrecin"
+        );
+    }
+
+    private void enviarCodigo(
+            String email,
+            String nome,
+            String codigo,
+            int validadeMinutos,
+            String titulo,
+            String mensagem,
+            String assunto) {
+
         Context context = new Context();
         context.setVariable("nome", nome);
         context.setVariable("email", email);
         context.setVariable("codigo", codigo);
         context.setVariable("validade", validadeMinutos);
+        context.setVariable("titulo", titulo);
+        context.setVariable("mensagem", mensagem);
 
         String html = templateEngine.process(
                 "email/cadastro-email",
@@ -49,7 +88,7 @@ public class EmailService {
 
             helper.setFrom(from);
             helper.setTo(email);
-            helper.setSubject("Código de confirmação - NuPrecin");
+            helper.setSubject(assunto);
             helper.setText(
                     "Seu código de confirmação é: " + codigo,
                     html

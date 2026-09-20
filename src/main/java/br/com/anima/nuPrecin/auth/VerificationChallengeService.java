@@ -1,5 +1,6 @@
 package br.com.anima.nuPrecin.auth;
 
+import br.com.anima.nuPrecin.usuario.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -54,13 +55,69 @@ public class VerificationChallengeService {
         return new GeneratedChallenge(desafio, code);
     }
 
+    @Transactional
+    public GeneratedChallenge createUserChallenge(
+            Usuario usuario,
+            DesafioTipo tipo,
+            LocalDateTime expiresAt) {
+
+        desafioRepository.invalidarDesafiosAtivosDoUsuario(
+                tipo,
+                usuario.getId(),
+                LocalDateTime.now()
+        );
+
+        String code = generateCode();
+        DesafioVerificacao desafio = DesafioVerificacao.builder()
+                .tipo(tipo)
+                .usuario(usuario)
+                .emailDestino(usuario.getEmail())
+                .codigoHash(hashCode(tipo, usuario.getEmail(), code))
+                .tentativas(0)
+                .maxTentativas(MAX_ATTEMPTS)
+                .criadoEm(LocalDateTime.now())
+                .expiraEm(expiresAt)
+                .build();
+
+        desafio = desafioRepository.save(desafio);
+        return new GeneratedChallenge(desafio, code);
+    }
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Optional<DesafioVerificacao> validateRegistrationCode(
             CadastroPendente cadastro,
             String code) {
 
-        Optional<DesafioVerificacao> optional = desafioRepository
-                .buscarDesafioAtivoDoCadastro(DesafioTipo.REGISTRO_CONTA, cadastro.getId());
+        return validateChallenge(
+                desafioRepository.buscarDesafioAtivoDoCadastro(
+                        DesafioTipo.REGISTRO_CONTA,
+                        cadastro.getId()
+                ),
+                DesafioTipo.REGISTRO_CONTA,
+                cadastro.getEmail(),
+                code
+        );
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public Optional<DesafioVerificacao> validateUserCode(
+            Usuario usuario,
+            DesafioTipo tipo,
+            String code) {
+
+        return validateChallenge(
+                desafioRepository.buscarDesafioAtivoDoUsuario(tipo, usuario.getId()),
+                tipo,
+                usuario.getEmail(),
+                code
+        );
+    }
+
+    private Optional<DesafioVerificacao> validateChallenge(
+            Optional<DesafioVerificacao> optional,
+            DesafioTipo tipo,
+            String email,
+            String code) {
 
         if (optional.isEmpty()) {
             return Optional.empty();
@@ -76,11 +133,7 @@ public class VerificationChallengeService {
             return Optional.empty();
         }
 
-        String expectedHash = hashCode(
-                DesafioTipo.REGISTRO_CONTA,
-                cadastro.getEmail(),
-                code
-        );
+        String expectedHash = hashCode(tipo, email, code);
 
         boolean valid = MessageDigest.isEqual(
                 desafio.getCodigoHash().getBytes(StandardCharsets.UTF_8),

@@ -3,9 +3,12 @@ package br.com.anima.nuPrecin.auth;
 import br.com.anima.nuPrecin.auth.dto.LoginRequestDto;
 import br.com.anima.nuPrecin.auth.dto.LoginResponseDto;
 import br.com.anima.nuPrecin.auth.dto.ConfirmarRegistroRequestDto;
+import br.com.anima.nuPrecin.auth.dto.MensagemResponseDto;
 import br.com.anima.nuPrecin.auth.dto.ReenviarConfirmacaoRequestDto;
 import br.com.anima.nuPrecin.auth.dto.RegistroRequestDto;
 import br.com.anima.nuPrecin.auth.dto.RegistroResponseDto;
+import br.com.anima.nuPrecin.auth.dto.ResetarSenhaRequestDto;
+import br.com.anima.nuPrecin.auth.dto.SolicitarResetSenhaRequestDto;
 import br.com.anima.nuPrecin.usuario.dto.UsuarioResponseDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,8 @@ public class AuthController {
     private AuthService service;
     @Autowired
     private CadastroService cadastroService;
+    @Autowired
+    private SenhaService senhaService;
 
     @PostMapping("login")
     public ResponseEntity<LoginResponseDto> login (@Valid @RequestBody LoginRequestDto dto) {
@@ -56,5 +61,18 @@ public class AuthController {
     public ResponseEntity<RegistroResponseDto> reenviarConfirmacao(
             @Valid @RequestBody ReenviarConfirmacaoRequestDto dto) {
         return ResponseEntity.accepted().body(cadastroService.reenviar(dto));
+    }
+
+    @PostMapping("senha/esqueci")
+    public ResponseEntity<MensagemResponseDto> solicitarResetSenha(
+            @Valid @RequestBody SolicitarResetSenhaRequestDto dto) {
+        return ResponseEntity.accepted().body(senhaService.solicitarReset(dto));
+    }
+
+    @PostMapping("senha/resetar")
+    public ResponseEntity<Void> resetarSenha(
+            @Valid @RequestBody ResetarSenhaRequestDto dto) {
+        senhaService.resetarSenha(dto);
+        return ResponseEntity.noContent().build();
     }
 }

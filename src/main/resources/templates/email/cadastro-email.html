@@ -9,7 +9,7 @@
     <meta name="color-scheme" content="light dark">
     <meta name="supported-color-schemes" content="light dark">
 
-    <title>Seu código de acesso</title>
+    <title th:text="${titulo}">Seu código de acesso</title>
 
     <!-- Importando fonte similar à do app (escondido do Outlook para evitar bug do Times New Roman) -->
     <!--[if !mso]><!-->
@@ -115,7 +115,7 @@
                             <!-- TÍTULO -->
                             <tr>
                                 <td class="title text-main" align="center" style="font-size: 24px; font-weight: 600; color: #1C201F; padding-bottom: 16px; letter-spacing: -0.3px;">
-                                    Verificação de conta
+                                    <span th:text="${titulo}">Verificação de conta</span>
                                 </td>
                             </tr>
 
@@ -123,7 +123,7 @@
                             <tr>
                                 <td class="text-muted" align="center" style="font-size: 15px; line-height: 1.6; color: #687073; padding-bottom: 40px;">
                                     Olá, <strong class="text-main" style="color: #1C201F; font-weight: 600;" th:text="${nome}">Jonatas</strong>.<br>
-                                    Cole o código abaixo no seu aplicativo para confirmar sua identidade e acessar sua conta.
+                                    <span th:text="${mensagem}">Cole o código abaixo no seu aplicativo para confirmar sua identidade e acessar sua conta.</span>
                                 </td>
                             </tr>
 
