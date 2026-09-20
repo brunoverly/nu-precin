@@ -1,8 +1,10 @@
 package br.com.anima.nuPrecin.usuario;
 
-import br.com.anima.nuPrecin.exception.DadosDuplicadosException;
 import br.com.anima.nuPrecin.exception.AcessoNaoAutorizadoException;
+import br.com.anima.nuPrecin.exception.CredenciaisInvalidasException;
+import br.com.anima.nuPrecin.exception.DadosDuplicadosException;
 import br.com.anima.nuPrecin.security.CurrentUserService;
+import br.com.anima.nuPrecin.usuario.dto.AtualizarUsuarioRequestDto;
 import br.com.anima.nuPrecin.usuario.dto.UsuarioRequestDto;
 import br.com.anima.nuPrecin.usuario.dto.UsuarioResponseDto;
 import jakarta.persistence.EntityNotFoundException;
@@ -73,10 +75,14 @@ public class UsuarioService {
     }
 
     @Transactional
-    public UsuarioResponseDto update(Long id, @Valid UsuarioRequestDto dto) {
+    public UsuarioResponseDto update(Long id, @Valid AtualizarUsuarioRequestDto dto) {
         currentUserService.ensureCanManageUser(id);
         Usuario usuario = usuarioRepository.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new EntityNotFoundException("usuário com id {" + id + "} não localizado no banco"));
+
+        if (!passwordEncoder.matches(dto.senhaAtual(), usuario.getSenha())) {
+            throw new CredenciaisInvalidasException("Senha atual inválida.");
+        }
 
         String email = normalizarEmail(dto.email());
         if (usuarioRepository.existsByEmailIgnoreCaseAndIdNot(email, id)) {
@@ -85,7 +91,10 @@ public class UsuarioService {
 
         usuarioMapper.updateEntityFromDto(dto, usuario);
         usuario.setEmail(email);
-        usuario.setSenha(passwordEncoder.encode(dto.senha()));
+        usuario.setSenha(passwordEncoder.encode(dto.novaSenha()));
+        if (dto.foto() != null && !dto.foto().isBlank()) {
+            usuario.setFoto(dto.foto());
+        }
         usuarioRepository.save(usuario);
 
         return usuarioMapper.toResponse(usuario);

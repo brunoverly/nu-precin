@@ -574,7 +574,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nome\": \"Maria Oliveira santos\",\n  \"email\": \"maria.oliveira@exemplo.com\",\n  \"foto\": \"https://exemplo.com/fotos/maria.jpg\",\n  \"senha\": \"123456\"\n}",
+              "raw": "{\n  \"nome\": \"Maria Oliveira santos\",\n  \"email\": \"maria.oliveira@exemplo.com\",\n  \"foto\": \"https://exemplo.com/fotos/maria.jpg\",\n  \"senhaAtual\": \"123456\",\n  \"novaSenha\": \"654321\"\n}",
               "options": {
                 "raw": {
                   "language": "json"

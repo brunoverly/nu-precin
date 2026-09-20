@@ -1,26 +1,30 @@
 package br.com.anima.nuPrecin.email;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientException;
+
+import java.util.List;
 
 @Service
 public class EmailService {
 
     @Autowired
-    private JavaMailSender mailSender;
-
-    @Autowired
     private SpringTemplateEngine templateEngine;
 
-    @Value("${MAIL_FROM:${SPRING_MAIL_USERNAME}}")
+    @Value("${RESEND_API_KEY:}")
+    private String apiKey;
+
+    @Value("${RESEND_FROM_EMAIL:onboarding@resend.dev}")
     private String from;
+
+    private final RestClient restClient = RestClient.create("https://api.resend.com");
 
     public void enviarCodigoConfirmacao(
             String email,
@@ -78,28 +82,36 @@ public class EmailService {
                 context
         );
 
+        if (apiKey.isBlank()) {
+            throw new IllegalStateException("RESEND_API_KEY não configurada.");
+        }
+
         try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(
-                    message,
-                    true,
-                    "UTF-8"
-            );
-
-            helper.setFrom(from);
-            helper.setTo(email);
-            helper.setSubject(assunto);
-            helper.setText(
-                    "Seu código de confirmação é: " + codigo,
-                    html
-            );
-
-            mailSender.send(message);
-        } catch (MessagingException ex) {
+            restClient.post()
+                    .uri("/emails")
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(new ResendEmailRequest(
+                            from,
+                            List.of(email),
+                            assunto,
+                            html
+                    ))
+                    .retrieve()
+                    .toBodilessEntity();
+        } catch (RestClientException ex) {
             throw new IllegalStateException(
-                    "Não foi possível preparar o e-mail de confirmação.",
+                    "Não foi possível enviar o e-mail de código.",
                     ex
             );
         }
+    }
+
+    private record ResendEmailRequest(
+            String from,
+            List<String> to,
+            String subject,
+            String html
+    ) {
     }
 }

@@ -2,6 +2,7 @@ package br.com.anima.nuPrecin.usuario;
 
 import br.com.anima.nuPrecin.usuario.dto.UsuarioRequestDto;
 import br.com.anima.nuPrecin.usuario.dto.UsuarioResponseDto;
+import br.com.anima.nuPrecin.usuario.dto.AtualizarUsuarioRequestDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -47,7 +48,9 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioResponseDto> update(@PathVariable Long id, @RequestBody @Valid UsuarioRequestDto dto) {
+    public ResponseEntity<UsuarioResponseDto> update(
+            @PathVariable Long id,
+            @RequestBody @Valid AtualizarUsuarioRequestDto dto) {
         return ResponseEntity.ok().body(usuarioService.update(id, dto));
     }
 
