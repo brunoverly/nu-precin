@@ -228,3 +228,7 @@ A rota legada `/votos` permanece disponível para compatibilidade.
 - Observabilidade com logs (SLF4J) e metrics (Micrometer).
 - Documentação com Swagger (OpenApi).
 - Implementação de refresh token JWT, e link temporário para atualização de senha.
+
+
+
+https://nyuuqqxfdmeodpeoymgv.supabase.co/storage/v1/object/public/nuprecin-media/teste/coca-cola.png

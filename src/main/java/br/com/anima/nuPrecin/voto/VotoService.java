@@ -11,14 +11,20 @@ import br.com.anima.nuPrecin.voto.dto.VotoResponseDto;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class VotoService {
+    public record VotoOperationResult(VotoResponseDto response, boolean created) {
+    }
+
     @Autowired
     private VotoRepository votoRepository;
     @Autowired
@@ -31,7 +37,9 @@ public class VotoService {
     private CurrentUserService currentUserService;
 
     @Transactional
-    public VotoResponseDto createOrUpdate(@Valid VotoRequestDto dto) {
+    public VotoOperationResult createOrUpdate(@Valid VotoRequestDto dto) {
+        validarId("idUsuario", dto.idUsuario());
+        validarId("idPromocao", dto.idPromocao());
         currentUserService.ensureCanUseUserId(dto.idUsuario());
         Usuario usuario = usuarioRepository.findByIdAndAtivoTrue(dto.idUsuario())
                 .orElseThrow(() -> new EntityNotFoundException("usuário com id {" + dto.idUsuario() + "} não localizado no banco"));
@@ -42,7 +50,8 @@ public class VotoService {
             throw new IllegalArgumentException("usuário não pode votar na própria promoção.");
         }
 
-        Voto voto = votoRepository.findByUsuarioIdAndPromocaoIdAndAtivoTrue(dto.idUsuario(), dto.idPromocao())
+        Optional<Voto> votoExistente = votoRepository.findByUsuarioIdAndPromocaoIdAndAtivoTrue(dto.idUsuario(), dto.idPromocao());
+        Voto voto = votoExistente
                 .orElseGet(() -> {
                     Voto novoVoto = new Voto();
                     novoVoto.setUsuario(usuario);
@@ -55,7 +64,7 @@ public class VotoService {
         voto.setAtivo(true);
         votoRepository.save(voto);
 
-        return votoMapper.toResponse(voto);
+        return new VotoOperationResult(votoMapper.toResponse(voto), votoExistente.isEmpty());
     }
 
     @Transactional(readOnly = true)
@@ -67,12 +76,29 @@ public class VotoService {
     }
 
     @Transactional(readOnly = true)
-    public List<VotoResponseDto> findAll(Long idPromocao, Long idUsuario, LocalDateTime dataInicio, LocalDateTime dataFim, VotoEnum voto) {
+    public Page<VotoResponseDto> findAll(Long idPromocao, Long idUsuario, LocalDateTime dataInicio, LocalDateTime dataFim, VotoEnum voto, Pageable pageable) {
+        validarIdOpcional("idPromocao", idPromocao);
+        validarIdOpcional("idUsuario", idUsuario);
         validarPeriodo(dataInicio, dataFim);
 
-        return votoMapper.toResponseList(
-                votoRepository.findAtivosComFiltros(idPromocao, idUsuario, dataInicio, dataFim, voto)
-        );
+        if (pageable.getPageSize() > 100) {
+            throw new IllegalArgumentException("size não pode ser maior que 100.");
+        }
+
+        return votoRepository.findAtivosComFiltros(idPromocao, idUsuario, dataInicio, dataFim, voto, pageable)
+                .map(votoMapper::toResponse);
+    }
+
+    private void validarId(String nome, Long valor) {
+        if (valor == null || valor <= 0) {
+            throw new IllegalArgumentException(nome + " deve ser maior que zero.");
+        }
+    }
+
+    private void validarIdOpcional(String nome, Long valor) {
+        if (valor != null && valor <= 0) {
+            throw new IllegalArgumentException(nome + " deve ser maior que zero.");
+        }
     }
 
     private void validarPeriodo(LocalDateTime dataInicio, LocalDateTime dataFim) {

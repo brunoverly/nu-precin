@@ -1,6 +1,7 @@
 package br.com.anima.nuPrecin.produto;
 
-
+import org.springframework.web.multipart.MultipartFile;
+import br.com.anima.nuPrecin.storage.ImageStorageService;
 import br.com.anima.nuPrecin.produto.dto.ProdutoRequestDto;
 import br.com.anima.nuPrecin.produto.dto.ProdutoResponseDto;
 import br.com.anima.nuPrecin.security.CurrentUserService;
@@ -19,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ProdutoService {
 
+    @Autowired
+    private ImageStorageService imageStorageService;
     @Autowired
     private ProdutoRepository produtoRepository;
     @Autowired
@@ -94,5 +97,27 @@ public class ProdutoService {
 
         produto.setAtivo(false);
         produtoRepository.save(produto);
+    }
+
+    @Transactional
+    public ProdutoResponseDto uploadImagem(Long id, MultipartFile file) {
+        Produto produto = produtoRepository.findByIdAtivo(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "produto com id {" + id + "} não localizado no banco"
+                ));
+
+        currentUserService.ensureCanManageUser(produto.getUsuario().getId());
+
+        String publicUrl = imageStorageService.upload(
+                "produtos",
+                id,
+                "imagens",
+                file
+        );
+
+        produto.setImagem(publicUrl);
+        produtoRepository.save(produto);
+
+        return produtoMapper.toResponse(produto);
     }
 }

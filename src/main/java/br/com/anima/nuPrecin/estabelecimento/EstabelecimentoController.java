@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -54,5 +56,18 @@ public class EstabelecimentoController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         estabelecimentoService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping(
+            value = "/{id}/foto",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    public ResponseEntity<EstabelecimentoResponseDto> uploadFoto(
+            @PathVariable Long id,
+            @RequestPart("file") MultipartFile file) {
+
+        return ResponseEntity.ok(
+                estabelecimentoService.uploadFoto(id, file)
+        );
     }
 }

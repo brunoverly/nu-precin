@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import br.com.anima.nuPrecin.storage.ImageStorageService;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Locale;
 
@@ -26,6 +28,8 @@ public class UsuarioService {
     private org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder passwordEncoder;
     @Autowired
     private CurrentUserService currentUserService;
+    @Autowired
+    private ImageStorageService imageStorageService;
 
     @Transactional
     public UsuarioResponseDto create(@Valid UsuarioRequestDto dto) {
@@ -90,6 +94,30 @@ public class UsuarioService {
 
         usuario.setAtivo(false);
         usuarioRepository.save(usuario);
+    }
+    @Transactional
+    public UsuarioResponseDto uploadFoto(
+            Long id,
+            MultipartFile file) {
+
+        currentUserService.ensureCanManageUser(id);
+
+        Usuario usuario = usuarioRepository.findByIdAndAtivoTrue(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "usuário com id {" + id + "} não localizado no banco"
+                ));
+
+        String publicUrl = imageStorageService.upload(
+                "usuarios",
+                id,
+                "avatar",
+                file
+        );
+
+        usuario.setFoto(publicUrl);
+        usuarioRepository.save(usuario);
+
+        return usuarioMapper.toResponse(usuario);
     }
 
     private String normalizarEmail(String email) {

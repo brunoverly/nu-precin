@@ -1,5 +1,7 @@
 package br.com.anima.nuPrecin.voto;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,7 +22,7 @@ public interface VotoRepository extends JpaRepository<Voto, Long> {
     Optional<Voto> findByUsuarioIdAndPromocaoIdAndAtivoTrue(Long idUsuario, Long idPromocao);
     List<Voto> findByAtivoTrueAndVotoAndDataVotoBetweenOrderByDataVotoDesc(VotoEnum voto, LocalDateTime dataInicio, LocalDateTime dataFim);
 
-    @Query("""
+    @Query(value = """
             SELECT v
             FROM Voto v
             WHERE v.ativo = true
@@ -29,13 +31,23 @@ public interface VotoRepository extends JpaRepository<Voto, Long> {
               AND (:dataInicio IS NULL OR v.dataVoto >= :dataInicio)
               AND (:dataFim IS NULL OR v.dataVoto <= :dataFim)
               AND (:voto IS NULL OR v.voto = :voto)
-            ORDER BY v.dataVoto DESC
+            """,
+            countQuery = """
+            SELECT COUNT(v)
+            FROM Voto v
+            WHERE v.ativo = true
+              AND (:idPromocao IS NULL OR v.promocao.id = :idPromocao)
+              AND (:idUsuario IS NULL OR v.usuario.id = :idUsuario)
+              AND (:dataInicio IS NULL OR v.dataVoto >= :dataInicio)
+              AND (:dataFim IS NULL OR v.dataVoto <= :dataFim)
+              AND (:voto IS NULL OR v.voto = :voto)
             """)
-    List<Voto> findAtivosComFiltros(@Param("idPromocao") Long idPromocao,
+    Page<Voto> findAtivosComFiltros(@Param("idPromocao") Long idPromocao,
                                     @Param("idUsuario") Long idUsuario,
                                     @Param("dataInicio") LocalDateTime dataInicio,
                                     @Param("dataFim") LocalDateTime dataFim,
-                                    @Param("voto") VotoEnum voto);
+                                    @Param("voto") VotoEnum voto,
+                                    Pageable pageable);
 
     @Query("""
             SELECT v.promocao.id AS idPromocao, COUNT(v.id) AS totalVotos

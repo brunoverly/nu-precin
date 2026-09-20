@@ -15,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import br.com.anima.nuPrecin.storage.ImageStorageService;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class EstabelecimentoService {
@@ -26,6 +28,8 @@ public class EstabelecimentoService {
     private UsuarioRepository usuarioRepository;
     @Autowired
     private EstabelecimentoMapper estabelecimentoMapper;
+    @Autowired
+    private ImageStorageService imageStorageService;
     @Autowired
     private CurrentUserService currentUserService;
 
@@ -142,5 +146,33 @@ public class EstabelecimentoService {
 
         estabelecimento.setAtivo(false);
         estabelecimentoRepository.save(estabelecimento);
+    }
+
+    @Transactional
+    public EstabelecimentoResponseDto uploadFoto(
+            Long id,
+            MultipartFile file) {
+
+        Estabelecimento estabelecimento = estabelecimentoRepository
+                .findByIdAndAtivoTrue(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "estabelecimento com id {" + id + "} não localizado no banco"
+                ));
+
+        currentUserService.ensureCanManageUser(
+                estabelecimento.getUsuario().getId()
+        );
+
+        String publicUrl = imageStorageService.upload(
+                "estabelecimentos",
+                id,
+                "fotos",
+                file
+        );
+
+        estabelecimento.setFoto(publicUrl);
+        estabelecimentoRepository.save(estabelecimento);
+
+        return estabelecimentoMapper.toResponse(estabelecimento);
     }
 }

@@ -4,13 +4,15 @@ import br.com.anima.nuPrecin.voto.dto.VotoRequestDto;
 import br.com.anima.nuPrecin.voto.dto.VotoResponseDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
 @RequestMapping({"/v1/votos", "/votos"})
@@ -20,9 +22,14 @@ public class VotoController {
 
     @PostMapping
     public ResponseEntity<VotoResponseDto> createOrUpdate(@RequestBody @Valid VotoRequestDto dto) {
-        VotoResponseDto votoResponseDto = votoService.createOrUpdate(dto);
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
+        VotoService.VotoOperationResult operation = votoService.createOrUpdate(dto);
+        VotoResponseDto votoResponseDto = operation.response();
+
+        if (!operation.created()) {
+            return ResponseEntity.ok(votoResponseDto);
+        }
+
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(votoResponseDto.id())
                 .toUri();
@@ -36,7 +43,8 @@ public class VotoController {
     }
 
     @GetMapping
-    public List<?> findAll(
+    public ResponseEntity<?> findAll(
+            @PageableDefault(size = 20, sort = "dataVoto", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(required = false) Long idPromocao,
             @RequestParam(required = false) Long idUsuario,
             @RequestParam(required = false) LocalDateTime dataInicio,
@@ -45,9 +53,12 @@ public class VotoController {
             @RequestParam(required = false) String agruparPor,
             @RequestParam(required = false) String ordenacao) {
         if ("promocao".equalsIgnoreCase(agruparPor)) {
-            return votoService.buscarRankingPromocoes(dataInicio, dataFim, voto, ordenacao);
+            return ResponseEntity.ok(votoService.buscarRankingPromocoes(dataInicio, dataFim, voto, ordenacao));
         }
-        return votoService.findAll(idPromocao, idUsuario, dataInicio, dataFim, voto);
+        if (agruparPor != null && !agruparPor.isBlank()) {
+            throw new IllegalArgumentException("agruparPor deve ser promocao.");
+        }
+        return ResponseEntity.ok(votoService.findAll(idPromocao, idUsuario, dataInicio, dataFim, voto, pageable));
     }
 
     @DeleteMapping("/{id}")
