@@ -11,7 +11,7 @@ public class ProdutoSpecification {
     public static Specification<Produto> temMarca(String marca) {
         return (root, query, cb) ->
                 marca == null ? null :
-                        cb.equal(root.get("marca"), marca);
+                        cb.equal(cb.lower(root.get("marca")), marca.toLowerCase());
     }
     public static Specification<Produto> temCategoria(String produtoEnumStr) {
         return (root, query, cb) -> {
@@ -22,7 +22,7 @@ public class ProdutoSpecification {
                 ProdutoEnum valorEnum = ProdutoEnum.valueOf(produtoEnumStr);
                 return cb.equal(root.get("categoria"), valorEnum);
             } catch (IllegalArgumentException e) {
-                return null;
+                throw new IllegalArgumentException("categoria inválida: " + produtoEnumStr);
             }
         };
     }

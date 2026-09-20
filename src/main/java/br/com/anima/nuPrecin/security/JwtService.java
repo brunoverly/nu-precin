@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 
 @Service
 public class JwtService {
@@ -66,7 +65,6 @@ public class JwtService {
     }
 
     private Instant generateExpiresDate() {
-        //retorna um LocalDateTime com fuso horário do local da requisição
-        return LocalDateTime.now().plusHours(24).toInstant(ZoneOffset.of("-03:00"));
+        return Instant.now().plus(24, ChronoUnit.HOURS);
     }
 }

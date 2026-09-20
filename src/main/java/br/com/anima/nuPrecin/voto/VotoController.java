@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/votos")
+@RequestMapping({"/v1/votos", "/votos"})
 public class VotoController {
     @Autowired
     private VotoService votoService;

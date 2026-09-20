@@ -36,15 +36,15 @@ public class Carrinho {
     public void onCreate() {
         this.dataCadastro = LocalDateTime.now();
         this.ativo = true;
-        calcularPrecoTotal();
+        recalcularPrecoTotal();
     }
 
     @PreUpdate
     public void onUpdate() {
-        calcularPrecoTotal();
+        recalcularPrecoTotal();
     }
 
-    private void calcularPrecoTotal() {
+    public void recalcularPrecoTotal() {
         if (itens == null || itens.isEmpty()) {
             this.precoTotal = BigDecimal.ZERO;
             return;

@@ -3,7 +3,6 @@ package br.com.anima.nuPrecin.auth;
 import br.com.anima.nuPrecin.auth.dto.LoginRequestDto;
 import br.com.anima.nuPrecin.auth.dto.LoginResponseDto;
 import jakarta.validation.Valid;
-import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +17,7 @@ public class AuthController {
     private AuthService service;
 
     @PostMapping("login")
-    public ResponseEntity<LoginResponseDto> login (@Valid @RequestBody LoginRequestDto dto) throws BadRequestException {
+    public ResponseEntity<LoginResponseDto> login (@Valid @RequestBody LoginRequestDto dto) {
         return ResponseEntity.ok().body(service.login(dto));
     }
 }

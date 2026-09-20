@@ -11,8 +11,12 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface VotoMapper {
 
+    @Mapping(target = "usuario", ignore = true)
+    @Mapping(target = "promocao", ignore = true)
     Voto toEntity(VotoRequestDto dto);
 
+    @Mapping(target = "idUsuario", source = "usuario.id")
+    @Mapping(target = "idPromocao", source = "promocao.id")
     VotoResponseDto toResponse(Voto entity);
 
     List<VotoResponseDto> toResponseList(List<Voto> entities);

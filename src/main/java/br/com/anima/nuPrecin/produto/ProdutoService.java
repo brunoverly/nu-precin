@@ -3,6 +3,7 @@ package br.com.anima.nuPrecin.produto;
 
 import br.com.anima.nuPrecin.produto.dto.ProdutoRequestDto;
 import br.com.anima.nuPrecin.produto.dto.ProdutoResponseDto;
+import br.com.anima.nuPrecin.security.CurrentUserService;
 import br.com.anima.nuPrecin.usuario.Usuario;
 import br.com.anima.nuPrecin.usuario.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -23,9 +25,13 @@ public class ProdutoService {
     private ProdutoMapper produtoMapper;
     @Autowired
     private UsuarioRepository usuarioRepository;
+    @Autowired
+    private CurrentUserService currentUserService;
 
 
+    @Transactional
     public ProdutoResponseDto create(ProdutoRequestDto dto){
+        currentUserService.ensureCanUseUserId(dto.idUsuario());
         Usuario usuario = usuarioRepository.findByIdAndAtivoTrue(dto.idUsuario())
                 .orElseThrow(() -> new EntityNotFoundException("usuário com id {" + dto.idUsuario() + "} não localizado no banco"));
 
@@ -35,12 +41,14 @@ public class ProdutoService {
         return produtoMapper.toResponse(produto);
     }
 
+    @Transactional(readOnly = true)
     public ProdutoResponseDto findById(Long id) {
         Produto produto = produtoRepository.findByIdAtivo(id)
                 .orElseThrow(() -> new EntityNotFoundException("produto com id {"+ id + "} não localizado no banco"));
         return produtoMapper.toResponse(produto);
     }
 
+    @Transactional(readOnly = true)
     public Page<ProdutoResponseDto> findAll(Pageable pageable, String nome, String marca, String categoria) {
 
         Specification<Produto> specification = ProdutoSpecification.temNome(nome)
@@ -55,9 +63,12 @@ public class ProdutoService {
 
     }
 
+    @Transactional
     public ProdutoResponseDto update(Long id, @Valid ProdutoRequestDto dto) {
         Produto produto = produtoRepository.findByIdAtivo(id)
                 .orElseThrow(() -> new EntityNotFoundException("entidade com o id {" + id + "} não localizada no banco"));
+        currentUserService.ensureCanManageUser(produto.getUsuario().getId());
+        currentUserService.ensureCanUseUserId(dto.idUsuario());
 
         Usuario usuario = usuarioRepository.findByIdAndAtivoTrue(dto.idUsuario())
                 .orElseThrow(() -> new EntityNotFoundException("usuário com id {" + dto.idUsuario() + "} não localizado no banco"));
@@ -75,9 +86,11 @@ public class ProdutoService {
 
     }
 
+    @Transactional
     public void delete(Long id) {
         Produto produto = produtoRepository.findByIdAtivo(id)
                 .orElseThrow(() -> new EntityNotFoundException("entidade com o id {" + id + "} não localizada no banco"));
+        currentUserService.ensureCanManageUser(produto.getUsuario().getId());
 
         produto.setAtivo(false);
         produtoRepository.save(produto);

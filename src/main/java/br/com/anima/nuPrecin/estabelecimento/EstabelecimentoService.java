@@ -4,6 +4,7 @@ import br.com.anima.nuPrecin.endereco.Endereco;
 import br.com.anima.nuPrecin.endereco.EnderecoRepository;
 import br.com.anima.nuPrecin.estabelecimento.dto.EstabelecimentoRequestDto;
 import br.com.anima.nuPrecin.estabelecimento.dto.EstabelecimentoResponseDto;
+import br.com.anima.nuPrecin.security.CurrentUserService;
 import br.com.anima.nuPrecin.usuario.Usuario;
 import br.com.anima.nuPrecin.usuario.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EstabelecimentoService {
@@ -24,13 +26,22 @@ public class EstabelecimentoService {
     private UsuarioRepository usuarioRepository;
     @Autowired
     private EstabelecimentoMapper estabelecimentoMapper;
+    @Autowired
+    private CurrentUserService currentUserService;
 
+    @Transactional
     public EstabelecimentoResponseDto create(@Valid EstabelecimentoRequestDto dto) {
+        currentUserService.ensureCanUseUserId(dto.idUsuario());
+
         // resolve usuario
         Usuario usuario = usuarioRepository.findByIdAndAtivoTrue(dto.idUsuario())
                 .orElseThrow(() -> new EntityNotFoundException("usuário com id {" + dto.idUsuario() + "} não localizado no banco"));
 
         // resolve endereco: prefer idEndereco se informado; senão use endereco embutido
+        if (dto.idEndereco() != null && dto.endereco() != null) {
+            throw new IllegalArgumentException("Informe apenas idEndereco ou endereco, não os dois.");
+        }
+
         Endereco endereco = null;
         if (dto.idEndereco() != null) {
             endereco = enderecoRepository.findById(dto.idEndereco())
@@ -55,12 +66,14 @@ public class EstabelecimentoService {
         return estabelecimentoMapper.toResponse(estabelecimento);
     }
 
+    @Transactional(readOnly = true)
     public EstabelecimentoResponseDto findById(Long id) {
         Estabelecimento estabelecimento = estabelecimentoRepository.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new EntityNotFoundException("estabelecimento com id {" + id + "} não localizado no banco"));
         return estabelecimentoMapper.toResponse(estabelecimento);
     }
 
+    @Transactional(readOnly = true)
     public Page<EstabelecimentoResponseDto> findAll(Pageable pageable, String nome, String tipo, Long idUsuario) {
         Specification<Estabelecimento> specification = EstabelecimentoSpecification.temNome(nome)
                 .and(EstabelecimentoSpecification.temTipo(tipo))
@@ -71,9 +84,17 @@ public class EstabelecimentoService {
         return estabelecimentos.map(estabelecimentoMapper::toResponse);
     }
 
+    @Transactional
     public EstabelecimentoResponseDto update(Long id, @Valid EstabelecimentoRequestDto dto) {
         Estabelecimento estabelecimento = estabelecimentoRepository.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new EntityNotFoundException("estabelecimento com id {" + id + "} não localizado no banco"));
+        currentUserService.ensureCanManageUser(estabelecimento.getUsuario().getId());
+        currentUserService.ensureCanUseUserId(dto.idUsuario());
+
+        if (dto.idEndereco() != null && dto.endereco() != null) {
+            throw new IllegalArgumentException("Informe apenas idEndereco ou endereco, não os dois.");
+        }
+
         // resolve usuario
         Usuario usuario = usuarioRepository.findByIdAndAtivoTrue(dto.idUsuario())
                 .orElseThrow(() -> new EntityNotFoundException("usuário com id {" + dto.idUsuario() + "} não localizado no banco"));
@@ -113,9 +134,11 @@ public class EstabelecimentoService {
         return estabelecimentoMapper.toResponse(estabelecimento);
     }
 
+    @Transactional
     public void delete(Long id) {
         Estabelecimento estabelecimento = estabelecimentoRepository.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new EntityNotFoundException("estabelecimento com id {" + id + "} não localizado no banco"));
+        currentUserService.ensureCanManageUser(estabelecimento.getUsuario().getId());
 
         estabelecimento.setAtivo(false);
         estabelecimentoRepository.save(estabelecimento);

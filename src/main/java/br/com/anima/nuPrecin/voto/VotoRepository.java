@@ -21,6 +21,23 @@ public interface VotoRepository extends JpaRepository<Voto, Long> {
     List<Voto> findByAtivoTrueAndVotoAndDataVotoBetweenOrderByDataVotoDesc(VotoEnum voto, LocalDateTime dataInicio, LocalDateTime dataFim);
 
     @Query("""
+            SELECT v
+            FROM Voto v
+            WHERE v.ativo = true
+              AND (:idPromocao IS NULL OR v.promocao.id = :idPromocao)
+              AND (:idUsuario IS NULL OR v.usuario.id = :idUsuario)
+              AND (:dataInicio IS NULL OR v.dataVoto >= :dataInicio)
+              AND (:dataFim IS NULL OR v.dataVoto <= :dataFim)
+              AND (:voto IS NULL OR v.voto = :voto)
+            ORDER BY v.dataVoto DESC
+            """)
+    List<Voto> findAtivosComFiltros(@Param("idPromocao") Long idPromocao,
+                                    @Param("idUsuario") Long idUsuario,
+                                    @Param("dataInicio") LocalDateTime dataInicio,
+                                    @Param("dataFim") LocalDateTime dataFim,
+                                    @Param("voto") VotoEnum voto);
+
+    @Query("""
             SELECT v.promocao.id AS idPromocao, COUNT(v.id) AS totalVotos
             FROM Voto v
             WHERE v.ativo = true

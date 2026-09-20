@@ -13,8 +13,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Optional;
-
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
     @Autowired
@@ -33,7 +31,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             String email = jwtService.getTokenSubject(token);
 
-            Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
+            var usuario = usuarioRepository.findByEmailIgnoreCaseAndAtivoTrue(email);
             if(usuario.isPresent()){
                 Usuario usuarioLogado = usuario.get();
                 var authentication = new UsernamePasswordAuthenticationToken(
@@ -52,7 +50,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private String getToken(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            return authHeader.replace("Bearer ", "");
+            return authHeader.substring("Bearer ".length()).trim();
         }
         return null;
     }

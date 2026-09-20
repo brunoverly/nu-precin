@@ -83,6 +83,10 @@ public class Usuario implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return ativo;
+    }
+
+    public boolean isAdmin() {
+        return role == UsuarioRole.ADMIN;
     }
 }

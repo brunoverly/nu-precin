@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface UsuarioRepository extends JpaRepository<Usuario, Long>, JpaSpecificationExecutor<Usuario> {
     Optional<Usuario> findByIdAndAtivoTrue(Long id);
     Page<Usuario> findAll(Specification<Usuario> specification, Pageable pageable);
-    Optional<Usuario> findByEmail(String email);
-    boolean existsByEmail(String email);
+    Optional<Usuario> findByEmailIgnoreCaseAndAtivoTrue(String email);
+    boolean existsByEmailIgnoreCase(String email);
+    boolean existsByEmailIgnoreCaseAndIdNot(String email, Long id);
 }

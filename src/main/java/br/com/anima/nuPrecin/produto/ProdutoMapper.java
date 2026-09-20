@@ -12,11 +12,14 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ProdutoMapper {
 
+     @Mapping(target = "usuario", ignore = true)
      Produto toEntity(ProdutoRequestDto dto);
 
+     @Mapping(target = "idUsuario", source = "usuario.id")
      ProdutoResponseDto toResponse(Produto entity);
 
      List<ProdutoResponseDto> toResponseList(List<Produto> entities);
 
+     @Mapping(target = "usuario", ignore = true)
      void updateEntityFromDto(ProdutoRequestDto dto, @MappingTarget Produto entity);
 }

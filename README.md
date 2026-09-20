@@ -126,6 +126,7 @@ A aplicação segue uma arquitetura em camadas, segmentada por domínio:
 - **Carrinho**:
   - Carrinho é único por usuário (OneToOne).
   - `precoTotal` é a soma dos `precoTotal` dos itens.
+  - O preço do item é obtido da promoção ativa; o valor enviado pelo cliente não é usado como fonte de verdade.
   - Cada `ItemCarrinho` calcula `precoTotal = precoItem * quantidadeItem`.
 
 - **Soft Delete**:
@@ -177,10 +178,12 @@ A aplicação segue uma arquitetura em camadas, segmentada por domínio:
 - `DELETE /v1/carrinhos/{id}` → desativa carrinho (soft delete)
 
 ### Votos
-- `POST /votos` → cria/atualiza voto do usuário em uma promoção
-- `GET /votos/{id}` → detalha voto por id
-- `GET /votos` → lista votos (filtros: `idPromocao`, `idUsuario`, `dataInicio`, `dataFim`, `voto`; ranking com `agruparPor=promocao` e `ordenacao`)
-- `DELETE /votos/{id}` → desativa voto (soft delete)
+- `POST /v1/votos` → cria/atualiza voto do usuário em uma promoção
+- `GET /v1/votos/{id}` → detalha voto por id
+- `GET /v1/votos` → lista votos (filtros: `idPromocao`, `idUsuario`, `dataInicio`, `dataFim`, `voto`; ranking com `agruparPor=promocao` e `ordenacao`)
+- `DELETE /v1/votos/{id}` → desativa voto (soft delete)
+
+A rota legada `/votos` permanece disponível para compatibilidade.
 
 ---
 

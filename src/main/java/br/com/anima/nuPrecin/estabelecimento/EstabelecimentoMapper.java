@@ -11,12 +11,16 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface EstabelecimentoMapper {
 
+    @Mapping(target = "usuario", ignore = true)
     Estabelecimento toEntity(EstabelecimentoRequestDto dto);
 
+    @Mapping(target = "idEndereco", source = "endereco.id")
+    @Mapping(target = "idUsuario", source = "usuario.id")
     EstabelecimentoResponseDto toResponse(Estabelecimento entity);
 
     List<EstabelecimentoResponseDto> toResponseList(List<Estabelecimento> entities);
 
 
+    @Mapping(target = "usuario", ignore = true)
     void updateEntityFromDto(EstabelecimentoRequestDto dto, @MappingTarget Estabelecimento entity);
 }

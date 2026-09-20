@@ -11,10 +11,15 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface CarrinhoMapper {
+    @Mapping(target = "promocao", ignore = true)
+    @Mapping(target = "carrinho", ignore = true)
+    @Mapping(target = "precoTotal", ignore = true)
     ItemCarrinho toItemEntity(CarrinhoRequestDto dto);
 
+    @Mapping(target = "idPromocao", source = "promocao.id")
     CarrinhoItemResponseDto toItemResponse(ItemCarrinho entity);
 
+    @Mapping(target = "idUsuario", source = "usuario.id")
     CarrinhoResponseDto toResponse(Carrinho entity);
 
     List<CarrinhoResponseDto> toResponseList(List<Carrinho> entities);

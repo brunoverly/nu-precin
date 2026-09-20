@@ -6,6 +6,7 @@ import br.com.anima.nuPrecin.produto.Produto;
 import br.com.anima.nuPrecin.produto.ProdutoRepository;
 import br.com.anima.nuPrecin.promocao.dto.PromocaoRequestDto;
 import br.com.anima.nuPrecin.promocao.dto.PromocaoResponseDto;
+import br.com.anima.nuPrecin.security.CurrentUserService;
 import br.com.anima.nuPrecin.usuario.Usuario;
 import br.com.anima.nuPrecin.usuario.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -31,7 +33,10 @@ public class PromocaoService {
 
     @Autowired
     private PromocaoMapper mapper;
+    @Autowired
+    private CurrentUserService currentUserService;
 
+    @Transactional(readOnly = true)
     public PromocaoResponseDto findById(Long id) {
         Promocao promocao = repository.findByIdAndAtivoTrue(id).orElseThrow(
                 ()-> new EntityNotFoundException("Promoção com id {" + id + "} não localizada no sistema."));
@@ -39,26 +44,29 @@ public class PromocaoService {
         return mapper.toResponse(promocao);
     }
 
+    @Transactional
     public PromocaoResponseDto create(@Valid PromocaoRequestDto dto) {
         validarDadosPromocao(dto);
+        currentUserService.ensureCanUseUserId(dto.idUsuario());
 
         DependenciasPromocao dependencias = buscarDependencias(dto.codigoBarras(), dto.idEstabelecimento(), dto.idUsuario());
 
         Promocao promocao = mapper.toEntity(dto);
-        promocao.setProduto(dependencias.produto());
-        promocao.setEstabelecimento(dependencias.estabelecimento());
-        promocao.setUsuario(dependencias.usuario());
+        vincularDependencias(promocao, dependencias);
 
         repository.save(promocao);
 
         return mapper.toResponse(promocao);
     }
 
+    @Transactional
     public PromocaoResponseDto update(Long id, @Valid PromocaoRequestDto dto) {
         validarDadosPromocao(dto);
 
         Promocao promocao = repository.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new EntityNotFoundException("Promoção com id{" + id + "} não localizada no sistema."));
+        currentUserService.ensureCanManageUser(promocao.getIdUsuario());
+        currentUserService.ensureCanUseUserId(dto.idUsuario());
 
         if(dto.precoOriginal() != null) promocao.setPrecoOriginal(dto.precoOriginal());
         if(dto.precoPromocao() != null) promocao.setPrecoPromocao(dto.precoPromocao());
@@ -66,23 +74,24 @@ public class PromocaoService {
         if(dto.dataFim() != null) promocao.setDataFim(dto.dataFim());
 
         DependenciasPromocao dependencias = buscarDependencias(dto.codigoBarras(), dto.idEstabelecimento(), dto.idUsuario());
-        promocao.setProduto(dependencias.produto());
-        promocao.setEstabelecimento(dependencias.estabelecimento());
-        promocao.setUsuario(dependencias.usuario());
+        vincularDependencias(promocao, dependencias);
 
         promocao.setDataAtualizacao(LocalDateTime.now());
         repository.save(promocao);
         return mapper.toResponse(promocao);
     }
 
+    @Transactional
     public void delete(Long id) {
         Promocao promocao = repository.findByIdAndAtivoTrue(id).orElseThrow(
                 ()-> new EntityNotFoundException("Promoção com id {" + id + "} não localizada no sistema."));
+        currentUserService.ensureCanManageUser(promocao.getIdUsuario());
 
         promocao.setAtivo(false);
         repository.save(promocao);
     }
 
+    @Transactional(readOnly = true)
     public Page<PromocaoResponseDto> findAll(Pageable pageable, Long idProduto, Long idEstabelecimento, Long idUsuario) {
         Specification<Promocao> specification = PromocaoSpecification.ativo()
                 .and(PromocaoSpecification.temProduto(idProduto))
@@ -111,6 +120,15 @@ public class PromocaoService {
                 .orElseThrow(() -> new EntityNotFoundException("usuário com id {" + idUsuario + "} não localizado no banco"));
 
         return new DependenciasPromocao(produto, estabelecimento, usuario);
+    }
+
+    private void vincularDependencias(Promocao promocao, DependenciasPromocao dependencias) {
+        promocao.setIdProduto(dependencias.produto().getId());
+        promocao.setIdEstabelecimento(dependencias.estabelecimento().getId());
+        promocao.setIdUsuario(dependencias.usuario().getId());
+        promocao.setProduto(dependencias.produto());
+        promocao.setEstabelecimento(dependencias.estabelecimento());
+        promocao.setUsuario(dependencias.usuario());
     }
 
     private record DependenciasPromocao(Produto produto, Estabelecimento estabelecimento, Usuario usuario) {

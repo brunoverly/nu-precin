@@ -11,7 +11,7 @@ public record CarrinhoRequestDto(
         @NotNull(message = "quantidadeItem é obrigatório")
         @Positive(message = "quantidadeItem deve ser maior que zero")
         Integer quantidadeItem,
-        @NotNull(message = "precoItem é obrigatório")
+        /** Mantido por compatibilidade; o service usa o preço da promoção ativa. */
         @Positive(message = "precoItem deve ser maior que zero")
         BigDecimal precoItem,
         @NotNull(message = "idUsuario é obrigatório")
