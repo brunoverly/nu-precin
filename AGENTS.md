@@ -8,7 +8,7 @@ Use as fontes abaixo nesta ordem quando houver conflito:
 
 1. Código Java e migrations Flyway: representam o contrato implementado no momento.
 2. `README.md`: resume arquitetura, entidades, endpoints e fluxo feliz do backend.
-3. `src/main/resources/postman/NuPrecin.postman_collection.json`: exemplos de consumo da API; valide as rotas no código antes de reproduzi-los.
+3. `src/main/resources/postman/old.json`: exemplos de consumo da API; valide as rotas no código antes de reproduzi-los.
 4. Diagramas em `src/main/resources/docs/`: ajudam a entender as relações de domínio, mas podem estar defasados em relação ao código e ao banco.
 5. Documento de requisitos do produto fornecido para o início do projeto: representa a visão do produto e o backlog do MVP, não necessariamente funcionalidades já implementadas.
 
@@ -65,7 +65,7 @@ Comandos principais:
 
 O perfil padrão em `src/main/resources/application.yaml` é `dev`. O arquivo `src/main/resources/application-dev.yaml` é local/ignorado pelo Git e precisa apontar para um PostgreSQL disponível; use `application-example.yaml` como modelo sem copiar credenciais reais para o repositório. A aplicação executa validação das migrations e do schema ao iniciar.
 
-O Swagger UI fica em `/swagger-ui.html` e o contrato OpenAPI em `/v3/api-docs`, quando a aplicação está em execução. A coleção para testes manuais está em `src/main/resources/postman/NuPrecin.postman_collection.json`.
+O Swagger UI fica em `/swagger-ui.html` e o contrato OpenAPI em `/v3/api-docs`, quando a aplicação está em execução. A coleção para testes manuais está em `src/main/resources/postman/old.json`.
 
 ## 4. Estrutura do código
 

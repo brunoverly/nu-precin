@@ -3,6 +3,9 @@ package br.com.anima.nuPrecin.voto;
 import br.com.anima.nuPrecin.voto.dto.VotoRequestDto;
 import br.com.anima.nuPrecin.voto.dto.VotoResponseDto;
 import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -16,11 +19,14 @@ import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping({"/v1/votos", "/votos"})
+@Tag(name = "Votos", description = "Votos em promoções, filtros e ranking.")
+@SecurityRequirement(name = "bearerAuth")
 public class VotoController {
     @Autowired
     private VotoService votoService;
 
     @PostMapping
+    @Operation(summary = "Criar ou atualizar voto", description = "Cria um voto ou atualiza o voto ativo do usuário para a promoção. Um usuário não pode votar na própria promoção.")
     public ResponseEntity<VotoResponseDto> createOrUpdate(@RequestBody @Valid VotoRequestDto dto) {
         VotoService.VotoOperationResult operation = votoService.createOrUpdate(dto);
         VotoResponseDto votoResponseDto = operation.response();
@@ -38,11 +44,13 @@ public class VotoController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Buscar voto por ID")
     public ResponseEntity<VotoResponseDto> findById(@PathVariable Long id) {
         return ResponseEntity.ok().body(votoService.findById(id));
     }
 
     @GetMapping
+    @Operation(summary = "Listar votos ou consultar ranking", description = "Sem `agruparPor`, retorna votos paginados. Com `agruparPor=promocao`, exige dataInicio/dataFim e retorna o ranking de promoções.")
     public ResponseEntity<?> findAll(
             @PageableDefault(size = 20, sort = "dataVoto", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(required = false) Long idPromocao,
@@ -62,6 +70,7 @@ public class VotoController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Desativar voto", description = "Executa soft delete do voto.")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         votoService.delete(id);
         return ResponseEntity.noContent().build();

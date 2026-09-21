@@ -1,7 +1,9 @@
 package br.com.anima.nuPrecin.produto.dto;
 
 import br.com.anima.nuPrecin.produto.ProdutoEnum;
+import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(name = "ProdutoResponse")
 public record ProdutoResponseDto(
          Long id,
          String nome,

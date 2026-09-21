@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(name = "CarrinhoResponse")
 public record CarrinhoResponseDto(
         Long id,
         List<CarrinhoItemResponseDto> itens,

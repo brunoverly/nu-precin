@@ -1,8 +1,10 @@
 package br.com.anima.nuPrecin.promocao.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@Schema(name = "PromocaoResponse")
 public record PromocaoResponseDto(
         Long id,
         BigDecimal precoOriginal,
