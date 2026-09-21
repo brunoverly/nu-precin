@@ -1,234 +1,351 @@
 <div align="center">
 
-# 🛒 nuPrecin - Backend
-### APP colaborativo para cadastro e comparação de preços e promoções
+# 🛒 NuPrecin Backend
 
-![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
-![Flyway](https://img.shields.io/badge/Flyway-CC0200?style=for-the-badge&logo=flyway&logoColor=white)
-![Maven](https://img.shields.io/badge/Apache%20Maven-C71A36?style=for-the-badge&logo=Apache%20Maven&logoColor=white)
-![Swagger](https://img.shields.io/badge/-Swagger-%23C1272D?style=for-the-badge&logo=swagger&logoColor=white)
+API colaborativa para cadastro, consulta e comparação de preços e promoções em estabelecimentos comerciais.
+
+![Java](https://img.shields.io/badge/Java-17-%23ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.13-%236DB33F?style=for-the-badge&logo=springboot&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-%234169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![Flyway](https://img.shields.io/badge/Flyway-%23CC0200?style=for-the-badge&logo=flyway&logoColor=white)
+![Swagger](https://img.shields.io/badge/OpenAPI%2FSwagger-%2385EA2D?style=for-the-badge&logo=swagger&logoColor=black)
 
 </div>
- 
-<br>
 
-## 📌 Objetivo do Sistema
-O **nuPrecin** é um sistema colaborativo (crowdsourcing) de preços e promoções em estabelecimentos comerciais. O MVP do backend provê APIs para cadastro e consulta de estabelecimentos, produtos e promoções, além de controle de carrinho, voto e autenticação com JWT, viabilizando comparação de preços e descoberta de ofertas em tempo real.
+## Visão geral
 
----
+O NuPrecin é um backend REST para explorar estabelecimentos e produtos, registrar promoções, montar um carrinho e colaborar com avaliações. A aplicação usa JWT, PostgreSQL, migrations Flyway e armazenamento de imagens no Supabase Storage.
 
-## 🏗 Arquitetura do Backend
-A aplicação segue uma arquitetura em camadas, segmentada por domínio:
+O backend atual já oferece autenticação, cadastro confirmado por e-mail, recuperação de senha, CRUDs principais, imagens, promoções, carrinho, votos e documentação OpenAPI.
 
-- **Controllers**: expõem endpoints REST e fazem validação básica de entrada (DTOs).
-- **Services**: concentram regras de negócio, validações de consistência e orquestração de domínios.
-- **Repositories**: acesso a dados via Spring Data JPA, com `JpaRepository` e `JpaSpecificationExecutor`.
-- **Entities**: entidades JPA (mapeamento relacional) com soft delete (`ativo`).
-- **DTOs**: `RequestDto` e `ResponseDto` como contratos de entrada/saída.
-- **Mappers**: MapStruct para conversão entre DTOs e entidades.
-- **Security**: autenticação stateless com JWT, filtro de autenticação e configuração de rotas públicas/privadas.
-- **Exceptions**: tratativas globais via `GlobalExceptionHandler` com resposta padronizada.
+## Stack
 
----
+- Java 17
+- Spring Boot 3.5.13
+- Spring Web, Spring Data JPA e Jakarta Validation
+- Spring Security com JWT e BCrypt
+- PostgreSQL e Flyway
+- MapStruct e Lombok
+- Springdoc OpenAPI/Swagger
+- Brevo Transactional Email API
+- Supabase Storage
+- Maven Wrapper
 
-## 🧱 Modelo de Dados (Entidades e Campos)
+## Executar e testar
 
-### Usuario
-- `id` (Long)
-- `nome` (String)
-- `email` (String)
-- `foto` (String)
-- `senha` (String - hash BCrypt)
-- `dataCadastro` (LocalDateTime)
-- `ativo` (boolean)
-- `role` (UsuarioRole - String Enum)
+Comandos principais:
 
-### Endereco
-- `id` (Long)
-- `logradouro` (String)
-- `bairro` (String)
-- `cidade` (String)
-- `estado` (String)
+```bash
+./mvnw test
+./mvnw -DskipTests compile
+./mvnw clean verify
+```
 
-### Estabelecimento
-- `id` (Long)
-- `nome` (String)
-- `tipo` (EstabelecimentoTipo - Enum)
-- `foto` (String)
-- `telefone` (String)
-- `ativo` (boolean)
-- `endereco` (Endereco - OneToOne)
-- `usuario` (Usuario - ManyToOne)
+Os testes usam o perfil `test` com banco H2 em memória e não dependem do banco remoto.
 
-### Produto
-- `id` (Long)
-- `nome` (String)
-- `descricao` (String)
-- `marca` (String)
-- `codigoDeBarras` (String)
-- `qrCode` (String)
-- `imagem` (String)
-- `categoria` (ProdutoEnum - Enum)
-- `ativo` (boolean)
-- `usuario` (Usuario - ManyToOne)
+Para executar localmente a aplicação, crie o arquivo ignorado pelo Git:
 
-### Promocao
-- `id` (Long)
-- `precoOriginal` (BigDecimal)
-- `precoPromocao` (BigDecimal)
-- `dataCriacao` (LocalDateTime)
-- `dataAtualizacao` (LocalDateTime)
-- `dataInicio` (LocalDateTime)
-- `dataFim` (LocalDateTime)
-- `ativo` (boolean)
-- `produto` (Produto - ManyToOne)
-- `estabelecimento` (Estabelecimento - ManyToOne)
-- `usuario` (Usuario - ManyToOne)
+```text
+src/main/resources/application-dev.yaml
+```
 
-### Voto
-- `id` (Long)
-- `voto` (VotoEnum - Enum)
-- `dataVoto` (LocalDateTime)
-- `ativo` (boolean)
-- `usuario` (Usuario - ManyToOne)
-- `promocao` (Promocao - ManyToOne)
+Use `application-example.yaml` como referência. Nunca publique credenciais reais, chaves JWT, API keys ou a service role key do Supabase.
 
-### Carrinho
-- `id` (Long)
-- `dataCadastro` (LocalDateTime)
-- `precoTotal` (BigDecimal)
-- `ativo` (boolean)
-- `usuario` (Usuario - OneToOne)
-- `itens` (ItemCarrinho - OneToMany)
+## Documentação OpenAPI
 
-### ItemCarrinho
-- `id` (Long)
-- `quantidadeItem` (Integer)
-- `precoItem` (BigDecimal)
-- `precoTotal` (BigDecimal)
-- `promocao` (Promocao - ManyToOne)
-- `carrinho` (Carrinho - ManyToOne)
+Com a aplicação em execução:
 
----
+- Swagger UI local: `http://localhost:8080/swagger-ui.html`
+- OpenAPI local: `http://localhost:8080/v3/api-docs`
+- Swagger UI produção: `https://nu-precin.onrender.com/swagger-ui.html`
+- OpenAPI produção: `https://nu-precin.onrender.com/v3/api-docs`
 
-## ✅ Regras de Negócio
-- **Promoção**:
-  - `dataFim` não pode ser anterior a `dataInicio`.
-  - `precoPromocao` deve ser maior que zero e menor ou igual ao `precoOriginal`.
-  - Promoção sempre referencia `Estabelecimento`, `Produto` e `Usuario` válidos.
+As páginas de documentação são públicas. As rotas de negócio continuam protegidas por JWT.
 
-- **Estabelecimento**:
-  - Endereço obrigatório na criação. No payload, aceita `idEndereco` ou objeto `endereco` embutido.
-  - Associação obrigatória ao usuário criador.
+No Swagger, use **Authorize** e informe:
 
-- **Carrinho**:
-  - Carrinho é único por usuário (OneToOne).
-  - `precoTotal` é a soma dos `precoTotal` dos itens.
-  - O preço do item é obtido da promoção ativa; o valor enviado pelo cliente não é usado como fonte de verdade.
-  - Cada `ItemCarrinho` calcula `precoTotal = precoItem * quantidadeItem`.
+```text
+Bearer <jwt retornado pelo login>
+```
 
-- **Soft Delete**:
-  - Exclusões são lógicas (`ativo = false`), mantendo histórico.
+## Configuração de produção
 
-- **Autenticação**:
-  - JWT com claims (issuer, subject, role) e expiração configurada.
+As variáveis são configuradas no ambiente de execução, nunca no código:
 
----
+```text
+SPRING_PROFILES_ACTIVE=prod
+SPRING_DATASOURCE_URL
+SPRING_DATASOURCE_USERNAME
+SPRING_DATASOURCE_PASSWORD
+KEY_TOKEN_SECRET
+KEY_TOKEN_ISSUER
+EMAIL_CONFIRMATION_SECRET
+BREVO_API_KEY
+BREVO_FROM_EMAIL
+SUPABASE_URL
+SUPABASE_STORAGE_BUCKET
+SUPABASE_SERVICE_ROLE_KEY
+CORS_ALLOWED_ORIGINS
+```
 
-## 🔌 Endpoints (Resumo)
+O Render executa as migrations Flyway automaticamente durante a inicialização. A service role key do Supabase deve permanecer somente no backend.
 
-### Auth
-- `POST /v1/auth/login` → autentica usuário (retorna token JWT)
+## Autenticação e conta
 
-### Usuarios
-- `POST /v1/usuarios` → cria usuário
-- `GET /v1/usuarios/{id}` → detalha usuário por id
-- `GET /v1/usuarios` → lista usuários (filtros: `nome`, `email`; paginação padrão)
-- `PUT /v1/usuarios/{id}` → atualiza usuário
-- `DELETE /v1/usuarios/{id}` → desativa usuário (soft delete)
+### Login
+
+```http
+POST /v1/auth/login
+```
+
+```json
+{
+  "email": "usuario@example.com",
+  "senha": "123456"
+}
+```
+
+Retorna `200 OK` com `nome`, `email` e `token`.
+
+### Cadastro com confirmação por e-mail
+
+1. Inicie o cadastro:
+
+```http
+POST /v1/auth/registro
+```
+
+```json
+{
+  "nome": "Maria Oliveira",
+  "email": "maria@example.com",
+  "foto": null,
+  "senha": "123456"
+}
+```
+
+Retorna `202 Accepted` e envia um código de quatro dígitos.
+
+2. Confirme o código:
+
+```http
+POST /v1/auth/registro/confirmar
+```
+
+```json
+{
+  "email": "maria@example.com",
+  "codigo": "4821"
+}
+```
+
+Retorna `201 Created`. Depois, faça login para obter o JWT.
+
+3. Reenvie o código, se necessário:
+
+```http
+POST /v1/auth/registro/reenviar
+```
+
+### Recuperação de senha
+
+1. Solicite o código:
+
+```http
+POST /v1/auth/senha/esqueci
+```
+
+```json
+{
+  "email": "usuario@example.com"
+}
+```
+
+2. Redefina a senha:
+
+```http
+POST /v1/auth/senha/resetar
+```
+
+```json
+{
+  "email": "usuario@example.com",
+  "codigo": "4821",
+  "novaSenha": "654321"
+}
+```
+
+Retorna `204 No Content` quando o código for válido.
+
+### Atualização do próprio usuário
+
+```http
+PUT /v1/usuarios/{id}
+Authorization: Bearer <jwt>
+```
+
+```json
+{
+  "nome": "Maria Oliveira",
+  "email": "maria@example.com",
+  "foto": null,
+  "senhaAtual": "123456",
+  "novaSenha": "654321"
+}
+```
+
+A `senhaAtual` precisa estar correta. Se `foto` for omitida, a foto atual é preservada.
+
+## Imagens
+
+A imagem é opcional nos cadastros. É possível informar uma URL no JSON ou enviar um arquivo depois.
+
+### Upload de arquivo
+
+Todos os uploads usam:
+
+```text
+Content-Type: multipart/form-data
+campo: file
+```
+
+Não defina manualmente o header `Content-Type` no Postman ou frontend; o cliente deve gerar o `boundary` do multipart.
+
+Formatos aceitos: JPEG, PNG e WEBP. Limite: 5 MB.
+
+Endpoints:
+
+```text
+POST /v1/usuarios/{id}/foto
+POST /v1/produtos/{id}/imagem
+POST /v1/estabelecimentos/{id}/foto
+```
+
+Depois do upload, a API salva a URL pública no banco e devolve o recurso atualizado:
+
+- Usuário e estabelecimento: campo `foto`.
+- Produto: campo `imagem`.
+
+Se uma URL for enviada no JSON, ela também é salva diretamente. Em atualizações, omitir o campo preserva a URL atual.
+
+## Endpoints
+
+Todas as rotas abaixo, exceto `/v1/auth/**`, `/actuator/health` e a documentação OpenAPI, exigem JWT.
+
+### Usuários
+
+```text
+POST   /v1/usuarios             Criação direta; somente ADMIN
+GET    /v1/usuarios/{id}        Consulta o próprio usuário ou qualquer usuário para ADMIN
+GET    /v1/usuarios             Lista; somente ADMIN
+PUT    /v1/usuarios/{id}        Atualiza perfil e senha atual/nova
+DELETE /v1/usuarios/{id}        Soft delete
+POST   /v1/usuarios/{id}/foto   Upload de foto
+```
 
 ### Estabelecimentos
-- `POST /v1/estabelecimentos` → cria estabelecimento (endereço embutido ou `idEndereco`)
-- `GET /v1/estabelecimentos/{id}` → detalha estabelecimento por id
-- `GET /v1/estabelecimentos` → lista estabelecimentos (filtros: `nome`, `tipo`, `idUsuario`; paginação padrão)
-- `PUT /v1/estabelecimentos/{id}` → atualiza estabelecimento
-- `DELETE /v1/estabelecimentos/{id}` → desativa estabelecimento (soft delete)
+
+```text
+POST   /v1/estabelecimentos
+GET    /v1/estabelecimentos/{id}
+GET    /v1/estabelecimentos?nome=&tipo=&idUsuario=
+PUT    /v1/estabelecimentos/{id}
+DELETE /v1/estabelecimentos/{id}
+POST   /v1/estabelecimentos/{id}/foto
+```
+
+Na criação/atualização, informe `idEndereco` ou `endereco`, nunca os dois.
 
 ### Produtos
-- `POST /v1/produtos` → cria produto
-- `GET /v1/produtos/{id}` → detalha produto por id
-- `GET /v1/produtos` → lista produtos (filtros: `nome`, `marca`, `categoria`; paginação padrão)
-- `PUT /v1/produtos/{id}` → atualiza produto
-- `DELETE /v1/produtos/{id}` → desativa produto (soft delete)
 
-### Promocoes
-- `POST /v1/promocoes` → cria promoção
-- `GET /v1/promocoes/{id}` → detalha promoção por id
-- `GET /v1/promocoes` → lista promoções (filtros: `idProduto`, `idEstabelecimento`, `idUsuario`; paginação padrão)
-- `PUT /v1/promocoes/{id}` → atualiza promoção
-- `DELETE /v1/promocoes/{id}` → desativa promoção (soft delete)
+```text
+POST   /v1/produtos
+GET    /v1/produtos/{id}
+GET    /v1/produtos?nome=&marca=&categoria=
+PUT    /v1/produtos/{id}
+DELETE /v1/produtos/{id}
+POST   /v1/produtos/{id}/imagem
+```
+
+### Promoções
+
+```text
+POST   /v1/promocoes
+GET    /v1/promocoes/{id}
+GET    /v1/promocoes?idProduto=&idEstabelecimento=&idUsuario=
+PUT    /v1/promocoes/{id}
+DELETE /v1/promocoes/{id}
+```
+
+O cadastro de promoção localiza o produto pelo `codigoBarras`. Os preços precisam ser positivos, o preço promocional não pode superar o original e as datas enviadas pelo endpoint precisam ser futuras.
 
 ### Carrinhos
-- `POST /v1/carrinhos` → adiciona item ao carrinho do usuário
-- `GET /v1/carrinhos/{id}` → detalha carrinho por id
-- `GET /v1/carrinhos/usuario/{idUsuario}` → detalha carrinho por usuário
-- `PUT /v1/carrinhos/{id}` → substitui itens do carrinho pelo item enviado
-- `DELETE /v1/carrinhos/{id}` → desativa carrinho (soft delete)
+
+```text
+POST   /v1/carrinhos
+GET    /v1/carrinhos/{id}
+GET    /v1/carrinhos/usuario/{idUsuario}
+PUT    /v1/carrinhos/{id}
+DELETE /v1/carrinhos/{id}
+```
+
+Existe um carrinho ativo por usuário. O preço efetivo do item vem da promoção ativa; `precoItem` é mantido no request por compatibilidade.
 
 ### Votos
-- `POST /v1/votos` → cria/atualiza voto do usuário em uma promoção
-- `GET /v1/votos/{id}` → detalha voto por id
-- `GET /v1/votos` → lista votos (filtros: `idPromocao`, `idUsuario`, `dataInicio`, `dataFim`, `voto`; ranking com `agruparPor=promocao` e `ordenacao`)
-- `DELETE /v1/votos/{id}` → desativa voto (soft delete)
 
-A rota legada `/votos` permanece disponível para compatibilidade.
+```text
+POST   /v1/votos
+GET    /v1/votos/{id}
+GET    /v1/votos
+DELETE /v1/votos/{id}
+```
 
----
+O cadastro de voto cria ou atualiza o voto ativo do usuário. Também existe compatibilidade com a rota legada `/votos`.
 
-## 📄 Diagramas e Coleções
-- **Diagrama de Classes disponível em**: `resources/docs/Diagrama-de-Classes.pdf`
-- **Diagrama de Entidades e Relacionamentos disponível em**: `resources/docs/Diagrama-Entidade-Relacionamento.pdf`
-- **Postman Collection, para facilitar o teste dos endpoints, disponível em:**`resources/postman/nuPrecin.postman_collection.json`
+Para ranking:
 
----
+```text
+GET /v1/votos?agruparPor=promocao&dataInicio=2026-01-01T00:00:00&dataFim=2026-12-31T23:59:59&voto=POSITIVO&ordenacao=desc
+```
 
-## 🔄 Fluxo Principal do Backend (Caminho Feliz)
-1. Usuário faz login (Auth) → recebe JWT.
-2. Usuário cria um estabelecimento com endereço embutido (ou `idEndereco`).
-3. Usuário cria/seleciona produtos.
-4. Usuário publica promoção vinculando estabelecimento, produto e seu usuário.
-5. Outros usuários consultam promoções e adicionam itens ao carrinho.
-6. Carrinho soma automaticamente os totais por item.
+## Modelo atual e próximos módulos
 
----
+O modelo atual representa preço principalmente por `Promocao` e o carrinho por itens de promoção. Ainda estão fora do escopo implementado:
 
-## 🧰 Stack Completa (Backend)
-- Java 17
-- Spring Boot 3.5.x
-- Spring Web
-- Spring Data JPA
-- Spring Validation (Jakarta Validation)
-- Spring Security (JWT)
-- BCrypt Password Encoder
-- MapStruct
-- Lombok
-- PostgreSQL
-- Flyway
-- Maven
+- Integração externa de leitura de código de barras/QR Code.
+- Histórico e contribuição independente de preços.
+- Lista de compras comparável entre vários estabelecimentos.
+- Cálculo de economia e itens sem preço.
+- Geolocalização, distância e favoritos.
+- Redis, OAuth2, refresh token e observabilidade avançada.
 
----
+## Migrations
 
-## 🚀 Próximos Passos (Evolução MVP)
-- Integração com API externa de leitura de código de barras e QR Code (fallback de criação de produto).
-- Cache com Redis para busca de produtos e promoções ativas.
-- Testes unitários e de integração (JUnit + Mockito + Testcontainers).
-- Autenticação social com Google (OAuth2).
-- Observabilidade com logs (SLF4J) e metrics (Micrometer).
-- Documentação com Swagger (OpenApi).
-- Implementação de refresh token JWT, e link temporário para atualização de senha.
+As migrations ficam em `src/main/resources/db/migration` e são aplicadas em ordem pelo Flyway.
 
+A migration `V13__reset_mvp_seed.sql` prepara o seed mínimo do MVP. Ela é destrutiva e deve ser aplicada somente em um banco cujo conteúdo atual possa ser substituído.
 
+## Estrutura do projeto
 
-https://nyuuqqxfdmeodpeoymgv.supabase.co/storage/v1/object/public/nuprecin-media/teste/coca-cola.png
+```text
+src/main/java/br/com/anima/nuPrecin
+├── auth             autenticação, cadastro e recuperação de senha
+├── usuario          contas, roles e perfil
+├── estabelecimento  estabelecimentos e endereços
+├── produto          catálogo e imagens
+├── promocao        promoções/preços
+├── carrinho        carrinho e itens
+├── voto            votos e ranking
+├── storage         integração com Supabase Storage
+├── email           integração com Brevo
+├── security        JWT, CORS e autorização
+└── exception       respostas padronizadas de erro
+```
+
+## Testes
+
+```bash
+./mvnw test
+```
+
+Os testes usam H2 em memória no perfil `test`, incluindo teste de carregamento do contexto e validação do contrato OpenAPI. O banco remoto não é usado pelos testes padrão.
