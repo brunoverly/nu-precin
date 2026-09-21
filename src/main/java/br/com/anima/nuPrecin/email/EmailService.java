@@ -1,5 +1,6 @@
 package br.com.anima.nuPrecin.email;
 
+import br.com.anima.nuPrecin.exception.ServicoExternoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -104,7 +105,7 @@ public class EmailService {
                     .retrieve()
                     .toBodilessEntity();
         } catch (RestClientException ex) {
-            throw new IllegalStateException(
+            throw new ServicoExternoException(
                     "Não foi possível enviar o e-mail de código.",
                     ex
             );

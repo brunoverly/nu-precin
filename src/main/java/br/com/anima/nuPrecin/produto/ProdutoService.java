@@ -81,6 +81,9 @@ public class ProdutoService {
         produto.setMarca(dto.marca());
         produto.setCodigoDeBarras(dto.codigoDeBarras());
         produto.setCategoria(dto.categoria());
+        if (dto.imagem() != null && !dto.imagem().isBlank()) {
+            produto.setImagem(dto.imagem());
+        }
         produto.setUsuario(usuario);
 
         produtoRepository.save(produto);

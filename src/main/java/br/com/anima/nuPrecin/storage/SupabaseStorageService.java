@@ -1,5 +1,6 @@
 package br.com.anima.nuPrecin.storage;
 
+import br.com.anima.nuPrecin.exception.ServicoExternoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -32,16 +33,23 @@ public class SupabaseStorageService implements StorageService {
             throw new IllegalArgumentException("Tipo do arquivo é obrigatório.");
         }
 
-        restClient.post()
-                .uri(buildObjectUrl(objectPath, false))
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " +
-                        properties.getServiceRoleKey())
-                .header("apikey", properties.getServiceRoleKey())
-                .header("x-upsert", "false")
-                .contentType(MediaType.parseMediaType(contentType))
-                .body(content)
-                .retrieve()
-                .toBodilessEntity();
+        try {
+            restClient.post()
+                    .uri(buildObjectUrl(objectPath, false))
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " +
+                            properties.getServiceRoleKey())
+                    .header("apikey", properties.getServiceRoleKey())
+                    .header("x-upsert", "false")
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .body(content)
+                    .retrieve()
+                    .toBodilessEntity();
+        } catch (org.springframework.web.client.RestClientException ex) {
+            throw new ServicoExternoException(
+                    "Não foi possível armazenar a imagem.",
+                    ex
+            );
+        }
 
         return publicUrl(objectPath);
     }
@@ -51,13 +59,20 @@ public class SupabaseStorageService implements StorageService {
         validateConfiguration();
         validateObjectPath(objectPath);
 
-        restClient.delete()
-                .uri(buildObjectUrl(objectPath, false))
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " +
-                        properties.getServiceRoleKey())
-                .header("apikey", properties.getServiceRoleKey())
-                .retrieve()
-                .toBodilessEntity();
+        try {
+            restClient.delete()
+                    .uri(buildObjectUrl(objectPath, false))
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " +
+                            properties.getServiceRoleKey())
+                    .header("apikey", properties.getServiceRoleKey())
+                    .retrieve()
+                    .toBodilessEntity();
+        } catch (org.springframework.web.client.RestClientException ex) {
+            throw new ServicoExternoException(
+                    "Não foi possível remover a imagem.",
+                    ex
+            );
+        }
     }
 
     @Override

@@ -22,5 +22,6 @@ public interface EstabelecimentoMapper {
 
 
     @Mapping(target = "usuario", ignore = true)
+    @Mapping(target = "foto", ignore = true)
     void updateEntityFromDto(EstabelecimentoRequestDto dto, @MappingTarget Estabelecimento entity);
 }

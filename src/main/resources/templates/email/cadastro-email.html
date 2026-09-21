@@ -48,6 +48,12 @@
         img { border: 0; line-height: 100%; outline: none; text-decoration: none; }
         a { color: #16745f; text-decoration: none; }
 
+        /* Tabelas com cantos arredondados precisam preservar o próprio contorno. */
+        .rounded-table {
+            border-collapse: separate !important;
+            border-spacing: 0 !important;
+        }
+
         /* Responsividade */
         @media only screen and (max-width: 600px) {
             .main-container { width: 100% !important; padding: 0 !important; }
@@ -55,7 +61,7 @@
             .code-box { width: 44px !important; height: 56px !important; font-size: 24px !important; }
             .code-spacer { width: 6px !important; }
             .title { font-size: 22px !important; }
-            .security-card { padding: 16px !important; }
+            .brand-logo { font-size: 28px !important; }
         }
 
         /* Dark Mode Settings */
@@ -70,9 +76,8 @@
                 border-color: #2A3331 !important;
                 color: #29C29D !important;
             }
-            .security-card { background-color: #212625 !important; border-color: #2A3331 !important; }
-            .icon-box { background-color: #163028 !important; }
-            .icon-stroke { stroke: #29C29D !important; }
+            .security-divider { border-top-color: #2A3331 !important; }
+            .icon-stroke { color: #29C29D !important; stroke: #29C29D !important; }
             .footer-text { color: #71717a !important; }
             .accent-text { color: #29C29D !important; }
         }
@@ -100,7 +105,7 @@
                 <!-- LOGO CENTRALIZADA -->
                 <tr>
                     <td align="center" style="padding-bottom: 32px;">
-                        <span class="text-dark" style="font-size:26px; font-weight:700; letter-spacing:-0.5px; color:#1C201F;">
+                        <span class="brand-logo text-dark" style="font-size:32px; font-weight:700; letter-spacing:-0.7px; color:#1C201F;">
                             Nu <span class="accent-text" style="color:#16745f;">Precin</span>
                         </span>
                     </td>
@@ -108,7 +113,7 @@
 
                 <!-- CAIXA PRINCIPAL -->
                 <tr>
-                    <td class="content-box" style="background-color:#ffffff; border-radius:32px; padding:48px; box-shadow: 0 12px 32px rgba(22, 116, 95, 0.04);">
+                    <td class="content-box" style="background-color:#ffffff; border-radius:32px; overflow:hidden; padding:48px; box-shadow: 0 12px 32px rgba(22, 116, 95, 0.04);">
 
                         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
 
@@ -130,7 +135,7 @@
                             <!-- CÓDIGO (Caixas com o raio e cores do app) -->
                             <tr>
                                 <td align="center" style="padding-bottom: 24px;">
-                                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
+                                    <table class="rounded-table" role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
                                         <tr>
                                             <td class="code-box accent-text" align="center" valign="middle" style="width: 52px; height: 64px; background-color: #F1F6F5; border: 1px solid #DFEBE8; border-radius: 16px; font-size: 26px; font-weight: 600; color: #16745f;" th:text="${#strings.substring(codigo, 0, 1)}">4</td>
                                             <td class="code-spacer" style="width: 8px;"></td>
@@ -150,12 +155,7 @@
                                     <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
                                         <tr>
                                             <td style="padding-right: 8px; padding-top: 2px;">
-                                                <!--[if !mso]><!-->
-                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="icon-stroke" stroke="#16745f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <circle cx="12" cy="12" r="10"></circle>
-                                                    <polyline points="12 6 12 12 16 14"></polyline>
-                                                </svg>
-                                                <!--<![endif]-->
+                                                <span class="icon-stroke" role="img" aria-label="Relógio" style="font-family:Arial, sans-serif; font-size:18px; line-height:18px; color:#16745f;">&#9201;</span>
                                             </td>
                                             <td style="font-size: 14px; color: #687073;">
                                                 Válido por <strong class="text-main" style="color: #1C201F; font-weight: 600;" th:text="${validade + ' minutos'}">10 minutos</strong>.
@@ -167,26 +167,15 @@
 
                             <!-- AVISO DE SEGURANÇA (Imitando o design da lista do Perfil) -->
                             <tr>
-                                <td>
-                                    <table class="security-card" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; border: 1px solid #EBEFEF; border-radius: 20px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.01);">
+                                <td class="security-divider" style="border-top: 1px solid #EBEFEF; padding-top: 20px;">
+                                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                                         <tr>
-                                            <td valign="middle" style="width: 56px;">
-                                                <!-- Ícone igual ao do app (com fundo verde menta) -->
-                                                <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-                                                    <tr>
-                                                        <td class="icon-box" align="center" valign="middle" style="width: 44px; height: 44px; background-color: #EBF3F1; border-radius: 14px;">
-                                                            <!--[if !mso]><!-->
-                                                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="icon-stroke" stroke="#16745f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                                                            </svg>
-                                                            <!--<![endif]-->
-                                                        </td>
-                                                    </tr>
-                                                </table>
+                                            <td valign="top" style="width: 28px; padding: 1px 8px 0 0;">
+                                                <span class="icon-stroke" role="img" aria-label="Cadeado" style="font-family:Arial, sans-serif; font-size:18px; line-height:18px; color:#16745f;">&#128274;</span>
                                             </td>
-                                            <td class="text-muted" valign="middle" style="font-size: 13px; line-height: 1.5; color: #687073; padding-left: 12px;">
-                                                <strong class="text-main" style="color: #1C201F; font-size: 14px; display: block; padding-bottom: 2px;">Dica de Segurança</strong>
-                                                O Nu Precin nunca solicitará este código fora do app.
+                                            <td class="text-muted" valign="top" style="font-size: 13px; line-height: 1.5; color: #687073;">
+                                                <strong class="text-main" style="color: #1C201F; font-size: 13px; font-weight: 600;">Dica de segurança</strong><br>
+                                                O Nu Precin nunca solicitará este código fora do aplicativo.
                                             </td>
                                         </tr>
                                     </table>

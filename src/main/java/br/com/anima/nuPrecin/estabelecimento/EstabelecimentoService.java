@@ -131,6 +131,9 @@ public class EstabelecimentoService {
         }
 
         estabelecimentoMapper.updateEntityFromDto(dto, estabelecimento);
+        if (dto.foto() != null && !dto.foto().isBlank()) {
+            estabelecimento.setFoto(dto.foto());
+        }
         estabelecimento.setEndereco(endereco);
         estabelecimento.setUsuario(usuario);
         estabelecimentoRepository.save(estabelecimento);

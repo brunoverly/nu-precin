@@ -13,6 +13,7 @@ public record ProdutoRequestDto(
                 String marca,
                 @NotBlank(message = "código de barras é obrigatório")
                 String codigoDeBarras,
+                String imagem,
                 @NotNull(message = "categoria é obrigatória")
                 ProdutoEnum categoria,
                 @NotNull(message = "idUsuario é obrigatório")
