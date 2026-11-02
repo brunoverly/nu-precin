@@ -31,7 +31,7 @@ public class EstabelecimentoController {
     @PostMapping
     @Operation(
             summary = "Cadastrar estabelecimento",
-            description = "Cria um estabelecimento. Informe exatamente um endereço: `idEndereco` ou o objeto `endereco`. A foto pode ser uma URL ou ser enviada depois pelo endpoint multipart."
+            description = "Cria um estabelecimento. Informe exatamente um endereço: `idEndereco` ou o objeto `endereco`. O objeto endereco aceita numero e cep opcionais. Retorna o estabelecimento com endereco completo e idEndereco para compatibilidade. A foto pode ser uma URL ou ser enviada depois pelo endpoint multipart."
     )
     public ResponseEntity<EstabelecimentoResponseDto> create(@RequestBody @Valid EstabelecimentoRequestDto dto) {
         EstabelecimentoResponseDto estabelecimentoResponseDto = estabelecimentoService.create(dto);
@@ -45,13 +45,13 @@ public class EstabelecimentoController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Buscar estabelecimento por ID")
+    @Operation(summary = "Buscar estabelecimento por ID", description = "Retorna o estabelecimento com o objeto endereco completo, incluindo numero, cep, latitude e longitude opcionais. Mantém idEndereco para compatibilidade.")
     public ResponseEntity<EstabelecimentoResponseDto> findById(@PathVariable Long id) {
         return ResponseEntity.ok().body(estabelecimentoService.findById(id));
     }
 
     @GetMapping
-    @Operation(summary = "Listar estabelecimentos", description = "Lista estabelecimentos ativos com paginação e filtros opcionais por nome, tipo e usuário criador.")
+    @Operation(summary = "Listar estabelecimentos", description = "Lista estabelecimentos ativos com paginação e filtros opcionais por nome, tipo e usuário criador. Cada item inclui endereco completo e idEndereco para compatibilidade.")
     public Page<EstabelecimentoResponseDto> findAll(
             @PageableDefault(size = 20, sort = "nome") Pageable pageable,
             @RequestParam(required = false) String nome,
@@ -61,7 +61,7 @@ public class EstabelecimentoController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Atualizar estabelecimento", description = "Atualiza os dados do estabelecimento. Se `foto` não for enviada, a foto atual é preservada.")
+    @Operation(summary = "Atualizar estabelecimento", description = "Atualiza os dados do estabelecimento e retorna endereco completo. Informe idEndereco ou endereco, nunca os dois. O objeto endereco aceita numero e cep opcionais; alterações no endereço limpam coordenadas antigas. Se `foto` não for enviada, a foto atual é preservada.")
     public ResponseEntity<EstabelecimentoResponseDto> update(@PathVariable Long id, @RequestBody @Valid EstabelecimentoRequestDto dto) {
         return ResponseEntity.ok().body(estabelecimentoService.update(id, dto));
     }
@@ -79,7 +79,7 @@ public class EstabelecimentoController {
     )
     @Operation(
             summary = "Enviar foto do estabelecimento",
-            description = "Envia uma imagem no campo multipart `file`. Aceita JPEG, PNG ou WEBP até 5 MB. A URL retornada é salva no campo `foto` do estabelecimento."
+            description = "Envia uma imagem no campo multipart `file`. Aceita JPEG, PNG ou WEBP até 5 MB. A URL retornada é salva no campo `foto` do estabelecimento. Retorna o estabelecimento atualizado com endereco completo."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Foto atualizada"),

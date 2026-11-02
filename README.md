@@ -254,7 +254,32 @@ DELETE /v1/estabelecimentos/{id}
 POST   /v1/estabelecimentos/{id}/foto
 ```
 
-Na criação/atualização, informe `idEndereco` ou `endereco`, nunca os dois.
+Na criação/atualização, informe `idEndereco` ou `endereco`, nunca os dois. O objeto `endereco` recebe `logradouro`, `bairro`, `cidade` e `estado` obrigatórios, além de `numero` e `cep` opcionais. O CEP deve conter oito dígitos sem pontuação. Os clientes existentes podem continuar enviando o número junto com o logradouro.
+
+Todas as respostas que retornam estabelecimentos (listagem paginada, busca por ID, cadastro, atualização e upload de foto) incluem `endereco`, mantendo `idEndereco` para compatibilidade:
+
+```json
+{
+  "idEndereco": 1,
+  "endereco": {
+    "id": 1,
+    "logradouro": "Avenida Antônio Carlos",
+    "numero": "4500",
+    "bairro": "Pampulha",
+    "cidade": "Belo Horizonte",
+    "estado": "MG",
+    "cep": "31270010",
+    "latitude": null,
+    "longitude": null
+  }
+}
+```
+
+O exemplo mostra os campos de endereço; os demais campos do estabelecimento continuam presentes. Na listagem, o objeto aparece em cada item de `content`.
+
+A migration `V14__add_address_details_and_coordinates.sql` adiciona os campos opcionais sem modificar os dados existentes. Latitude e longitude são campos de saída preparados para geocodificação pelo backend, não são recebidos no cadastro/atualização. Quando os dados do endereço mudam, as coordenadas antigas são limpas; sem mudança, são preservadas.
+
+A integração de geocodificação aguarda a escolha do fornecedor. Ainda não há conversão automática, reprocessamento dos endereços antigos ou endpoint de proximidade. Após essa integração, a rota planejada é `GET /v1/estabelecimentos/proximos?latitude=...&longitude=...&raioKm=5`, com `distanciaKm` e ordenação por distância. Credenciais serão configuradas somente no backend.
 
 ### Produtos
 

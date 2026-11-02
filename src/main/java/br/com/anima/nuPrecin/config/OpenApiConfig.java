@@ -68,7 +68,7 @@ import org.springframework.context.annotation.Configuration;
                         ## Fluxo de produto e estabelecimento
 
                         1. Crie ou consulte o usuário autenticado.
-                        2. Crie o produto e o estabelecimento usando JSON.
+                        2. Crie o produto e o estabelecimento usando JSON. O estabelecimento retorna `endereco` completo e mantém `idEndereco` para compatibilidade. `numero` e `cep` são opcionais; latitude e longitude podem ser nulas, aguardando geocodificação.
                         3. Envie as imagens opcionalmente pelos endpoints multipart.
                         4. Crie uma promoção relacionando o código de barras do produto ao estabelecimento.
                         5. Adicione a promoção ao carrinho.

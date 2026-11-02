@@ -152,7 +152,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"tipo\": \"ATACADAO\",\n    \"nome\": \"Atacadão Pampulha\",\n    \"foto\": null,\n    \"telefone\": \"3133334455\",\n    \"endereco\": {\n        \"logradouro\": \"Avenida Antônio Carlos, 4500\",\n        \"bairro\": \"Pampulha\",\n        \"cidade\": \"Belo Horizonte\",\n        \"estado\": \"MG\"\n    },\n    \"idUsuario\": 1\n}\n",
+              "raw": "{\n    \"tipo\": \"ATACADAO\",\n    \"nome\": \"Atacadão Pampulha\",\n    \"foto\": null,\n    \"telefone\": \"3133334455\",\n    \"endereco\": {\n        \"logradouro\": \"Avenida Antônio Carlos\",\n        \"numero\": \"4500\",\n        \"bairro\": \"Pampulha\",\n        \"cidade\": \"Belo Horizonte\",\n        \"estado\": \"MG\",\n        \"cep\": \"31270010\"\n    },\n    \"idUsuario\": 1\n}\n",
               "options": {
                 "raw": {
                   "language": "json"
@@ -171,9 +171,73 @@
                 "v1",
                 "estabelecimentos"
               ]
-            }
+            },
+            "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; a geocodificação aguarda escolha do fornecedor. Envie endereco ou idEndereco, nunca os dois. Alterações no endereço limpam coordenadas antigas."
           },
-          "response": []
+          "response": [
+            {
+              "name": "Sucesso com endereço completo",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"tipo\": \"ATACADAO\",\n    \"nome\": \"Atacadão Pampulha\",\n    \"foto\": null,\n    \"telefone\": \"3133334455\",\n    \"endereco\": {\n        \"logradouro\": \"Avenida Antônio Carlos\",\n        \"numero\": \"4500\",\n        \"bairro\": \"Pampulha\",\n        \"cidade\": \"Belo Horizonte\",\n        \"estado\": \"MG\",\n        \"cep\": \"31270010\"\n    },\n    \"idUsuario\": 1\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "https://nu-precin.onrender.com/v1/estabelecimentos",
+                  "protocol": "https",
+                  "host": [
+                    "nu-precin",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "v1",
+                    "estabelecimentos"
+                  ]
+                },
+                "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; a geocodificação aguarda escolha do fornecedor. Envie endereco ou idEndereco, nunca os dois. Alterações no endereço limpam coordenadas antigas."
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id\": 1,\n  \"tipo\": \"SUPERMERCADO\",\n  \"nome\": \"Supermercado BH\",\n  \"foto\": null,\n  \"telefone\": \"3132224400\",\n  \"idEndereco\": 1,\n  \"idUsuario\": 1,\n  \"endereco\": {\n    \"id\": 1,\n    \"logradouro\": \"Avenida Antônio Carlos\",\n    \"numero\": \"4500\",\n    \"bairro\": \"Pampulha\",\n    \"cidade\": \"Belo Horizonte\",\n    \"estado\": \"MG\",\n    \"cep\": \"31270010\",\n    \"latitude\": null,\n    \"longitude\": null\n  }\n}"
+            }
+          ]
         },
         {
           "name": "Cadastrar foto",
@@ -221,9 +285,72 @@
                 "1",
                 "foto"
               ]
-            }
+            },
+            "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; a geocodificação aguarda escolha do fornecedor."
           },
-          "response": []
+          "response": [
+            {
+              "name": "Sucesso com endereço completo",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "uuid": "4c7b0dcb-1b18-406f-ba3d-abe817e95d3c",
+                      "src": "/home/bruno/Downloads/bh.jpg"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "https://nu-precin.onrender.com/v1/estabelecimentos/1/foto",
+                  "protocol": "https",
+                  "host": [
+                    "nu-precin",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "v1",
+                    "estabelecimentos",
+                    "1",
+                    "foto"
+                  ]
+                },
+                "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; a geocodificação aguarda escolha do fornecedor."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id\": 1,\n  \"tipo\": \"SUPERMERCADO\",\n  \"nome\": \"Supermercado BH\",\n  \"foto\": null,\n  \"telefone\": \"3132224400\",\n  \"idEndereco\": 1,\n  \"idUsuario\": 1,\n  \"endereco\": {\n    \"id\": 1,\n    \"logradouro\": \"Avenida Antônio Carlos\",\n    \"numero\": \"4500\",\n    \"bairro\": \"Pampulha\",\n    \"cidade\": \"Belo Horizonte\",\n    \"estado\": \"MG\",\n    \"cep\": \"31270010\",\n    \"latitude\": null,\n    \"longitude\": null\n  }\n}"
+            }
+          ]
         },
         {
           "name": "Atualizar",
@@ -253,7 +380,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"tipo\": \"SUPERMERCADO\",\n    \"nome\": \"Supermercado BH\",\n    \"foto\":\"https://nyuuqqxfdmeodpeoymgv.supabase.co/storage/v1/object/public/nuprecin-media/estabelecimentos/1/fotos/43bf8c4e-9a20-440b-bacf-934976b9c89e.jpg\",\n    \"telefone\": \"3132224400\",\n    \"idEndereco\": 1,\n    \"idUsuario\": 1\n}",
+              "raw": "{\n    \"tipo\": \"SUPERMERCADO\",\n    \"nome\": \"Supermercado BH\",\n    \"foto\": \"https://nyuuqqxfdmeodpeoymgv.supabase.co/storage/v1/object/public/nuprecin-media/estabelecimentos/1/fotos/43bf8c4e-9a20-440b-bacf-934976b9c89e.jpg\",\n    \"telefone\": \"3132224400\",\n    \"idUsuario\": 1,\n    \"endereco\": {\n        \"logradouro\": \"Avenida Antônio Carlos\",\n        \"numero\": \"4500\",\n        \"bairro\": \"Pampulha\",\n        \"cidade\": \"Belo Horizonte\",\n        \"estado\": \"MG\",\n        \"cep\": \"31270010\"\n    }\n}\n",
               "options": {
                 "raw": {
                   "language": "json"
@@ -273,9 +400,74 @@
                 "estabelecimentos",
                 "1"
               ]
-            }
+            },
+            "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; a geocodificação aguarda escolha do fornecedor. Envie endereco ou idEndereco, nunca os dois. Alterações no endereço limpam coordenadas antigas."
           },
-          "response": []
+          "response": [
+            {
+              "name": "Sucesso com endereço completo",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"tipo\": \"SUPERMERCADO\",\n    \"nome\": \"Supermercado BH\",\n    \"foto\": \"https://nyuuqqxfdmeodpeoymgv.supabase.co/storage/v1/object/public/nuprecin-media/estabelecimentos/1/fotos/43bf8c4e-9a20-440b-bacf-934976b9c89e.jpg\",\n    \"telefone\": \"3132224400\",\n    \"idUsuario\": 1,\n    \"endereco\": {\n        \"logradouro\": \"Avenida Antônio Carlos\",\n        \"numero\": \"4500\",\n        \"bairro\": \"Pampulha\",\n        \"cidade\": \"Belo Horizonte\",\n        \"estado\": \"MG\",\n        \"cep\": \"31270010\"\n    }\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "https://nu-precin.onrender.com/v1/estabelecimentos/1",
+                  "protocol": "https",
+                  "host": [
+                    "nu-precin",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "v1",
+                    "estabelecimentos",
+                    "1"
+                  ]
+                },
+                "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; a geocodificação aguarda escolha do fornecedor. Envie endereco ou idEndereco, nunca os dois. Alterações no endereço limpam coordenadas antigas."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id\": 1,\n  \"tipo\": \"SUPERMERCADO\",\n  \"nome\": \"Supermercado BH\",\n  \"foto\": null,\n  \"telefone\": \"3132224400\",\n  \"idEndereco\": 1,\n  \"idUsuario\": 1,\n  \"endereco\": {\n    \"id\": 1,\n    \"logradouro\": \"Avenida Antônio Carlos\",\n    \"numero\": \"4500\",\n    \"bairro\": \"Pampulha\",\n    \"cidade\": \"Belo Horizonte\",\n    \"estado\": \"MG\",\n    \"cep\": \"31270010\",\n    \"latitude\": null,\n    \"longitude\": null\n  }\n}"
+            }
+          ]
         },
         {
           "name": "Buscar todos",
@@ -310,9 +502,59 @@
                 "v1",
                 "estabelecimentos"
               ]
-            }
+            },
+            "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; a geocodificação aguarda escolha do fornecedor."
           },
-          "response": []
+          "response": [
+            {
+              "name": "Sucesso com endereço completo",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "https://nu-precin.onrender.com/v1/estabelecimentos",
+                  "protocol": "https",
+                  "host": [
+                    "nu-precin",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "v1",
+                    "estabelecimentos"
+                  ]
+                },
+                "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; a geocodificação aguarda escolha do fornecedor."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"content\": [\n    {\n      \"id\": 1,\n      \"tipo\": \"SUPERMERCADO\",\n      \"nome\": \"Supermercado BH\",\n      \"foto\": null,\n      \"telefone\": \"3132224400\",\n      \"idEndereco\": 1,\n      \"idUsuario\": 1,\n      \"endereco\": {\n        \"id\": 1,\n        \"logradouro\": \"Avenida Antônio Carlos\",\n        \"numero\": \"4500\",\n        \"bairro\": \"Pampulha\",\n        \"cidade\": \"Belo Horizonte\",\n        \"estado\": \"MG\",\n        \"cep\": \"31270010\",\n        \"latitude\": null,\n        \"longitude\": null\n      }\n    }\n  ],\n  \"totalElements\": 1,\n  \"totalPages\": 1,\n  \"size\": 20,\n  \"number\": 0,\n  \"numberOfElements\": 1,\n  \"first\": true,\n  \"last\": true,\n  \"empty\": false\n}"
+            }
+          ]
         },
         {
           "name": "Buscar por id",
@@ -348,9 +590,60 @@
                 "estabelecimentos",
                 "1"
               ]
-            }
+            },
+            "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; a geocodificação aguarda escolha do fornecedor."
           },
-          "response": []
+          "response": [
+            {
+              "name": "Sucesso com endereço completo",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "https://nu-precin.onrender.com/v1/estabelecimentos/1",
+                  "protocol": "https",
+                  "host": [
+                    "nu-precin",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "v1",
+                    "estabelecimentos",
+                    "1"
+                  ]
+                },
+                "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; a geocodificação aguarda escolha do fornecedor."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id\": 1,\n  \"tipo\": \"SUPERMERCADO\",\n  \"nome\": \"Supermercado BH\",\n  \"foto\": null,\n  \"telefone\": \"3132224400\",\n  \"idEndereco\": 1,\n  \"idUsuario\": 1,\n  \"endereco\": {\n    \"id\": 1,\n    \"logradouro\": \"Avenida Antônio Carlos\",\n    \"numero\": \"4500\",\n    \"bairro\": \"Pampulha\",\n    \"cidade\": \"Belo Horizonte\",\n    \"estado\": \"MG\",\n    \"cep\": \"31270010\",\n    \"latitude\": null,\n    \"longitude\": null\n  }\n}"
+            }
+          ]
         },
         {
           "name": "Buscar com filtro",
@@ -407,9 +700,81 @@
                   "value": "nome,asc"
                 }
               ]
-            }
+            },
+            "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; a geocodificação aguarda escolha do fornecedor."
           },
-          "response": []
+          "response": [
+            {
+              "name": "Sucesso com endereço completo",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "https://nu-precin.onrender.com/v1/estabelecimentos?nome=bh&tipo=supermercado&page=0&size=20&sort=nome,asc",
+                  "protocol": "https",
+                  "host": [
+                    "nu-precin",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "v1",
+                    "estabelecimentos"
+                  ],
+                  "query": [
+                    {
+                      "key": "nome",
+                      "value": "bh"
+                    },
+                    {
+                      "key": "tipo",
+                      "value": "supermercado"
+                    },
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "nome,asc"
+                    }
+                  ]
+                },
+                "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; a geocodificação aguarda escolha do fornecedor."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"content\": [\n    {\n      \"id\": 1,\n      \"tipo\": \"SUPERMERCADO\",\n      \"nome\": \"Supermercado BH\",\n      \"foto\": null,\n      \"telefone\": \"3132224400\",\n      \"idEndereco\": 1,\n      \"idUsuario\": 1,\n      \"endereco\": {\n        \"id\": 1,\n        \"logradouro\": \"Avenida Antônio Carlos\",\n        \"numero\": \"4500\",\n        \"bairro\": \"Pampulha\",\n        \"cidade\": \"Belo Horizonte\",\n        \"estado\": \"MG\",\n        \"cep\": \"31270010\",\n        \"latitude\": null,\n        \"longitude\": null\n      }\n    }\n  ],\n  \"totalElements\": 1,\n  \"totalPages\": 1,\n  \"size\": 20,\n  \"number\": 0,\n  \"numberOfElements\": 1,\n  \"first\": true,\n  \"last\": true,\n  \"empty\": false\n}"
+            }
+          ]
         },
         {
           "name": "Apagar",

@@ -12,6 +12,7 @@ import java.util.List;
 public interface EstabelecimentoMapper {
 
     @Mapping(target = "usuario", ignore = true)
+    @Mapping(target = "endereco", ignore = true)
     Estabelecimento toEntity(EstabelecimentoRequestDto dto);
 
     @Mapping(target = "idEndereco", source = "endereco.id")
@@ -22,6 +23,7 @@ public interface EstabelecimentoMapper {
 
 
     @Mapping(target = "usuario", ignore = true)
+    @Mapping(target = "endereco", ignore = true)
     @Mapping(target = "foto", ignore = true)
     void updateEntityFromDto(EstabelecimentoRequestDto dto, @MappingTarget Estabelecimento entity);
 }

@@ -31,7 +31,10 @@ class ResponseMapperTest {
     @Test
     void shouldExposeRelatedIdsInEstabelecimentoAndProdutoResponses() {
         Usuario usuario = Usuario.builder().id(3L).build();
-        Endereco endereco = Endereco.builder().id(4L).build();
+        Endereco endereco = Endereco.builder().id(4L)
+                .logradouro("Avenida Antônio Carlos").numero("4500")
+                .bairro("Pampulha").cidade("Belo Horizonte").estado("MG").cep("31270010")
+                .latitude(-19.86).longitude(-43.96).build();
         Estabelecimento estabelecimento = Estabelecimento.builder()
                 .id(5L)
                 .usuario(usuario)
@@ -42,7 +45,17 @@ class ResponseMapperTest {
                 .usuario(usuario)
                 .build();
 
-        assertEquals(4L, estabelecimentoMapper.toResponse(estabelecimento).idEndereco());
+        var response = estabelecimentoMapper.toResponse(estabelecimento);
+        assertEquals(4L, response.idEndereco());
+        assertEquals(4L, response.endereco().id());
+        assertEquals("Avenida Antônio Carlos", response.endereco().logradouro());
+        assertEquals("4500", response.endereco().numero());
+        assertEquals("Pampulha", response.endereco().bairro());
+        assertEquals("Belo Horizonte", response.endereco().cidade());
+        assertEquals("MG", response.endereco().estado());
+        assertEquals("31270010", response.endereco().cep());
+        assertEquals(-19.86, response.endereco().latitude());
+        assertEquals(-43.96, response.endereco().longitude());
         assertEquals(3L, estabelecimentoMapper.toResponse(estabelecimento).idUsuario());
         assertEquals(3L, produtoMapper.toResponse(produto).idUsuario());
     }

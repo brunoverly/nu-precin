@@ -2,6 +2,7 @@ package br.com.anima.nuPrecin.estabelecimento;
 
 import br.com.anima.nuPrecin.endereco.Endereco;
 import br.com.anima.nuPrecin.endereco.EnderecoRepository;
+import br.com.anima.nuPrecin.endereco.dto.EnderecoRequestDto;
 import br.com.anima.nuPrecin.estabelecimento.dto.EstabelecimentoRequestDto;
 import br.com.anima.nuPrecin.estabelecimento.dto.EstabelecimentoResponseDto;
 import br.com.anima.nuPrecin.security.CurrentUserService;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import br.com.anima.nuPrecin.storage.ImageStorageService;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Objects;
 
 @Service
 public class EstabelecimentoService {
@@ -51,13 +54,7 @@ public class EstabelecimentoService {
             endereco = enderecoRepository.findById(dto.idEndereco())
                     .orElseThrow(() -> new EntityNotFoundException("endereço com id {" + dto.idEndereco() + "} não localizado no banco"));
         } else if (dto.endereco() != null) {
-            Endereco novo = Endereco.builder()
-                    .logradouro(dto.endereco().logradouro())
-                    .bairro(dto.endereco().bairro())
-                    .cidade(dto.endereco().cidade())
-                    .estado(dto.endereco().estado())
-                    .build();
-            endereco = enderecoRepository.save(novo);
+            endereco = salvarEndereco(new Endereco(), dto.endereco());
         } else {
             throw new IllegalArgumentException("Informe idEndereco ou o objeto endereco no payload");
         }
@@ -109,23 +106,8 @@ public class EstabelecimentoService {
             endereco = enderecoRepository.findById(dto.idEndereco())
                     .orElseThrow(() -> new EntityNotFoundException("endereço com id {" + dto.idEndereco() + "} não localizado no banco"));
         } else if (dto.endereco() != null) {
-            // if estabelecimento already has endereco, update its fields; else create new
-            if (estabelecimento.getEndereco() != null) {
-                Endereco eExist = estabelecimento.getEndereco();
-                eExist.setLogradouro(dto.endereco().logradouro());
-                eExist.setBairro(dto.endereco().bairro());
-                eExist.setCidade(dto.endereco().cidade());
-                eExist.setEstado(dto.endereco().estado());
-                endereco = enderecoRepository.save(eExist);
-            } else {
-                Endereco novo = Endereco.builder()
-                        .logradouro(dto.endereco().logradouro())
-                        .bairro(dto.endereco().bairro())
-                        .cidade(dto.endereco().cidade())
-                        .estado(dto.endereco().estado())
-                        .build();
-                endereco = enderecoRepository.save(novo);
-            }
+            Endereco existente = estabelecimento.getEndereco();
+            endereco = salvarEndereco(existente != null ? existente : new Endereco(), dto.endereco());
         } else {
             throw new IllegalArgumentException("Informe idEndereco ou o objeto endereco no payload");
         }
@@ -139,6 +121,27 @@ public class EstabelecimentoService {
         estabelecimentoRepository.save(estabelecimento);
 
         return estabelecimentoMapper.toResponse(estabelecimento);
+    }
+
+    private Endereco salvarEndereco(Endereco endereco, EnderecoRequestDto dto) {
+        boolean alterado = !Objects.equals(endereco.getLogradouro(), dto.logradouro())
+                || !Objects.equals(endereco.getNumero(), dto.numero())
+                || !Objects.equals(endereco.getBairro(), dto.bairro())
+                || !Objects.equals(endereco.getCidade(), dto.cidade())
+                || !Objects.equals(endereco.getEstado(), dto.estado())
+                || !Objects.equals(endereco.getCep(), dto.cep());
+
+        endereco.setLogradouro(dto.logradouro());
+        endereco.setNumero(dto.numero());
+        endereco.setBairro(dto.bairro());
+        endereco.setCidade(dto.cidade());
+        endereco.setEstado(dto.estado());
+        endereco.setCep(dto.cep());
+        if (alterado) {
+            endereco.setLatitude(null);
+            endereco.setLongitude(null);
+        }
+        return enderecoRepository.save(endereco);
     }
 
     @Transactional
