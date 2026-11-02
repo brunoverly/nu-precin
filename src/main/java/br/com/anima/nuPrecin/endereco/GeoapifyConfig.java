@@ -13,7 +13,7 @@ public class GeoapifyConfig {
     RestClient geoapifyRestClient(RestClient.Builder builder) {
         var factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout(Duration.ofSeconds(3));
-        factory.setReadTimeout(Duration.ofSeconds(3));
+        factory.setReadTimeout(Duration.ofSeconds(10));
         return builder.baseUrl("https://api.geoapify.com")
                 .requestFactory(factory).build();
     }

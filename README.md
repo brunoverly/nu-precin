@@ -294,7 +294,7 @@ A chave nunca deve ser enviada ao frontend nem gravada em arquivos versionados. 
 
 Ao cadastrar ou atualizar um estabelecimento, a API tenta localizar seu endereço quando não existem coordenadas. A consulta inclui os dados disponíveis e restringe os resultados ao Brasil. São aceitos resultados de prédio, estabelecimento ou rua com confiança mínima de 0,7; resultados genéricos de cidade/CEP e coordenadas inválidas são descartados. Uma localização de rua pode ser aproximada.
 
-Timeout, limite de uso, chave ausente ou endereço não localizado não impedem salvar o estabelecimento. Nesses casos as coordenadas permanecem nulas. Não há novas consultas ao Geoapify durante listagens ou buscas por distância.
+O cliente aguarda até 3 segundos para conectar e até 10 segundos pela resposta do Geoapify. Timeout, limite de uso, chave ausente ou endereço não localizado não impedem salvar o estabelecimento. Nesses casos as coordenadas permanecem nulas. Não há novas consultas ao Geoapify durante listagens ou buscas por distância.
 
 Para tentar novamente, o proprietário ou um ADMIN pode chamar:
 
