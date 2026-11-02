@@ -15,7 +15,12 @@ spring:
     open-in-view: false
 
 key:
+  geoapify-key: ""
   token-secret: test-token-secret
   token-issuer: nuprecin-test
 
 EMAIL_CONFIRMATION_SECRET: test-email-secret
+
+app:
+  geocoding:
+    backfill-enabled: false

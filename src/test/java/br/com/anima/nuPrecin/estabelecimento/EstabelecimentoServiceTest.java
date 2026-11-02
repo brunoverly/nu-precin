@@ -32,6 +32,8 @@ class EstabelecimentoServiceTest {
     private br.com.anima.nuPrecin.storage.ImageStorageService imageStorageService;
     @Mock
     private CurrentUserService currentUserService;
+    @Mock
+    private br.com.anima.nuPrecin.endereco.EnderecoGeocodingService geocodingService;
 
     @InjectMocks
     private EstabelecimentoService service;

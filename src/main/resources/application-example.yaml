@@ -17,5 +17,6 @@ springdoc:
     path: /swagger-ui.html
 
 key:
+  geoapify-key: ${GEOAPIFY_API_KEY:}
   token-secret: coloque uma chave para gerar o token aqui
   token-issuer: coloque um issuer para gerar o token aqui

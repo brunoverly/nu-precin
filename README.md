@@ -82,6 +82,7 @@ KEY_TOKEN_ISSUER
 EMAIL_CONFIRMATION_SECRET
 BREVO_API_KEY
 BREVO_FROM_EMAIL
+GEOAPIFY_API_KEY
 SUPABASE_URL
 SUPABASE_STORAGE_BUCKET
 SUPABASE_SERVICE_ROLE_KEY
@@ -252,6 +253,8 @@ GET    /v1/estabelecimentos?nome=&tipo=&idUsuario=
 PUT    /v1/estabelecimentos/{id}
 DELETE /v1/estabelecimentos/{id}
 POST   /v1/estabelecimentos/{id}/foto
+POST   /v1/estabelecimentos/{id}/geocodificar
+GET    /v1/estabelecimentos/proximos?latitude=&longitude=&raioKm=5
 ```
 
 Na criação/atualização, informe `idEndereco` ou `endereco`, nunca os dois. O objeto `endereco` recebe `logradouro`, `bairro`, `cidade` e `estado` obrigatórios, além de `numero` e `cep` opcionais. O CEP deve conter oito dígitos sem pontuação. Os clientes existentes podem continuar enviando o número junto com o logradouro.
@@ -277,9 +280,47 @@ Todas as respostas que retornam estabelecimentos (listagem paginada, busca por I
 
 O exemplo mostra os campos de endereço; os demais campos do estabelecimento continuam presentes. Na listagem, o objeto aparece em cada item de `content`.
 
-A migration `V14__add_address_details_and_coordinates.sql` adiciona os campos opcionais sem modificar os dados existentes. Latitude e longitude são campos de saída preparados para geocodificação pelo backend, não são recebidos no cadastro/atualização. Quando os dados do endereço mudam, as coordenadas antigas são limpas; sem mudança, são preservadas.
+A migration `V14__add_address_details_and_coordinates.sql` adiciona os campos opcionais sem modificar os dados existentes. Latitude e longitude são campos de saída preenchidos pelo backend, não são recebidos no cadastro/atualização. Quando os dados do endereço mudam, as coordenadas antigas são limpas e a API tenta obter novas; sem mudança, coordenadas existentes são preservadas.
 
-A integração de geocodificação aguarda a escolha do fornecedor. Ainda não há conversão automática, reprocessamento dos endereços antigos ou endpoint de proximidade. Após essa integração, a rota planejada é `GET /v1/estabelecimentos/proximos?latitude=...&longitude=...&raioKm=5`, com `distanciaKm` e ordenação por distância. Credenciais serão configuradas somente no backend.
+### Geocodificação com Geoapify
+
+Configure `GEOAPIFY_API_KEY` no ambiente do backend. No Render, adicione a variável em **Environment**; o arquivo de exemplo não é carregado como configuração de produção. Localmente, o backend também carrega um `.env` na raiz, ignorado pelo Git e pelo Docker:
+
+```dotenv
+GEOAPIFY_API_KEY=sua_chave
+```
+
+A chave nunca deve ser enviada ao frontend nem gravada em arquivos versionados. O `application-example.yaml` contém somente a referência à variável.
+
+Ao cadastrar ou atualizar um estabelecimento, a API tenta localizar seu endereço quando não existem coordenadas. A consulta inclui os dados disponíveis e restringe os resultados ao Brasil. São aceitos resultados de prédio, estabelecimento ou rua com confiança mínima de 0,7; resultados genéricos de cidade/CEP e coordenadas inválidas são descartados. Uma localização de rua pode ser aproximada.
+
+Timeout, limite de uso, chave ausente ou endereço não localizado não impedem salvar o estabelecimento. Nesses casos as coordenadas permanecem nulas. Não há novas consultas ao Geoapify durante listagens ou buscas por distância.
+
+Para tentar novamente, o proprietário ou um ADMIN pode chamar:
+
+```http
+POST /v1/estabelecimentos/{id}/geocodificar
+Authorization: Bearer <jwt>
+```
+
+Retorna `200 OK` com o estabelecimento e `endereco` completo. Se a tentativa falhar, as coordenadas continuam nulas. Coordenadas já preenchidas são preservadas.
+
+A migration `V15__track_address_geocoding_attempts.sql` registra a data da última tentativa e adiciona controle de versão para impedir que um reprocessamento sobrescreva uma edição concorrente do endereço.
+
+Com uma chave configurada, o backend também processa endereços antigos de estabelecimentos ativos: até 25 endereços por execução, 15 segundos após iniciar e depois a cada hora. Prioriza os nunca tentados e espera seis horas antes de repetir uma falha. Cada endereço é processado em sua própria transação; erros não interrompem o restante do lote. Defina `GEOCODING_BACKFILL_ENABLED=false` para desativar. O agendamento só funciona enquanto a instância está em execução; no Render gratuito ela pode ficar suspensa.
+
+As chamadas são limitadas a menos de cinco por segundo por instância. O consumo do plano é compartilhado com os demais usos da mesma chave; monitore a cota no painel do fornecedor. A integração segue a [API oficial de geocodificação](https://apidocs.geoapify.com/docs/geocoding/forward-geocoding/). Ao exibir informações derivadas no frontend, inclua o link **Powered by Geoapify** e a atribuição às fontes, conforme as [regras do plano gratuito](https://www.geoapify.com/pricing/).
+
+### Busca por proximidade
+
+```http
+GET /v1/estabelecimentos/proximos?latitude=-19.92&longitude=-43.94&raioKm=5
+Authorization: Bearer <jwt>
+```
+
+Retorna uma lista JSON, sem paginação, de estabelecimentos ativos dentro do raio, ordenada por `distanciaKm` crescente. Cada item contém os mesmos campos do estabelecimento, incluindo `endereco` completo, mais `distanciaKm`. Endereços sem coordenadas ficam fora da busca; sem resultados, retorna `[]`.
+
+Latitude deve estar entre -90 e 90, longitude entre -180 e 180, e o raio deve ser positivo. Os dois primeiros parâmetros são obrigatórios; o raio padrão é 5 km. Valores inválidos retornam `400 Bad Request`. A distância é calculada pela fórmula de Haversine no banco, em linha reta sobre a superfície terrestre, e não representa um trajeto por ruas.
 
 ### Produtos
 

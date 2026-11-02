@@ -2,6 +2,7 @@ package br.com.anima.nuPrecin.endereco;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "enderecos")
@@ -24,4 +25,7 @@ public class Endereco {
     private String cep;
     private Double latitude;
     private Double longitude;
+    private LocalDateTime geocodificacaoTentadaEm;
+    @Version
+    private Long versao;
 }

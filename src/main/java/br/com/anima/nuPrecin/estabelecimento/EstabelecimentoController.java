@@ -2,6 +2,8 @@ package br.com.anima.nuPrecin.estabelecimento;
 
 import br.com.anima.nuPrecin.estabelecimento.dto.EstabelecimentoRequestDto;
 import br.com.anima.nuPrecin.estabelecimento.dto.EstabelecimentoResponseDto;
+import br.com.anima.nuPrecin.estabelecimento.dto.EstabelecimentoProximoResponseDto;
+import java.util.List;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -31,7 +33,7 @@ public class EstabelecimentoController {
     @PostMapping
     @Operation(
             summary = "Cadastrar estabelecimento",
-            description = "Cria um estabelecimento. Informe exatamente um endereço: `idEndereco` ou o objeto `endereco`. O objeto endereco aceita numero e cep opcionais. Retorna o estabelecimento com endereco completo e idEndereco para compatibilidade. A foto pode ser uma URL ou ser enviada depois pelo endpoint multipart."
+            description = "Cria um estabelecimento. Informe exatamente um endereço: `idEndereco` ou o objeto `endereco`. O objeto endereco aceita numero e cep opcionais. Tenta obter coordenadas pelo Geoapify; falhas não impedem o cadastro e mantêm as coordenadas nulas. Retorna o estabelecimento com endereco completo e idEndereco para compatibilidade. A foto pode ser uma URL ou ser enviada depois pelo endpoint multipart."
     )
     public ResponseEntity<EstabelecimentoResponseDto> create(@RequestBody @Valid EstabelecimentoRequestDto dto) {
         EstabelecimentoResponseDto estabelecimentoResponseDto = estabelecimentoService.create(dto);
@@ -50,6 +52,15 @@ public class EstabelecimentoController {
         return ResponseEntity.ok().body(estabelecimentoService.findById(id));
     }
 
+    @GetMapping("/proximos")
+    @Operation(summary = "Buscar estabelecimentos próximos",
+            description = "Retorna uma lista de estabelecimentos ativos dentro do raio, ordenados pela distância em linha reta, com endereco completo e distanciaKm. Ignora endereços sem coordenadas. Latitude e longitude são obrigatórias; raioKm é positivo e assume 5 km quando omitido. Não consulta o Geoapify.")
+    public List<EstabelecimentoProximoResponseDto> proximos(
+            @RequestParam double latitude, @RequestParam double longitude,
+            @RequestParam(defaultValue = "5") double raioKm) {
+        return estabelecimentoService.proximos(latitude, longitude, raioKm);
+    }
+
     @GetMapping
     @Operation(summary = "Listar estabelecimentos", description = "Lista estabelecimentos ativos com paginação e filtros opcionais por nome, tipo e usuário criador. Cada item inclui endereco completo e idEndereco para compatibilidade.")
     public Page<EstabelecimentoResponseDto> findAll(
@@ -61,7 +72,7 @@ public class EstabelecimentoController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Atualizar estabelecimento", description = "Atualiza os dados do estabelecimento e retorna endereco completo. Informe idEndereco ou endereco, nunca os dois. O objeto endereco aceita numero e cep opcionais; alterações no endereço limpam coordenadas antigas. Se `foto` não for enviada, a foto atual é preservada.")
+    @Operation(summary = "Atualizar estabelecimento", description = "Atualiza os dados do estabelecimento e retorna endereco completo. Informe idEndereco ou endereco, nunca os dois. O objeto endereco aceita numero e cep opcionais; alterações no endereço limpam coordenadas antigas e tentam obter novas pelo Geoapify. Em falha, mantém coordenadas nulas e permite nova tentativa. Se `foto` não for enviada, a foto atual é preservada.")
     public ResponseEntity<EstabelecimentoResponseDto> update(@PathVariable Long id, @RequestBody @Valid EstabelecimentoRequestDto dto) {
         return ResponseEntity.ok().body(estabelecimentoService.update(id, dto));
     }
@@ -71,6 +82,13 @@ public class EstabelecimentoController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         estabelecimentoService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/geocodificar")
+    @Operation(summary = "Tentar localizar estabelecimento",
+            description = "Proprietário ou ADMIN pode tentar novamente a geocodificação de um endereço sem coordenadas. Retorna o estabelecimento com endereco completo. Em falha ou resultado impreciso, latitude e longitude permanecem nulas. Coordenadas existentes são preservadas.")
+    public ResponseEntity<EstabelecimentoResponseDto> geocodificar(@PathVariable Long id) {
+        return ResponseEntity.ok(estabelecimentoService.geocodificar(id));
     }
 
     @PostMapping(

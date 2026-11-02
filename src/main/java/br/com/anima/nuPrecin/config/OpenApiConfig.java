@@ -68,10 +68,18 @@ import org.springframework.context.annotation.Configuration;
                         ## Fluxo de produto e estabelecimento
 
                         1. Crie ou consulte o usuário autenticado.
-                        2. Crie o produto e o estabelecimento usando JSON. O estabelecimento retorna `endereco` completo e mantém `idEndereco` para compatibilidade. `numero` e `cep` são opcionais; latitude e longitude podem ser nulas, aguardando geocodificação.
+                        2. Crie o produto e o estabelecimento usando JSON. O estabelecimento retorna `endereco` completo e mantém `idEndereco` para compatibilidade. `numero` e `cep` são opcionais; latitude e longitude são preenchidas pelo Geoapify quando localizado o endereço e podem permanecer nulas em falhas.
                         3. Envie as imagens opcionalmente pelos endpoints multipart.
                         4. Crie uma promoção relacionando o código de barras do produto ao estabelecimento.
                         5. Adicione a promoção ao carrinho.
+
+                        ## Localização de estabelecimentos
+
+                        - Cadastro e alteração de endereço tentam obter coordenadas pelo Geoapify sem impedir o salvamento em caso de falha.
+                        - `POST /v1/estabelecimentos/{id}/geocodificar` permite ao proprietário ou ADMIN repetir uma tentativa sem coordenadas.
+                        - `GET /v1/estabelecimentos/proximos?latitude=...&longitude=...&raioKm=5` retorna lista ordenada por distância, com `endereco` e `distanciaKm`.
+                        - A distância é em linha reta; endereços sem coordenadas não aparecem nessa busca.
+                        - Ao exibir localizações derivadas no frontend, inclua a atribuição ao Geoapify e às fontes de dados conforme o plano utilizado.
                         """,
                 contact = @Contact(name = "Time NuPrecin"),
                 license = @License(name = "Uso interno do projeto")

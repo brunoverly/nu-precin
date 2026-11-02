@@ -172,7 +172,7 @@
                 "estabelecimentos"
               ]
             },
-            "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; a geocodificação aguarda escolha do fornecedor. Envie endereco ou idEndereco, nunca os dois. Alterações no endereço limpam coordenadas antigas."
+            "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; o backend tenta preenchê-las usando Geoapify. Falhas não impedem salvar o estabelecimento. Envie endereco ou idEndereco, nunca os dois. Alterações no endereço limpam coordenadas antigas e tentam obter novas."
           },
           "response": [
             {
@@ -223,7 +223,7 @@
                     "estabelecimentos"
                   ]
                 },
-                "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; a geocodificação aguarda escolha do fornecedor. Envie endereco ou idEndereco, nunca os dois. Alterações no endereço limpam coordenadas antigas."
+                "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; o backend tenta preenchê-las usando Geoapify. Falhas não impedem salvar o estabelecimento. Envie endereco ou idEndereco, nunca os dois. Alterações no endereço limpam coordenadas antigas e tentam obter novas."
               },
               "status": "Created",
               "code": 201,
@@ -286,7 +286,7 @@
                 "foto"
               ]
             },
-            "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; a geocodificação aguarda escolha do fornecedor."
+            "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; o backend tenta preenchê-las usando Geoapify. Falhas não impedem salvar o estabelecimento."
           },
           "response": [
             {
@@ -336,7 +336,7 @@
                     "foto"
                   ]
                 },
-                "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; a geocodificação aguarda escolha do fornecedor."
+                "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; o backend tenta preenchê-las usando Geoapify. Falhas não impedem salvar o estabelecimento."
               },
               "status": "OK",
               "code": 200,
@@ -401,7 +401,7 @@
                 "1"
               ]
             },
-            "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; a geocodificação aguarda escolha do fornecedor. Envie endereco ou idEndereco, nunca os dois. Alterações no endereço limpam coordenadas antigas."
+            "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; o backend tenta preenchê-las usando Geoapify. Falhas não impedem salvar o estabelecimento. Envie endereco ou idEndereco, nunca os dois. Alterações no endereço limpam coordenadas antigas e tentam obter novas."
           },
           "response": [
             {
@@ -453,7 +453,7 @@
                     "1"
                   ]
                 },
-                "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; a geocodificação aguarda escolha do fornecedor. Envie endereco ou idEndereco, nunca os dois. Alterações no endereço limpam coordenadas antigas."
+                "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; o backend tenta preenchê-las usando Geoapify. Falhas não impedem salvar o estabelecimento. Envie endereco ou idEndereco, nunca os dois. Alterações no endereço limpam coordenadas antigas e tentam obter novas."
               },
               "status": "OK",
               "code": 200,
@@ -503,7 +503,7 @@
                 "estabelecimentos"
               ]
             },
-            "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; a geocodificação aguarda escolha do fornecedor."
+            "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; o backend tenta preenchê-las usando Geoapify. Falhas não impedem salvar o estabelecimento."
           },
           "response": [
             {
@@ -540,7 +540,7 @@
                     "estabelecimentos"
                   ]
                 },
-                "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; a geocodificação aguarda escolha do fornecedor."
+                "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; o backend tenta preenchê-las usando Geoapify. Falhas não impedem salvar o estabelecimento."
               },
               "status": "OK",
               "code": 200,
@@ -591,7 +591,7 @@
                 "1"
               ]
             },
-            "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; a geocodificação aguarda escolha do fornecedor."
+            "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; o backend tenta preenchê-las usando Geoapify. Falhas não impedem salvar o estabelecimento."
           },
           "response": [
             {
@@ -629,7 +629,7 @@
                     "1"
                   ]
                 },
-                "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; a geocodificação aguarda escolha do fornecedor."
+                "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; o backend tenta preenchê-las usando Geoapify. Falhas não impedem salvar o estabelecimento."
               },
               "status": "OK",
               "code": 200,
@@ -701,7 +701,7 @@
                 }
               ]
             },
-            "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; a geocodificação aguarda escolha do fornecedor."
+            "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; o backend tenta preenchê-las usando Geoapify. Falhas não impedem salvar o estabelecimento."
           },
           "response": [
             {
@@ -760,7 +760,7 @@
                     }
                   ]
                 },
-                "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; a geocodificação aguarda escolha do fornecedor."
+                "description": "Retorna o estabelecimento com endereco completo, mantendo idEndereco para compatibilidade. Numero e CEP são opcionais (CEP com oito dígitos sem pontuação). Latitude e longitude podem ser nulas; o backend tenta preenchê-las usando Geoapify. Falhas não impedem salvar o estabelecimento."
               },
               "status": "OK",
               "code": 200,
@@ -813,6 +813,214 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Tentar geocodificacao",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "https://nu-precin.onrender.com/v1/estabelecimentos/1/geocodificar",
+              "protocol": "https",
+              "host": [
+                "nu-precin",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "estabelecimentos",
+                "1",
+                "geocodificar"
+              ]
+            },
+            "description": "Proprietário ou ADMIN pode tentar localizar um endereço sem coordenadas. Retorna o estabelecimento completo. Em falha, as coordenadas continuam nulas; se já existem, são preservadas."
+          },
+          "response": [
+            {
+              "name": "Sucesso",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "https://nu-precin.onrender.com/v1/estabelecimentos/1/geocodificar",
+                  "protocol": "https",
+                  "host": [
+                    "nu-precin",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "v1",
+                    "estabelecimentos",
+                    "1",
+                    "geocodificar"
+                  ]
+                },
+                "description": "Proprietário ou ADMIN pode tentar localizar um endereço sem coordenadas. Retorna o estabelecimento completo. Em falha, as coordenadas continuam nulas; se já existem, são preservadas."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id\": 1,\n  \"tipo\": \"SUPERMERCADO\",\n  \"nome\": \"Supermercado BH\",\n  \"foto\": null,\n  \"telefone\": \"3132224400\",\n  \"idEndereco\": 1,\n  \"idUsuario\": 1,\n  \"endereco\": {\n    \"id\": 1,\n    \"logradouro\": \"Avenida Antônio Carlos\",\n    \"numero\": \"4500\",\n    \"bairro\": \"Pampulha\",\n    \"cidade\": \"Belo Horizonte\",\n    \"estado\": \"MG\",\n    \"cep\": \"31270010\",\n    \"latitude\": -19.92,\n    \"longitude\": -43.94\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Buscar proximos",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "https://nu-precin.onrender.com/v1/estabelecimentos/proximos?latitude=-19.92&longitude=-43.94&raioKm=5",
+              "protocol": "https",
+              "host": [
+                "nu-precin",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "estabelecimentos",
+                "proximos"
+              ],
+              "query": [
+                {
+                  "key": "latitude",
+                  "value": "-19.92"
+                },
+                {
+                  "key": "longitude",
+                  "value": "-43.94"
+                },
+                {
+                  "key": "raioKm",
+                  "value": "5"
+                }
+              ]
+            },
+            "description": "Retorna lista sem paginação com endereco completo e distanciaKm em linha reta, dentro do raio e ordenada por distância. Ignora estabelecimentos inativos e sem coordenadas. Latitude [-90,90] e longitude [-180,180] obrigatórias; raio positivo, padrão 5 km. Não consulta Geoapify."
+          },
+          "response": [
+            {
+              "name": "Sucesso",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "https://nu-precin.onrender.com/v1/estabelecimentos/proximos?latitude=-19.92&longitude=-43.94&raioKm=5",
+                  "protocol": "https",
+                  "host": [
+                    "nu-precin",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "v1",
+                    "estabelecimentos",
+                    "proximos"
+                  ],
+                  "query": [
+                    {
+                      "key": "latitude",
+                      "value": "-19.92"
+                    },
+                    {
+                      "key": "longitude",
+                      "value": "-43.94"
+                    },
+                    {
+                      "key": "raioKm",
+                      "value": "5"
+                    }
+                  ]
+                },
+                "description": "Retorna lista sem paginação com endereco completo e distanciaKm em linha reta, dentro do raio e ordenada por distância. Ignora estabelecimentos inativos e sem coordenadas. Latitude [-90,90] e longitude [-180,180] obrigatórias; raio positivo, padrão 5 km. Não consulta Geoapify."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"id\": 1,\n    \"tipo\": \"SUPERMERCADO\",\n    \"nome\": \"Supermercado BH\",\n    \"foto\": null,\n    \"telefone\": \"3132224400\",\n    \"idEndereco\": 1,\n    \"idUsuario\": 1,\n    \"endereco\": {\n      \"id\": 1,\n      \"logradouro\": \"Avenida Antônio Carlos\",\n      \"numero\": \"4500\",\n      \"bairro\": \"Pampulha\",\n      \"cidade\": \"Belo Horizonte\",\n      \"estado\": \"MG\",\n      \"cep\": \"31270010\",\n      \"latitude\": -19.92,\n      \"longitude\": -43.94\n    },\n    \"distanciaKm\": 0.0\n  }\n]"
+            }
+          ]
         }
       ]
     },

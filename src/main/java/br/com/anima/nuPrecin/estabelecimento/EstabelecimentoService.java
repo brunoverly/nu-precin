@@ -2,9 +2,11 @@ package br.com.anima.nuPrecin.estabelecimento;
 
 import br.com.anima.nuPrecin.endereco.Endereco;
 import br.com.anima.nuPrecin.endereco.EnderecoRepository;
+import br.com.anima.nuPrecin.endereco.EnderecoGeocodingService;
 import br.com.anima.nuPrecin.endereco.dto.EnderecoRequestDto;
 import br.com.anima.nuPrecin.estabelecimento.dto.EstabelecimentoRequestDto;
 import br.com.anima.nuPrecin.estabelecimento.dto.EstabelecimentoResponseDto;
+import br.com.anima.nuPrecin.estabelecimento.dto.EstabelecimentoProximoResponseDto;
 import br.com.anima.nuPrecin.security.CurrentUserService;
 import br.com.anima.nuPrecin.usuario.Usuario;
 import br.com.anima.nuPrecin.usuario.UsuarioRepository;
@@ -20,6 +22,7 @@ import br.com.anima.nuPrecin.storage.ImageStorageService;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
+import java.util.List;
 
 @Service
 public class EstabelecimentoService {
@@ -35,6 +38,8 @@ public class EstabelecimentoService {
     private ImageStorageService imageStorageService;
     @Autowired
     private CurrentUserService currentUserService;
+    @Autowired
+    private EnderecoGeocodingService geocodingService;
 
     @Transactional
     public EstabelecimentoResponseDto create(@Valid EstabelecimentoRequestDto dto) {
@@ -62,6 +67,7 @@ public class EstabelecimentoService {
         Estabelecimento estabelecimento = estabelecimentoMapper.toEntity(dto);
         estabelecimento.setEndereco(endereco);
         estabelecimento.setUsuario(usuario);
+        geocodingService.preencherCoordenadas(endereco);
         estabelecimento = estabelecimentoRepository.save(estabelecimento);
 
         return estabelecimentoMapper.toResponse(estabelecimento);
@@ -83,6 +89,29 @@ public class EstabelecimentoService {
 
         Page<Estabelecimento> estabelecimentos = estabelecimentoRepository.findAll(specification, pageable);
         return estabelecimentos.map(estabelecimentoMapper::toResponse);
+    }
+
+    @Transactional(readOnly = true)
+    public List<EstabelecimentoProximoResponseDto> proximos(double latitude, double longitude, double raioKm) {
+        if (!Double.isFinite(latitude) || latitude < -90 || latitude > 90
+                || !Double.isFinite(longitude) || longitude < -180 || longitude > 180
+                || !Double.isFinite(raioKm) || raioKm <= 0) {
+            throw new IllegalArgumentException("Informe latitude entre -90 e 90, longitude entre -180 e 180 e raioKm positivo.");
+        }
+        return estabelecimentoRepository.buscarProximos(latitude, longitude, raioKm).stream()
+                .map(e -> estabelecimentoMapper.toProximoResponse(e,
+                        distanciaKm(latitude, longitude, e.getEndereco())))
+                .toList();
+    }
+
+    private double distanciaKm(double latitude, double longitude, Endereco endereco) {
+        double lat1 = Math.toRadians(latitude);
+        double lat2 = Math.toRadians(endereco.getLatitude());
+        double deltaLat = lat2 - lat1;
+        double deltaLon = Math.toRadians(endereco.getLongitude() - longitude);
+        double a = Math.pow(Math.sin(deltaLat / 2), 2)
+                + Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin(deltaLon / 2), 2);
+        return 6371.0088 * 2 * Math.asin(Math.sqrt(Math.min(1, a)));
     }
 
     @Transactional
@@ -118,6 +147,7 @@ public class EstabelecimentoService {
         }
         estabelecimento.setEndereco(endereco);
         estabelecimento.setUsuario(usuario);
+        geocodingService.preencherCoordenadas(endereco);
         estabelecimentoRepository.save(estabelecimento);
 
         return estabelecimentoMapper.toResponse(estabelecimento);
@@ -140,8 +170,21 @@ public class EstabelecimentoService {
         if (alterado) {
             endereco.setLatitude(null);
             endereco.setLongitude(null);
+            endereco.setGeocodificacaoTentadaEm(null);
         }
         return enderecoRepository.save(endereco);
+    }
+
+    @Transactional
+    public EstabelecimentoResponseDto geocodificar(Long id) {
+        Estabelecimento estabelecimento = estabelecimentoRepository.findByIdAndAtivoTrue(id)
+                .orElseThrow(() -> new EntityNotFoundException("Estabelecimento não encontrado."));
+        currentUserService.ensureCanManageUser(estabelecimento.getUsuario().getId());
+        if (estabelecimento.getEndereco() != null) {
+            geocodingService.preencherCoordenadas(estabelecimento.getEndereco());
+            enderecoRepository.save(estabelecimento.getEndereco());
+        }
+        return estabelecimentoMapper.toResponse(estabelecimento);
     }
 
     @Transactional
