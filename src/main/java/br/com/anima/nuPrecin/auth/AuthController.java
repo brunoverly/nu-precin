@@ -42,7 +42,7 @@ public class AuthController {
     @PostMapping("login")
     @Operation(
             summary = "Autenticar usuário",
-            description = "Valida e-mail e senha e retorna um JWT para as rotas protegidas."
+            description = "Valida e-mail e senha e retorna o ID do usuário, nome, e-mail e um JWT para as rotas protegidas."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Login realizado com sucesso",
@@ -75,7 +75,7 @@ public class AuthController {
     @PostMapping("registro/confirmar")
     @Operation(
             summary = "Confirmar cadastro",
-            description = "Valida o código recebido por e-mail e cria o usuário definitivo. O retorno não contém JWT; faça login depois."
+            description = "Valida o código recebido por e-mail e cria o usuário definitivo, retornando seu ID no campo id. O retorno não contém JWT; faça login depois."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Usuário criado",

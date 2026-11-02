@@ -105,7 +105,7 @@ POST /v1/auth/login
 }
 ```
 
-Retorna `200 OK` com `nome`, `email` e `token`.
+Retorna `200 OK` com `id` do usuário, `nome`, `email` e `token`.
 
 ### Cadastro com confirmação por e-mail
 
@@ -139,7 +139,7 @@ POST /v1/auth/registro/confirmar
 }
 ```
 
-Retorna `201 Created`. Depois, faça login para obter o JWT.
+Retorna `201 Created` com `id` do usuário, `nome`, `email`, `foto` e `dataCadastro`. Depois, faça login para obter o JWT.
 
 3. Reenvie o código, se necessário:
 

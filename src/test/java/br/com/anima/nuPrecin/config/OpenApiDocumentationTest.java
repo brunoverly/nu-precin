@@ -25,6 +25,8 @@ class OpenApiDocumentationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.info.title").value("NuPrecin API"))
                 .andExpect(jsonPath("$.components.securitySchemes.bearerAuth").exists())
+                .andExpect(jsonPath("$.components.schemas.LoginResponse.properties.id.type").value("integer"))
+                .andExpect(jsonPath("$.components.schemas.UsuarioResponse.properties.id.type").value("integer"))
                 .andExpect(jsonPath("$.paths['/v1/auth/login']").exists())
                 .andExpect(jsonPath("$.paths['/v1/auth/login'].post.security").doesNotExist())
                 .andExpect(jsonPath("$.paths['/v1/auth/registro/confirmar']").exists())

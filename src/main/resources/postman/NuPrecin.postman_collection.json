@@ -47,7 +47,8 @@
                 "auth",
                 "login"
               ]
-            }
+            },
+            "description": "Retorna o ID definitivo do usuário no campo id. Retorna também nome, email e token JWT."
           },
           "event": [
             {
@@ -56,12 +57,67 @@
                 "type": "text/javascript",
                 "exec": [
                   "const body = pm.response.json();",
-                  "if (body.token) pm.collectionVariables.set('token', body.token);"
+                  "if (body.token) pm.collectionVariables.set('token', body.token);",
+                  "if (pm.response.code === 200 && body.id != null) pm.collectionVariables.set('id_usuario', body.id);"
                 ]
               }
             }
           ],
-          "response": []
+          "response": [
+            {
+              "name": "Sucesso com ID do usuário",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\" : \"admin@nuprecin.com.br\",\n    \"senha\" : \"123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "https://nu-precin.onrender.com/v1/auth/login",
+                  "protocol": "https",
+                  "host": [
+                    "nu-precin",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "v1",
+                    "auth",
+                    "login"
+                  ]
+                },
+                "description": "Retorna o ID definitivo do usuário no campo id. Retorna também nome, email e token JWT."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id\": 1,\n  \"nome\": \"Administrador NuPrecin\",\n  \"email\": \"admin@nuprecin.com.br\",\n  \"token\": \"eyJhbGciOiJIUzI1NiJ9...\"\n}"
+            }
+          ]
         }
       ]
     },
@@ -865,9 +921,80 @@
                 "registro",
                 "confirmar"
               ]
-            }
+            },
+            "description": "Retorna o ID definitivo do usuário no campo id. Retorna também nome, email, foto e dataCadastro. Faça login para obter o JWT."
           },
-          "response": []
+          "response": [
+            {
+              "name": "Sucesso com ID do usuário",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"mariaoliveira@gmail.com\",\n    \"codigo\": \"{{codigo_confirmacao}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "https://nu-precin.onrender.com/v1/auth/registro/confirmar",
+                  "protocol": "https",
+                  "host": [
+                    "nu-precin",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "v1",
+                    "auth",
+                    "registro",
+                    "confirmar"
+                  ]
+                },
+                "description": "Retorna o ID definitivo do usuário no campo id. Retorna também nome, email, foto e dataCadastro. Faça login para obter o JWT."
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id\": 1,\n  \"nome\": \"Maria Oliveira\",\n  \"email\": \"mariaoliveira@gmail.com\",\n  \"foto\": null,\n  \"dataCadastro\": \"02-11-2026T10:00:00\"\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "if (pm.response.code === 201 && body.id != null) pm.collectionVariables.set('id_usuario', body.id);"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Reenviar codigo",
@@ -1977,6 +2104,11 @@
     },
     {
       "key": "codigo_reset",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "id_usuario",
       "value": "",
       "type": "string"
     }

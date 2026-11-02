@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "LoginResponse", description = "Dados do usuário autenticado e JWT")
 public record LoginResponseDto(
+        @Schema(description = "ID do usuário autenticado", example = "1")
+        Long id,
         @Schema(example = "Administrador NuPrecin")
         String nome,
         @Schema(example = "admin@nuprecin.com.br")
