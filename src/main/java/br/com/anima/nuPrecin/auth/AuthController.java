@@ -42,7 +42,7 @@ public class AuthController {
     @PostMapping("login")
     @Operation(
             summary = "Autenticar usuário",
-            description = "Valida e-mail e senha e retorna o ID do usuário, nome, e-mail e um JWT para as rotas protegidas."
+            description = "Valida e-mail e senha e retorna o ID do usuário, nome, e-mail, raioBuscaKm salvo e um JWT para as rotas protegidas."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Login realizado com sucesso",

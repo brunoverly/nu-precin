@@ -54,10 +54,10 @@ public class EstabelecimentoController {
 
     @GetMapping("/proximos")
     @Operation(summary = "Buscar estabelecimentos próximos",
-            description = "Retorna uma lista de estabelecimentos ativos dentro do raio, ordenados pela distância em linha reta, com endereco completo e distanciaKm. Ignora endereços sem coordenadas. Latitude e longitude são obrigatórias; raioKm é positivo e assume 5 km quando omitido. Não consulta o Geoapify.")
+            description = "Retorna uma lista de estabelecimentos ativos dentro do raio, ordenados pela distância em linha reta, com endereco completo e distanciaKm. Ignora endereços sem coordenadas. Latitude e longitude são obrigatórias. Se raioKm for omitido, usa raioBuscaKm salvo do usuário autenticado (padrão 5 km). Um raioKm explícito e positivo vale somente para essa consulta. Não consulta o Geoapify.")
     public List<EstabelecimentoProximoResponseDto> proximos(
             @RequestParam double latitude, @RequestParam double longitude,
-            @RequestParam(defaultValue = "5") double raioKm) {
+            @RequestParam(required = false) Double raioKm) {
         return estabelecimentoService.proximos(latitude, longitude, raioKm);
     }
 

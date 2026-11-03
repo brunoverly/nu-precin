@@ -10,6 +10,12 @@ import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Bean;
+import org.springdoc.core.customizers.OpenApiCustomizer;
+import io.swagger.v3.oas.models.media.IntegerSchema;
+import io.swagger.v3.oas.models.media.Schema;
+
+import java.util.List;
 
 @Configuration
 @OpenAPIDefinition(
@@ -35,6 +41,16 @@ import org.springframework.context.annotation.Configuration;
                         3. `POST /v1/auth/registro/confirmar` confirma o código e cria a conta definitiva.
                         4. `POST /v1/auth/login` retorna o JWT.
                         5. Em caso de expiração ou perda do código, use `POST /v1/auth/registro/reenviar`.
+
+                        ## Preferências e favoritos por usuário
+
+                        - `GET /v1/usuarios/{id}/preferencias` recupera a distância preferida.
+                        - `PATCH /v1/usuarios/{id}/preferencias` recebe `{"raioBuscaKm":3}`. Aceita 1, 3, 5 ou 10 km; padrão 5. Não exige troca de senha.
+                        - Login e perfil também retornam `raioBuscaKm`.
+                        - A busca de estabelecimentos próximos usa essa preferência se `raioKm` for omitido. Um raio explícito vale só para a consulta.
+                        - `GET /v1/usuarios/{id}/favoritos` retorna um array dos estabelecimentos favoritos ativos com foto e endereço completo.
+                        - `PUT /v1/usuarios/{id}/favoritos/{idEstabelecimento}` favorita e `DELETE` desfavorita. Ambas sem corpo e com retorno 204, inclusive ao repetir a operação.
+                        - Preferências e favoritos são privados do usuário; ADMIN pode gerenciar os de outros usuários.
 
                         A foto não é obrigatória no cadastro. Depois do login, use `POST /v1/usuarios/{id}/foto` para enviar um arquivo.
 
@@ -107,4 +123,24 @@ import org.springframework.context.annotation.Configuration;
         in = SecuritySchemeIn.HEADER
 )
 public class OpenApiConfig {
+    @Bean
+    OpenApiCustomizer raioBuscaComoNumeroInteiro() {
+        return openApi -> {
+            if (openApi.getComponents() == null || openApi.getComponents().getSchemas() == null) return;
+            for (String name : List.of("PreferenciasUsuario", "LoginResponse", "UsuarioResponse")) {
+                Schema<?> schema = openApi.getComponents().getSchemas().get(name);
+                if (schema != null && schema.getProperties() != null
+                        && schema.getProperties().get("raioBuscaKm") != null) {
+                    var original = schema.getProperties().get("raioBuscaKm");
+                    var raio = new IntegerSchema();
+                    raio.setDescription(original.getDescription());
+                    raio.setExample(original.getExample());
+                    raio.setDefault(5);
+                    // allowableValues da anotação é String[]; o contrato JSON aceita números.
+                    raio.setEnum(List.of(1, 3, 5, 10));
+                    schema.addProperty("raioBuscaKm", raio);
+                }
+            }
+        };
+    }
 }

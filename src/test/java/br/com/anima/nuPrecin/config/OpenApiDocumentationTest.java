@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -36,6 +37,14 @@ class OpenApiDocumentationTest {
                 .andExpect(jsonPath("$.components.schemas.EstabelecimentoProximoResponse.properties.endereco['$ref']").value("#/components/schemas/EnderecoResponse"))
                 .andExpect(jsonPath("$.components.schemas.LoginResponse.properties.id.type").value("integer"))
                 .andExpect(jsonPath("$.components.schemas.UsuarioResponse.properties.id.type").value("integer"))
+                .andExpect(jsonPath("$.components.schemas.UsuarioResponse.properties.raioBuscaKm.type").value("integer"))
+                .andExpect(jsonPath("$.components.schemas.LoginResponse.properties.raioBuscaKm.type").value("integer"))
+                .andExpect(jsonPath("$.components.schemas.PreferenciasUsuario.properties.raioBuscaKm.enum", containsInAnyOrder(1, 3, 5, 10)))
+                .andExpect(jsonPath("$.paths['/v1/usuarios/{id}/preferencias'].get").exists())
+                .andExpect(jsonPath("$.paths['/v1/usuarios/{id}/preferencias'].patch").exists())
+                .andExpect(jsonPath("$.paths['/v1/usuarios/{id}/favoritos'].get").exists())
+                .andExpect(jsonPath("$.paths['/v1/usuarios/{id}/favoritos/{idEstabelecimento}'].put.responses['204']").exists())
+                .andExpect(jsonPath("$.paths['/v1/usuarios/{id}/favoritos/{idEstabelecimento}'].delete.responses['204']").exists())
                 .andExpect(jsonPath("$.paths['/v1/auth/login']").exists())
                 .andExpect(jsonPath("$.paths['/v1/auth/login'].post.security").doesNotExist())
                 .andExpect(jsonPath("$.paths['/v1/auth/registro/confirmar']").exists())

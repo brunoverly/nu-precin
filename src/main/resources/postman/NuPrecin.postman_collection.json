@@ -48,7 +48,7 @@
                 "login"
               ]
             },
-            "description": "Retorna o ID definitivo do usuário no campo id. Retorna também nome, email e token JWT."
+            "description": "Retorna o ID definitivo do usuário no campo id. Retorna também nome, email e token JWT. Inclui raioBuscaKm salvo, com opções 1, 3, 5 ou 10 e padrão 5."
           },
           "event": [
             {
@@ -103,7 +103,7 @@
                     "login"
                   ]
                 },
-                "description": "Retorna o ID definitivo do usuário no campo id. Retorna também nome, email e token JWT."
+                "description": "Retorna o ID definitivo do usuário no campo id. Retorna também nome, email e token JWT. Inclui raioBuscaKm salvo, com opções 1, 3, 5 ou 10 e padrão 5."
               },
               "status": "OK",
               "code": 200,
@@ -115,7 +115,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"id\": 1,\n  \"nome\": \"Administrador NuPrecin\",\n  \"email\": \"admin@nuprecin.com.br\",\n  \"token\": \"eyJhbGciOiJIUzI1NiJ9...\"\n}"
+              "body": "{\n  \"id\": 1,\n  \"nome\": \"Administrador NuPrecin\",\n  \"email\": \"admin@nuprecin.com.br\",\n  \"token\": \"eyJhbGciOiJIUzI1NiJ9...\",\n  \"raioBuscaKm\": 5\n}"
             }
           ]
         }
@@ -954,7 +954,7 @@
                 }
               ]
             },
-            "description": "Retorna lista sem paginação com endereco completo e distanciaKm em linha reta, dentro do raio e ordenada por distância. Ignora estabelecimentos inativos e sem coordenadas. Latitude [-90,90] e longitude [-180,180] obrigatórias; raio positivo, padrão 5 km. Não consulta Geoapify."
+            "description": "Retorna lista de estabelecimentos ativos com endereco e distanciaKm, ordenada por distância em linha reta. Sem raioKm, usa raioBuscaKm salvo do usuário (padrão 5). Um raioKm explícito e positivo vale só para a consulta, sem alterar a preferência. Latitude e longitude obrigatórias. Não consulta Geoapify."
           },
           "response": [
             {
@@ -1006,7 +1006,7 @@
                     }
                   ]
                 },
-                "description": "Retorna lista sem paginação com endereco completo e distanciaKm em linha reta, dentro do raio e ordenada por distância. Ignora estabelecimentos inativos e sem coordenadas. Latitude [-90,90] e longitude [-180,180] obrigatórias; raio positivo, padrão 5 km. Não consulta Geoapify."
+                "description": "Retorna lista de estabelecimentos ativos com endereco e distanciaKm, ordenada por distância em linha reta. Sem raioKm, usa raioBuscaKm salvo do usuário (padrão 5). Um raioKm explícito e positivo vale só para a consulta, sem alterar a preferência. Latitude e longitude obrigatórias. Não consulta Geoapify."
               },
               "status": "OK",
               "code": 200,
@@ -1495,7 +1495,7 @@
                 "confirmar"
               ]
             },
-            "description": "Retorna o ID definitivo do usuário no campo id. Retorna também nome, email, foto e dataCadastro. Faça login para obter o JWT."
+            "description": "Retorna o ID definitivo do usuário no campo id. Retorna também nome, email, foto e dataCadastro. Faça login para obter o JWT. Inclui raioBuscaKm salvo, com opções 1, 3, 5 ou 10 e padrão 5."
           },
           "response": [
             {
@@ -1541,7 +1541,7 @@
                     "confirmar"
                   ]
                 },
-                "description": "Retorna o ID definitivo do usuário no campo id. Retorna também nome, email, foto e dataCadastro. Faça login para obter o JWT."
+                "description": "Retorna o ID definitivo do usuário no campo id. Retorna também nome, email, foto e dataCadastro. Faça login para obter o JWT. Inclui raioBuscaKm salvo, com opções 1, 3, 5 ou 10 e padrão 5."
               },
               "status": "Created",
               "code": 201,
@@ -1553,7 +1553,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"id\": 1,\n  \"nome\": \"Maria Oliveira\",\n  \"email\": \"mariaoliveira@gmail.com\",\n  \"foto\": null,\n  \"dataCadastro\": \"02-11-2026T10:00:00\"\n}"
+              "body": "{\n  \"id\": 1,\n  \"nome\": \"Maria Oliveira\",\n  \"email\": \"mariaoliveira@gmail.com\",\n  \"foto\": null,\n  \"dataCadastro\": \"02-11-2026T10:00:00\",\n  \"raioBuscaKm\": 5\n}"
             }
           ],
           "event": [
@@ -1880,7 +1880,8 @@
                 "usuarios",
                 "1"
               ]
-            }
+            },
+            "description": " O perfil inclui raioBuscaKm salvo (1, 3, 5 ou 10; padrão 5)."
           },
           "response": []
         },
@@ -1915,6 +1916,531 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Consultar preferencias",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "https://nu-precin.onrender.com/v1/usuarios/{{id_usuario}}/preferencias",
+              "protocol": "https",
+              "host": [
+                "nu-precin",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "usuarios",
+                "{{id_usuario}}",
+                "preferencias"
+              ]
+            },
+            "description": "Recupera a distância salva: 1, 3, 5 ou 10 km. Padrão 5. Apenas o próprio usuário ou ADMIN."
+          },
+          "response": [
+            {
+              "name": "Sucesso",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "https://nu-precin.onrender.com/v1/usuarios/{{id_usuario}}/preferencias",
+                  "protocol": "https",
+                  "host": [
+                    "nu-precin",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "v1",
+                    "usuarios",
+                    "{{id_usuario}}",
+                    "preferencias"
+                  ]
+                },
+                "description": "Recupera a distância salva: 1, 3, 5 ou 10 km. Padrão 5. Apenas o próprio usuário ou ADMIN."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"raioBuscaKm\": 3\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
+        },
+        {
+          "name": "Salvar preferencia de distancia",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "https://nu-precin.onrender.com/v1/usuarios/{{id_usuario}}/preferencias",
+              "protocol": "https",
+              "host": [
+                "nu-precin",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "usuarios",
+                "{{id_usuario}}",
+                "preferencias"
+              ]
+            },
+            "description": "Salva somente raioBuscaKm como número inteiro: 1, 3, 5 ou 10. Sem senha atual ou troca de senha. O login e perfil também retornam esse campo. Apenas o próprio usuário ou ADMIN.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"raioBuscaKm\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "Sucesso",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "https://nu-precin.onrender.com/v1/usuarios/{{id_usuario}}/preferencias",
+                  "protocol": "https",
+                  "host": [
+                    "nu-precin",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "v1",
+                    "usuarios",
+                    "{{id_usuario}}",
+                    "preferencias"
+                  ]
+                },
+                "description": "Salva somente raioBuscaKm como número inteiro: 1, 3, 5 ou 10. Sem senha atual ou troca de senha. O login e perfil também retornam esse campo. Apenas o próprio usuário ou ADMIN.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"raioBuscaKm\": 3\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"raioBuscaKm\": 3\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
+        },
+        {
+          "name": "Listar favoritos",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "https://nu-precin.onrender.com/v1/usuarios/{{id_usuario}}/favoritos",
+              "protocol": "https",
+              "host": [
+                "nu-precin",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "usuarios",
+                "{{id_usuario}}",
+                "favoritos"
+              ]
+            },
+            "description": "Array direto, sem paginação, dos favoritos ativos, com foto e endereco completo, ordenado por nome e ID. Sem favoritos retorna []. Apenas o próprio usuário ou ADMIN."
+          },
+          "response": [
+            {
+              "name": "Sucesso",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "https://nu-precin.onrender.com/v1/usuarios/{{id_usuario}}/favoritos",
+                  "protocol": "https",
+                  "host": [
+                    "nu-precin",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "v1",
+                    "usuarios",
+                    "{{id_usuario}}",
+                    "favoritos"
+                  ]
+                },
+                "description": "Array direto, sem paginação, dos favoritos ativos, com foto e endereco completo, ordenado por nome e ID. Sem favoritos retorna []. Apenas o próprio usuário ou ADMIN."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"id\": 3,\n    \"tipo\": \"SUPERMERCADO\",\n    \"nome\": \"Supermercados BH - Bom Pastor - Santa Luzia/MG\",\n    \"foto\": \"https://nyuuqqxfdmeodpeoymgv.supabase.co/storage/v1/object/public/nuprecin-media/estabelecimentos/1/fotos/43bf8c4e-9a20-440b-bacf-934976b9c89e.jpg\",\n    \"telefone\": \"3136373272\",\n    \"idEndereco\": 3,\n    \"idUsuario\": 1,\n    \"endereco\": {\n      \"id\": 3,\n      \"logradouro\": \"Rua Bom Pastor\",\n      \"numero\": \"734\",\n      \"bairro\": \"Bom Pastor\",\n      \"cidade\": \"Santa Luzia\",\n      \"estado\": \"MG\",\n      \"cep\": null,\n      \"latitude\": -19.782421,\n      \"longitude\": -43.935581\n    }\n  }\n]",
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "name": "Sem favoritos",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "https://nu-precin.onrender.com/v1/usuarios/{{id_usuario}}/favoritos",
+                  "protocol": "https",
+                  "host": [
+                    "nu-precin",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "v1",
+                    "usuarios",
+                    "{{id_usuario}}",
+                    "favoritos"
+                  ]
+                },
+                "description": "Array direto, sem paginação, dos favoritos ativos, com foto e endereco completo, ordenado por nome e ID. Sem favoritos retorna []. Apenas o próprio usuário ou ADMIN."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[]",
+              "_postman_previewlanguage": "json"
+            }
+          ]
+        },
+        {
+          "name": "Favoritar estabelecimento",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "https://nu-precin.onrender.com/v1/usuarios/{{id_usuario}}/favoritos/{{id_estabelecimento_favorito}}",
+              "protocol": "https",
+              "host": [
+                "nu-precin",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "usuarios",
+                "{{id_usuario}}",
+                "favoritos",
+                "{{id_estabelecimento_favorito}}"
+              ]
+            },
+            "description": "Favorita uma loja ativa. Sem corpo. Retorna 204 mesmo quando já existe o vínculo, sem duplicar. Apenas o próprio usuário ou ADMIN."
+          },
+          "response": [
+            {
+              "name": "Sucesso",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "https://nu-precin.onrender.com/v1/usuarios/{{id_usuario}}/favoritos/{{id_estabelecimento_favorito}}",
+                  "protocol": "https",
+                  "host": [
+                    "nu-precin",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "v1",
+                    "usuarios",
+                    "{{id_usuario}}",
+                    "favoritos",
+                    "{{id_estabelecimento_favorito}}"
+                  ]
+                },
+                "description": "Favorita uma loja ativa. Sem corpo. Retorna 204 mesmo quando já existe o vínculo, sem duplicar. Apenas o próprio usuário ou ADMIN."
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Remover favorito",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "https://nu-precin.onrender.com/v1/usuarios/{{id_usuario}}/favoritos/{{id_estabelecimento_favorito}}",
+              "protocol": "https",
+              "host": [
+                "nu-precin",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "usuarios",
+                "{{id_usuario}}",
+                "favoritos",
+                "{{id_estabelecimento_favorito}}"
+              ]
+            },
+            "description": "Remove somente o vínculo de favorito, preservando o estabelecimento. Sem corpo. Retorna 204 mesmo quando não existe vínculo. Apenas o próprio usuário ou ADMIN."
+          },
+          "response": [
+            {
+              "name": "Sucesso",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "https://nu-precin.onrender.com/v1/usuarios/{{id_usuario}}/favoritos/{{id_estabelecimento_favorito}}",
+                  "protocol": "https",
+                  "host": [
+                    "nu-precin",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "v1",
+                    "usuarios",
+                    "{{id_usuario}}",
+                    "favoritos",
+                    "{{id_estabelecimento_favorito}}"
+                  ]
+                },
+                "description": "Remove somente o vínculo de favorito, preservando o estabelecimento. Sem corpo. Retorna 204 mesmo quando não existe vínculo. Apenas o próprio usuário ou ADMIN."
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [],
+              "cookie": [],
+              "body": ""
+            }
+          ]
         }
       ]
     },
@@ -2683,6 +3209,11 @@
     {
       "key": "id_usuario",
       "value": "",
+      "type": "string"
+    },
+    {
+      "key": "id_estabelecimento_favorito",
+      "value": "3",
       "type": "string"
     }
   ]

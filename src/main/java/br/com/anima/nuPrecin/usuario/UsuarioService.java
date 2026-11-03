@@ -7,6 +7,7 @@ import br.com.anima.nuPrecin.security.CurrentUserService;
 import br.com.anima.nuPrecin.usuario.dto.AtualizarUsuarioRequestDto;
 import br.com.anima.nuPrecin.usuario.dto.UsuarioRequestDto;
 import br.com.anima.nuPrecin.usuario.dto.UsuarioResponseDto;
+import br.com.anima.nuPrecin.usuario.dto.PreferenciasUsuarioDto;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import br.com.anima.nuPrecin.storage.ImageStorageService;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Locale;
+import java.util.Set;
 
 @Service
 public class UsuarioService {
@@ -58,6 +60,27 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new EntityNotFoundException("usuário com id {" + id + "} não localizado no banco"));
         return usuarioMapper.toResponse(usuario);
+    }
+
+    @Transactional(readOnly = true)
+    public PreferenciasUsuarioDto preferencias(Long id) {
+        currentUserService.ensureCanManageUser(id);
+        Usuario usuario = usuarioRepository.findByIdAndAtivoTrue(id)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado."));
+        return new PreferenciasUsuarioDto(usuario.getRaioBuscaKm());
+    }
+
+    @Transactional
+    public PreferenciasUsuarioDto atualizarPreferencias(Long id, PreferenciasUsuarioDto dto) {
+        currentUserService.ensureCanManageUser(id);
+        if (dto.raioBuscaKm() == null || !Set.of(1, 3, 5, 10).contains(dto.raioBuscaKm())) {
+            throw new IllegalArgumentException("raioBuscaKm deve ser 1, 3, 5 ou 10.");
+        }
+        Usuario usuario = usuarioRepository.findByIdAndAtivoTrue(id)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado."));
+        usuario.setRaioBuscaKm(dto.raioBuscaKm());
+        usuarioRepository.save(usuario);
+        return new PreferenciasUsuarioDto(usuario.getRaioBuscaKm());
     }
 
     @Transactional(readOnly = true)

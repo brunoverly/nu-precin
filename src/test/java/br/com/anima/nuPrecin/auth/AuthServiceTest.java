@@ -30,7 +30,7 @@ class AuthServiceTest {
     @Test
     void shouldReturnAuthenticatedUserIdAlongWithExistingFields() {
         Usuario usuario = Usuario.builder()
-                .id(42L).nome("Maria").email("maria@example.com").senha("hash").build();
+                .id(42L).nome("Maria").email("maria@example.com").senha("hash").raioBuscaKm(10).build();
         when(repository.findByEmailIgnoreCaseAndAtivoTrue("maria@example.com"))
                 .thenReturn(Optional.of(usuario));
         when(encoder.matches("123", "hash")).thenReturn(true);
@@ -42,5 +42,6 @@ class AuthServiceTest {
         assertEquals("Maria", response.nome());
         assertEquals("maria@example.com", response.email());
         assertEquals("jwt", response.token());
+        assertEquals(10, response.raioBuscaKm());
     }
 }

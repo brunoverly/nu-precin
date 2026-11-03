@@ -58,7 +58,7 @@ class UsuarioServiceTest {
         when(passwordEncoder.matches("senha-atual", "old-hash")).thenReturn(true);
         when(passwordEncoder.encode("senha-nova")).thenReturn("new-hash");
         when(usuarioMapper.toResponse(usuario)).thenReturn(
-                new UsuarioResponseDto(1L, "Usuário Atualizado", "user@example.com", usuario.getFoto(), null)
+                new UsuarioResponseDto(1L, "Usuário Atualizado", "user@example.com", usuario.getFoto(), null, 5)
         );
 
         service.update(1L, dto);

@@ -91,7 +91,7 @@ class CadastroServiceTest {
         when(usuarioRepository.existsByEmailIgnoreCase("maria@example.com")).thenReturn(false);
         when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuario);
         when(usuarioMapper.toResponse(usuario)).thenReturn(
-                new UsuarioResponseDto(1L, "Maria", "maria@example.com", null, null)
+                new UsuarioResponseDto(1L, "Maria", "maria@example.com", null, null, 5)
         );
 
         UsuarioResponseDto response = service.confirmar(

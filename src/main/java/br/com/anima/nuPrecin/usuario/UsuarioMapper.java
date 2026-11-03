@@ -12,15 +12,18 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface UsuarioMapper {
 
+    @Mapping(target = "raioBuscaKm", ignore = true)
     Usuario toEntity(UsuarioRequestDto dto);
 
     UsuarioResponseDto toResponse(Usuario entity);
 
     List<UsuarioResponseDto> toResponseList(List<Usuario> entities);
 
+    @Mapping(target = "raioBuscaKm", ignore = true)
     void updateEntityFromDto(UsuarioRequestDto dto, @MappingTarget Usuario entity);
 
     @Mapping(target = "foto", ignore = true)
     @Mapping(target = "senha", ignore = true)
+    @Mapping(target = "raioBuscaKm", ignore = true)
     void updateEntityFromDto(AtualizarUsuarioRequestDto dto, @MappingTarget Usuario entity);
 }

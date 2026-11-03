@@ -35,6 +35,10 @@ public class Usuario implements UserDetails {
     private LocalDateTime dataCadastro;
     private boolean ativo;
 
+    @Column(name = "raio_busca_km", nullable = false)
+    @Builder.Default
+    private int raioBuscaKm = 5;
+
     @OneToMany(mappedBy = "usuario")
     @Builder.Default
     private List<Promocao> promocoes = new ArrayList<>();

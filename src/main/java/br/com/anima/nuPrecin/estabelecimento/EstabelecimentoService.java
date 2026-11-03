@@ -92,13 +92,14 @@ public class EstabelecimentoService {
     }
 
     @Transactional(readOnly = true)
-    public List<EstabelecimentoProximoResponseDto> proximos(double latitude, double longitude, double raioKm) {
+    public List<EstabelecimentoProximoResponseDto> proximos(double latitude, double longitude, Double raioKm) {
+        double raioEfetivoKm = raioKm != null ? raioKm : currentUserService.getRequiredUser().getRaioBuscaKm();
         if (!Double.isFinite(latitude) || latitude < -90 || latitude > 90
                 || !Double.isFinite(longitude) || longitude < -180 || longitude > 180
-                || !Double.isFinite(raioKm) || raioKm <= 0) {
+                || !Double.isFinite(raioEfetivoKm) || raioEfetivoKm <= 0) {
             throw new IllegalArgumentException("Informe latitude entre -90 e 90, longitude entre -180 e 180 e raioKm positivo.");
         }
-        return estabelecimentoRepository.buscarProximos(latitude, longitude, raioKm).stream()
+        return estabelecimentoRepository.buscarProximos(latitude, longitude, raioEfetivoKm).stream()
                 .map(e -> estabelecimentoMapper.toProximoResponse(e,
                         distanciaKm(latitude, longitude, e.getEndereco())))
                 .toList();

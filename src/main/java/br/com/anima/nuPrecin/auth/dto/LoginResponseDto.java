@@ -11,5 +11,7 @@ public record LoginResponseDto(
         @Schema(example = "admin@nuprecin.com.br")
         String email,
         @Schema(description = "JWT para o header Authorization", example = "eyJhbGciOiJIUzI1NiJ9...")
-        String token) {
+        String token,
+        @Schema(description = "Distância preferida para buscar estabelecimentos, em quilômetros", example = "5", allowableValues = {"1", "3", "5", "10"}, defaultValue = "5")
+        int raioBuscaKm) {
 }

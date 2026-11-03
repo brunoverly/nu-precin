@@ -16,6 +16,8 @@ public record UsuarioResponseDto(
         @Schema(description = "URL pública da foto", example = "https://project.supabase.co/storage/v1/object/public/bucket/usuarios/1/avatar/image.jpg", nullable = true)
         String foto,
         @JsonFormat(pattern = "dd-MM-yyyy'T'HH:mm:ss")
-        LocalDateTime dataCadastro
+        LocalDateTime dataCadastro,
+        @Schema(description = "Distância preferida para buscar estabelecimentos, em quilômetros", example = "5", allowableValues = {"1", "3", "5", "10"}, defaultValue = "5")
+        int raioBuscaKm
 ) {
 }

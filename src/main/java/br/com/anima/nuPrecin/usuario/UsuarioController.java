@@ -3,6 +3,7 @@ package br.com.anima.nuPrecin.usuario;
 import br.com.anima.nuPrecin.usuario.dto.UsuarioRequestDto;
 import br.com.anima.nuPrecin.usuario.dto.UsuarioResponseDto;
 import br.com.anima.nuPrecin.usuario.dto.AtualizarUsuarioRequestDto;
+import br.com.anima.nuPrecin.usuario.dto.PreferenciasUsuarioDto;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -55,6 +56,26 @@ public class UsuarioController {
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) String email) {
         return usuarioService.findAll(pageable, nome, email);
+    }
+
+    @GetMapping("/{id}/preferencias")
+    @Operation(summary = "Consultar preferências do usuário", description = "Retorna raioBuscaKm salvo (1, 3, 5 ou 10). O padrão é 5 km. Disponível ao próprio usuário ou ADMIN.")
+    public ResponseEntity<PreferenciasUsuarioDto> preferencias(@PathVariable Long id) {
+        return ResponseEntity.ok(usuarioService.preferencias(id));
+    }
+
+    @PatchMapping("/{id}/preferencias")
+    @Operation(summary = "Salvar preferência de distância", description = "Altera somente raioBuscaKm. Envie um número inteiro: 1, 3, 5 ou 10. Não exige senha atual nem troca de senha. Disponível ao próprio usuário ou ADMIN.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Preferência salva"),
+            @ApiResponse(responseCode = "400", description = "Distância inválida ou ausente"),
+            @ApiResponse(responseCode = "401", description = "JWT ausente ou inválido"),
+            @ApiResponse(responseCode = "403", description = "Usuário sem permissão para alterar este perfil"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
+    })
+    public ResponseEntity<PreferenciasUsuarioDto> atualizarPreferencias(
+            @PathVariable Long id, @Valid @RequestBody PreferenciasUsuarioDto dto) {
+        return ResponseEntity.ok(usuarioService.atualizarPreferencias(id, dto));
     }
 
     @PutMapping("/{id}")

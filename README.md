@@ -106,7 +106,7 @@ POST /v1/auth/login
 }
 ```
 
-Retorna `200 OK` com `id` do usuário, `nome`, `email` e `token`.
+Retorna `200 OK` com `id` do usuário, `nome`, `email`, `token` e `raioBuscaKm` salvo.
 
 ### Cadastro com confirmação por e-mail
 
@@ -140,7 +140,7 @@ POST /v1/auth/registro/confirmar
 }
 ```
 
-Retorna `201 Created` com `id` do usuário, `nome`, `email`, `foto` e `dataCadastro`. Depois, faça login para obter o JWT.
+Retorna `201 Created` com `id` do usuário, `nome`, `email`, `foto`, `dataCadastro` e `raioBuscaKm` (padrão 5). Depois, faça login para obter o JWT.
 
 3. Reenvie o código, se necessário:
 
@@ -197,6 +197,62 @@ Authorization: Bearer <jwt>
 
 A `senhaAtual` precisa estar correta. Se `foto` for omitida, a foto atual é preservada.
 
+### Preferência de distância
+
+A preferência pertence ao usuário e aceita somente **1, 3, 5 ou 10 km**, enviados como número inteiro. Usuários novos e já existentes recebem **5 km** por padrão, pela migration `V16__add_user_search_radius.sql`.
+
+```http
+PATCH /v1/usuarios/{id}/preferencias
+Authorization: Bearer <jwt>
+Content-Type: application/json
+```
+
+```json
+{
+  "raioBuscaKm": 3
+}
+```
+
+Retorna `200 OK` com o mesmo objeto. Essa chamada altera somente a preferência, sem exigir senha atual ou troca de senha. Valores fora das opções, decimais, textos, valores nulos ou campo ausente retornam `400 Bad Request`.
+
+Para recuperar:
+
+```http
+GET /v1/usuarios/{id}/preferencias
+Authorization: Bearer <jwt>
+```
+
+O campo `raioBuscaKm` também aparece no login e nas respostas de perfil de usuário, incluindo `GET /v1/usuarios/{id}`. O cadastro inicial pendente continua retornando somente e-mail e mensagem.
+
+Na busca `GET /v1/estabelecimentos/proximos`, omitir `raioKm` usa a preferência salva do usuário autenticado. Enviar `raioKm` explicitamente vale apenas para aquela consulta e não altera a preferência.
+
+### Estabelecimentos favoritos
+
+Favoritos também pertencem ao usuário. A migration `V17__create_user_establishment_favorites.sql` cria o vínculo entre usuário e estabelecimento, impedindo duplicatas, inclusive em requisições concorrentes.
+
+```http
+PUT /v1/usuarios/{id}/favoritos/{idEstabelecimento}
+Authorization: Bearer <jwt>
+```
+
+Não recebe corpo e retorna `204 No Content`, mesmo se já estiver favoritado. Aceita somente estabelecimento ativo; inexistente ou inativo retorna `404 Not Found`.
+
+```http
+GET /v1/usuarios/{id}/favoritos
+Authorization: Bearer <jwt>
+```
+
+Retorna `200 OK` com um **array direto, sem paginação**, de estabelecimentos favoritos ativos, ordenado por nome e ID. Cada item contém os mesmos campos de `GET /v1/estabelecimentos/{id}`, incluindo `id`, `tipo`, `nome`, `foto`, `telefone`, `idEndereco`, `idUsuario` do proprietário do estabelecimento e o objeto `endereco` completo. Quando não há favoritos, retorna `[]`. Estabelecimentos desativados ficam fora dessa lista.
+
+```http
+DELETE /v1/usuarios/{id}/favoritos/{idEstabelecimento}
+Authorization: Bearer <jwt>
+```
+
+Não recebe corpo e retorna `204 No Content`, mesmo se o vínculo não existir. Remove somente o favorito; o estabelecimento continua cadastrado. Também permite remover um favorito cujo estabelecimento foi desativado.
+
+Preferências e favoritos exigem JWT. Usuários comuns acessam apenas os próprios dados; ADMIN pode gerenciar os de outros usuários. O frontend deve usar o `id` retornado no login como `{id}` e o ID da loja como `{idEstabelecimento}`. É possível favoritar uma loja pertencente a outro usuário; o vínculo é pessoal e não interfere nos favoritos dos demais.
+
 ## Imagens
 
 A imagem é opcional nos cadastros. É possível informar uma URL no JSON ou enviar um arquivo depois.
@@ -242,6 +298,11 @@ GET    /v1/usuarios             Lista; somente ADMIN
 PUT    /v1/usuarios/{id}        Atualiza perfil e senha atual/nova
 DELETE /v1/usuarios/{id}        Soft delete
 POST   /v1/usuarios/{id}/foto   Upload de foto
+GET    /v1/usuarios/{id}/preferencias
+PATCH  /v1/usuarios/{id}/preferencias
+GET    /v1/usuarios/{id}/favoritos
+PUT    /v1/usuarios/{id}/favoritos/{idEstabelecimento}
+DELETE /v1/usuarios/{id}/favoritos/{idEstabelecimento}
 ```
 
 ### Estabelecimentos
@@ -320,7 +381,7 @@ Authorization: Bearer <jwt>
 
 Retorna uma lista JSON, sem paginação, de estabelecimentos ativos dentro do raio, ordenada por `distanciaKm` crescente. Cada item contém os mesmos campos do estabelecimento, incluindo `endereco` completo, mais `distanciaKm`. Endereços sem coordenadas ficam fora da busca; sem resultados, retorna `[]`.
 
-Latitude deve estar entre -90 e 90, longitude entre -180 e 180, e o raio deve ser positivo. Os dois primeiros parâmetros são obrigatórios; o raio padrão é 5 km. Valores inválidos retornam `400 Bad Request`. A distância é calculada pela fórmula de Haversine no banco, em linha reta sobre a superfície terrestre, e não representa um trajeto por ruas.
+Latitude deve estar entre -90 e 90, longitude entre -180 e 180, e o raio deve ser positivo. Os dois primeiros parâmetros são obrigatórios. Se `raioKm` for omitido, usa `raioBuscaKm` salvo do usuário autenticado (5 km por padrão); um raio explícito pode ser qualquer número positivo finito, vale só para essa consulta e não altera a preferência. Valores inválidos retornam `400 Bad Request`. A distância é calculada pela fórmula de Haversine no banco, em linha reta sobre a superfície terrestre, e não representa um trajeto por ruas.
 
 ### Produtos
 
