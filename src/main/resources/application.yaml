@@ -22,6 +22,10 @@ management:
     health:
       show-details: never
 app:
+  google:
+    client-id: ${GOOGLE_CLIENT_ID:}
+  catalogo:
+    open-food-facts-user-agent: "${OPEN_FOOD_FACTS_USER_AGENT:NuPrecin/1.0 (https://nu-precin.onrender.com)}"
   geocoding:
     backfill-enabled: ${GEOCODING_BACKFILL_ENABLED:true}
   cors:

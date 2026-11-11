@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 
 @Service
 public class JwtService {
@@ -25,7 +26,7 @@ public class JwtService {
             Algorithm algorithm = Algorithm.HMAC256(tokenSecret);
             return JWT.create()
                     .withIssuer(tokenIssuer)
-                    .withSubject(usuario.getEmail())
+                    .withSubject(usuario.getId().toString())
                     .withClaim("role", usuario.getRole().name())
                     .withExpiresAt(generateExpiresDate())
                     .sign(algorithm);
@@ -34,33 +35,18 @@ public class JwtService {
         }
     }
 
-    //extrai o e-mail do usuario autenticado para futuras querries
-    public String getTokenSubject(String token){
-        try{
-            Algorithm algorithm = Algorithm.HMAC256(tokenSecret);
-            return JWT.require(algorithm)
+    public Optional<Long> usuarioId(String token) {
+        try {
+            String subject = JWT.require(Algorithm.HMAC256(tokenSecret))
                     .withIssuer(tokenIssuer)
+                    .withClaimPresence("sub")
+                    .withClaimPresence("exp")
                     .build()
                     .verify(token)
                     .getSubject();
-        }catch (JWTVerificationException e){
-            throw new RuntimeException("Erro ao tentar recuperar {Subjet} do token");
-        }
-    }
-
-    //verifica se o bearer token repassado é valido
-    public boolean isTokenValid(String token){
-        try{
-            Algorithm algorithm = Algorithm.HMAC256(tokenSecret);
-            JWT.require(algorithm)
-                    .withIssuer(tokenIssuer)
-                    .build()
-                    .verify(token);
-
-            return true;
-
-        }catch (JWTVerificationException e){
-            return false;
+            return Optional.of(Long.parseLong(subject));
+        } catch (JWTVerificationException | NumberFormatException ex) {
+            return Optional.empty();
         }
     }
 

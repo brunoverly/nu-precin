@@ -15,6 +15,8 @@ public record PromocaoResponseDto(
         LocalDateTime dataFim,
         Long idProduto,
         Long idEstabelecimento,
-        Long idUsuario
+        Long idUsuario,
+        boolean enquantoDurarEstoque,
+        LocalDateTime ultimaConfirmacaoEm
 ) {
 }

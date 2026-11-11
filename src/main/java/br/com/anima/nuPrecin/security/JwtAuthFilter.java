@@ -1,6 +1,5 @@
 package br.com.anima.nuPrecin.security;
 
-import br.com.anima.nuPrecin.usuario.Usuario;
 import br.com.anima.nuPrecin.usuario.UsuarioRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,23 +23,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = getToken(request);
-        if(token != null
-                && SecurityContextHolder.getContext().getAuthentication() == null
-                && jwtService.isTokenValid(token)){
-
-
-            String email = jwtService.getTokenSubject(token);
-
-            var usuario = usuarioRepository.findByEmailIgnoreCaseAndAtivoTrue(email);
-            if(usuario.isPresent()){
-                Usuario usuarioLogado = usuario.get();
-                var authentication = new UsernamePasswordAuthenticationToken(
-                        usuarioLogado,
-                        null,
-                        usuarioLogado.getAuthorities());
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
+        if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            jwtService.usuarioId(token)
+                    .flatMap(usuarioRepository::findByIdAndAtivoTrue)
+                    .ifPresent(usuario -> SecurityContextHolder.getContext().setAuthentication(
+                            new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities())));
         }
 
         filterChain.doFilter(request, response);

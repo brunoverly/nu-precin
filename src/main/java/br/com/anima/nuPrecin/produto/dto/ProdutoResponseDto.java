@@ -1,6 +1,9 @@
 package br.com.anima.nuPrecin.produto.dto;
 
 import br.com.anima.nuPrecin.produto.ProdutoEnum;
+import br.com.anima.nuPrecin.produto.UnidadeEmbalagem;
+
+import java.math.BigDecimal;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "ProdutoResponse")
@@ -14,7 +17,9 @@ public record ProdutoResponseDto(
          String imagem,
          ProdutoEnum categoria,
          Long idUsuario,
-         boolean ativo) {
+         boolean ativo,
+         BigDecimal quantidadeEmbalagem,
+         UnidadeEmbalagem unidadeEmbalagem) {
 
     
 }

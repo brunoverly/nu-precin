@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,7 @@ public class EstabelecimentoController {
             summary = "Cadastrar estabelecimento",
             description = "Cria um estabelecimento. Informe exatamente um endereço: `idEndereco` ou o objeto `endereco`. O objeto endereco aceita numero e cep opcionais. Tenta obter coordenadas pelo Geoapify; falhas não impedem o cadastro e mantêm as coordenadas nulas. Retorna o estabelecimento com endereco completo e idEndereco para compatibilidade. A foto pode ser uma URL ou ser enviada depois pelo endpoint multipart."
     )
+    @ApiResponse(responseCode = "201", description = "Estabelecimento criado")
     public ResponseEntity<EstabelecimentoResponseDto> create(@RequestBody @Valid EstabelecimentoRequestDto dto) {
         EstabelecimentoResponseDto estabelecimentoResponseDto = estabelecimentoService.create(dto);
         URI uri = ServletUriComponentsBuilder
@@ -64,7 +66,7 @@ public class EstabelecimentoController {
     @GetMapping
     @Operation(summary = "Listar estabelecimentos", description = "Lista estabelecimentos ativos com paginação e filtros opcionais por nome, tipo e usuário criador. Cada item inclui endereco completo e idEndereco para compatibilidade.")
     public Page<EstabelecimentoResponseDto> findAll(
-            @PageableDefault(size = 20, sort = "nome") Pageable pageable,
+            @ParameterObject @PageableDefault(size = 20, sort = "nome") Pageable pageable,
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) String tipo,
             @RequestParam(required = false) Long idUsuario) {

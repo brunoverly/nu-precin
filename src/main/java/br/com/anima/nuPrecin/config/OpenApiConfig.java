@@ -1,6 +1,11 @@
 package br.com.anima.nuPrecin.config;
 
+import br.com.anima.nuPrecin.exception.ErrorResponse;
+import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.models.media.Content;
+import io.swagger.v3.oas.models.media.MediaType;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Contact;
@@ -28,7 +33,7 @@ import java.util.List;
                         ## Convenções gerais
 
                         - Todas as rotas de negócio usam o prefixo `/v1`.
-                        - As rotas de autenticação (`/v1/auth/**`) são públicas.
+                        - As rotas de autenticação são públicas, exceto `POST /v1/auth/google/vincular`, que exige JWT.
                         - As demais rotas exigem `Authorization: Bearer <token>`.
                         - Respostas de erro seguem o objeto `ErrorResponse`.
                         - Exclusões são lógicas: o registro fica com `ativo=false`.
@@ -39,8 +44,14 @@ import java.util.List;
                         1. `POST /v1/auth/registro` envia um código de 4 dígitos por e-mail e cria um cadastro pendente.
                         2. O frontend solicita o código ao usuário.
                         3. `POST /v1/auth/registro/confirmar` confirma o código e cria a conta definitiva.
-                        4. `POST /v1/auth/login` retorna o JWT.
+                        4. `POST /v1/auth/login` retorna o ID do usuário e o JWT.
                         5. Em caso de expiração ou perda do código, use `POST /v1/auth/registro/reenviar`.
+
+                        ## Login com Google
+
+                        - `POST /v1/auth/google` valida o ID token e retorna o ID da conta e o JWT do NuPrecin.
+                        - O vínculo automático exige confirmação local do e-mail atual e verificação sob autoridade do Google.
+                        - `POST /v1/auth/google/vincular` exige sessão NuPrecin e ID token com o mesmo e-mail verificado.
 
                         ## Preferências e favoritos por usuário
 
@@ -50,6 +61,7 @@ import java.util.List;
                         - A busca de estabelecimentos próximos usa essa preferência se `raioKm` for omitido. Um raio explícito vale só para a consulta.
                         - `GET /v1/usuarios/{id}/favoritos` retorna um array dos estabelecimentos favoritos ativos com foto e endereço completo.
                         - `PUT /v1/usuarios/{id}/favoritos/{idEstabelecimento}` favorita e `DELETE` desfavorita. Ambas sem corpo e com retorno 204, inclusive ao repetir a operação.
+                        - `GET /v1/usuarios/{id}/produtos-favoritos` lista os produtos favoritos ativos. Use `PUT` ou `DELETE` no caminho com `/{idProduto}` para alterar a lista.
                         - Preferências e favoritos são privados do usuário; ADMIN pode gerenciar os de outros usuários.
 
                         A foto não é obrigatória no cadastro. Depois do login, use `POST /v1/usuarios/{id}/foto` para enviar um arquivo.
@@ -89,6 +101,12 @@ import java.util.List;
                         4. Crie uma promoção relacionando o código de barras do produto ao estabelecimento.
                         5. Adicione a promoção ao carrinho.
 
+                        ## Catálogo, histórico e comparativo
+
+                        - Consulte o produto por código de barras ou conteúdo decodificado de QR Code. A API consulta o catálogo local antes do Open Food Facts.
+                        - `GET /v1/produtos/{idProduto}/historico-precos` lista observações manuais e versões de preços promocionais.
+                        - `GET /v1/produtos/{id}/comparativo-precos` retorna a menor oferta vigente por loja ativa, em ordem crescente de preço.
+
                         ## Localização de estabelecimentos
 
                         - Cadastro e alteração de endereço tentam obter coordenadas pelo Geoapify sem impedir o salvamento em caso de falha.
@@ -116,13 +134,33 @@ import java.util.List;
 )
 @SecurityScheme(
         name = "bearerAuth",
-        description = "JWT retornado por POST /v1/auth/login. Envie no formato: Bearer <token>.",
+        description = "JWT retornado por POST /v1/auth/login ou POST /v1/auth/google. Envie no formato: Bearer <token>.",
         type = SecuritySchemeType.HTTP,
         scheme = "bearer",
         bearerFormat = "JWT",
         in = SecuritySchemeIn.HEADER
 )
 public class OpenApiConfig {
+    @Bean
+    OpenApiCustomizer documentarRespostasDeErro() {
+        return api -> {
+            if (api.getPaths() == null || api.getComponents() == null) return;
+            ModelConverters.getInstance().read(ErrorResponse.class).forEach(api.getComponents()::addSchemas);
+            api.getPaths().forEach((path, item) -> {
+                if ("/actuator".equals(path) && item.getGet() != null) {
+                    item.getGet().addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
+                }
+                if (!path.startsWith("/v1/") && !path.startsWith("/votos")) return;
+                item.readOperations().forEach(operation -> operation.getResponses().forEach((code, response) -> {
+                    if (code.matches("[45]\\d{2}")) {
+                        response.setContent(new Content().addMediaType("application/json",
+                                new MediaType().schema(new Schema<>().$ref("#/components/schemas/ErrorResponse"))));
+                    }
+                }));
+            });
+        };
+    }
+
     @Bean
     OpenApiCustomizer raioBuscaComoNumeroInteiro() {
         return openApi -> {

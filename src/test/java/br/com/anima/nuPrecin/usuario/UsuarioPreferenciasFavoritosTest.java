@@ -5,6 +5,9 @@ import br.com.anima.nuPrecin.estabelecimento.Estabelecimento;
 import br.com.anima.nuPrecin.estabelecimento.EstabelecimentoRepository;
 import br.com.anima.nuPrecin.estabelecimento.EstabelecimentoTipo;
 import br.com.anima.nuPrecin.security.JwtService;
+import br.com.anima.nuPrecin.produto.Produto;
+import br.com.anima.nuPrecin.produto.ProdutoEnum;
+import br.com.anima.nuPrecin.produto.ProdutoRepository;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,6 +34,7 @@ class UsuarioPreferenciasFavoritosTest {
     @Autowired private UsuarioRepository usuarios;
     @Autowired private EstabelecimentoRepository estabelecimentos;
     @Autowired private EstabelecimentoFavoritoRepository favoritos;
+    @Autowired private ProdutoRepository produtos;
     @Autowired private BCryptPasswordEncoder encoder;
     @Autowired private JwtService jwt;
     @Autowired private EntityManager entityManager;
@@ -82,6 +86,21 @@ class UsuarioPreferenciasFavoritosTest {
         assertEquals("preferencias@example.com", salvo.getEmail());
         assertEquals(passwordHash, salvo.getSenha());
         assertEquals("https://example.com/perfil.png", salvo.getFoto());
+    }
+
+    @Test
+    void sessaoContinuaVinculadaAoIdDepoisDaTrocaDeEmail() throws Exception {
+        Usuario original = usuario("email-original@example.com");
+        String authorization = auth(original);
+        original.setEmail("novo-email@example.com");
+        usuarios.flush();
+        Usuario novoTitular = usuario("email-original@example.com");
+        entityManager.clear();
+
+        mvc.perform(get("/v1/usuarios/{id}/preferencias", original.getId()).header("Authorization", authorization))
+                .andExpect(status().isOk());
+        mvc.perform(get("/v1/usuarios/{id}/preferencias", novoTitular.getId()).header("Authorization", authorization))
+                .andExpect(status().isForbidden());
     }
 
     @ParameterizedTest
@@ -215,5 +234,49 @@ class UsuarioPreferenciasFavoritosTest {
                 .andExpect(status().isNoContent());
         mvc.perform(get(base + "/favoritos").header("Authorization", admin))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.length()").value(1));
+    }
+
+    @Test
+    void favoritosDeProdutosSaoPrivadosIdempotentesEFiltramInativos() throws Exception {
+        var dono = usuario("produto-dono@example.com");
+        var outro = usuario("produto-outro@example.com");
+        var produto = produtos.saveAndFlush(Produto.builder().nome("Leite").descricao("Integral")
+                .marca("Exemplo").categoria(ProdutoEnum.ALIMENTO).codigoDeBarras("7891000100103")
+                .usuario(outro).build());
+
+        String lista = "/v1/usuarios/" + dono.getId() + "/produtos-favoritos";
+        String favorito = lista + "/" + produto.getId();
+        String token = auth(dono);
+        String outroToken = auth(outro);
+
+        mvc.perform(get(lista)).andExpect(status().isUnauthorized());
+        mvc.perform(get(lista).header("Authorization", outroToken)).andExpect(status().isForbidden());
+        mvc.perform(put(favorito).header("Authorization", outroToken)).andExpect(status().isForbidden());
+        mvc.perform(delete(favorito).header("Authorization", outroToken)).andExpect(status().isForbidden());
+
+        for (int i = 0; i < 2; i++) {
+            mvc.perform(put(favorito).header("Authorization", token)).andExpect(status().isNoContent());
+        }
+        mvc.perform(get(lista).header("Authorization", token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].id").value(produto.getId()))
+                .andExpect(jsonPath("$[0].codigoDeBarras").value("7891000100103"));
+        mvc.perform(get("/v1/usuarios/{id}/produtos-favoritos", outro.getId()).header("Authorization", outroToken))
+                .andExpect(status().isOk()).andExpect(content().json("[]"));
+
+        produto.setAtivo(false);
+        produtos.saveAndFlush(produto);
+        mvc.perform(get(lista).header("Authorization", token))
+                .andExpect(status().isOk()).andExpect(content().json("[]"));
+        mvc.perform(put(favorito).header("Authorization", token)).andExpect(status().isNotFound());
+
+        for (int i = 0; i < 2; i++) {
+            mvc.perform(delete(favorito).header("Authorization", token)).andExpect(status().isNoContent());
+        }
+        produto.setAtivo(true);
+        produtos.saveAndFlush(produto);
+        mvc.perform(get(lista).header("Authorization", token))
+                .andExpect(status().isOk()).andExpect(content().json("[]"));
     }
 }

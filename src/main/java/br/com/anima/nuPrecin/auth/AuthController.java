@@ -1,5 +1,6 @@
 package br.com.anima.nuPrecin.auth;
 
+import br.com.anima.nuPrecin.auth.dto.GoogleLoginRequestDto;
 import br.com.anima.nuPrecin.auth.dto.LoginRequestDto;
 import br.com.anima.nuPrecin.auth.dto.LoginResponseDto;
 import br.com.anima.nuPrecin.auth.dto.ConfirmarRegistroRequestDto;
@@ -17,6 +18,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +37,8 @@ public class AuthController {
     @Autowired
     private AuthService service;
     @Autowired
+    private GoogleAuthService googleAuthService;
+    @Autowired
     private CadastroService cadastroService;
     @Autowired
     private SenhaService senhaService;
@@ -52,6 +56,36 @@ public class AuthController {
     })
     public ResponseEntity<LoginResponseDto> login (@Valid @RequestBody LoginRequestDto dto) {
         return ResponseEntity.ok().body(service.login(dto));
+    }
+
+    @PostMapping("google")
+    @Operation(summary = "Autenticar com Google",
+            description = "Valida o ID token do Google e retorna o mesmo contrato do login por senha. Vincula automaticamente contas ativas com e-mail confirmado sob autoridade do Google.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Login realizado"),
+            @ApiResponse(responseCode = "400", description = "Payload inválido"),
+            @ApiResponse(responseCode = "401", description = "Token inválido ou vínculo necessário"),
+            @ApiResponse(responseCode = "409", description = "Já existe um vínculo com outra identidade"),
+            @ApiResponse(responseCode = "502", description = "Login com Google indisponível")
+    })
+    public LoginResponseDto loginGoogle(@Valid @RequestBody GoogleLoginRequestDto dto) {
+        return googleAuthService.login(dto.idToken());
+    }
+
+    @PostMapping("google/vincular")
+    @Operation(summary = "Vincular conta Google à conta autenticada",
+            description = "Requer JWT do NuPrecin e ID token do Google com e-mail verificado correspondente ao da conta.",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Conta vinculada"),
+            @ApiResponse(responseCode = "400", description = "Payload inválido"),
+            @ApiResponse(responseCode = "401", description = "Credenciais ausentes ou inválidas"),
+            @ApiResponse(responseCode = "409", description = "Já existe um vínculo com outra identidade"),
+            @ApiResponse(responseCode = "502", description = "Login com Google indisponível")
+    })
+    public ResponseEntity<Void> vincularGoogle(@Valid @RequestBody GoogleLoginRequestDto dto) {
+        googleAuthService.vincular(dto.idToken());
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("registro")

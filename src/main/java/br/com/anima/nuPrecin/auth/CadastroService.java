@@ -100,6 +100,7 @@ public class CadastroService {
         Usuario usuario = Usuario.builder()
                 .nome(cadastro.getNome())
                 .email(cadastro.getEmail())
+                .emailConfirmado(true)
                 .foto(cadastro.getFoto())
                 .senha(cadastro.getSenhaHash())
                 .build();

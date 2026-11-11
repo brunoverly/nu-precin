@@ -54,7 +54,7 @@ class UsuarioServiceTest {
                 "senha-nova"
         );
 
-        when(usuarioRepository.findByIdAndAtivoTrue(1L)).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.buscarAtivoParaAlteracao(1L)).thenReturn(Optional.of(usuario));
         when(passwordEncoder.matches("senha-atual", "old-hash")).thenReturn(true);
         when(passwordEncoder.encode("senha-nova")).thenReturn("new-hash");
         when(usuarioMapper.toResponse(usuario)).thenReturn(
@@ -82,7 +82,7 @@ class UsuarioServiceTest {
                 "senha-nova"
         );
 
-        when(usuarioRepository.findByIdAndAtivoTrue(1L)).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.buscarAtivoParaAlteracao(1L)).thenReturn(Optional.of(usuario));
         when(passwordEncoder.matches("senha-incorreta", "old-hash")).thenReturn(false);
 
         assertThrows(CredenciaisInvalidasException.class, () -> service.update(1L, dto));

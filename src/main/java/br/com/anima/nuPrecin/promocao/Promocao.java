@@ -10,6 +10,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,13 @@ import java.util.List;
 @Builder
 @EqualsAndHashCode(of = "id")
 public class Promocao {
+    private static final ZoneId FUSO_VIGENCIA = ZoneId.of("America/Sao_Paulo");
+
+    public static LocalDateTime agoraNaVigencia() {
+        return LocalDateTime.now(FUSO_VIGENCIA);
+    }
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,6 +40,19 @@ public class Promocao {
     private LocalDateTime dataInicio;
     private LocalDateTime dataFim;
     private boolean ativo;
+    private boolean enquantoDurarEstoque;
+    private LocalDateTime ultimaConfirmacaoEm;
+
+    public static LocalDateTime limiteConfirmacao(LocalDateTime agora) {
+        return agora.minusHours(24);
+    }
+
+    public boolean estaVigente(LocalDateTime agora) {
+        return (dataInicio == null || !agora.isBefore(dataInicio))
+                && (dataFim != null ? !agora.isAfter(dataFim)
+                    : enquantoDurarEstoque && ultimaConfirmacaoEm != null
+                        && ultimaConfirmacaoEm.isAfter(limiteConfirmacao(agora)));
+    }
 
     @Column(name = "id_produto")
     private Long idProduto;

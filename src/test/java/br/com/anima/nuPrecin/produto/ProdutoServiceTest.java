@@ -48,14 +48,14 @@ class ProdutoServiceTest {
                 "7894900011517",
                 "https://cdn.example/coca.png",
                 ProdutoEnum.BEBIDA,
-                1L
+                1L, null, null, null
         );
 
         when(produtoRepository.findByIdAtivo(1L)).thenReturn(Optional.of(produto));
         when(usuarioRepository.findByIdAndAtivoTrue(1L)).thenReturn(Optional.of(usuario));
         when(produtoMapper.toResponse(produto)).thenReturn(
                 new ProdutoResponseDto(1L, dto.nome(), dto.descricao(), dto.marca(),
-                        dto.codigoDeBarras(), null, dto.imagem(), dto.categoria(), 1L, true)
+                        dto.codigoDeBarras(), null, dto.imagem(), dto.categoria(), 1L, true, null, null)
         );
 
         service.update(1L, dto);
@@ -79,7 +79,7 @@ class ProdutoServiceTest {
                 "7894900011517",
                 null,
                 ProdutoEnum.BEBIDA,
-                1L
+                1L, null, null, null
         );
 
         when(produtoRepository.findByIdAtivo(1L)).thenReturn(Optional.of(produto));

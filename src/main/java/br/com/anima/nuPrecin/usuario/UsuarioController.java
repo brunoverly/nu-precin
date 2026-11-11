@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -52,7 +53,7 @@ public class UsuarioController {
     @GetMapping
     @Operation(summary = "Listar usuários", description = "Lista usuários ativos com filtros por nome/e-mail. Disponível somente para administradores.")
     public Page<UsuarioResponseDto> findAll(
-            @PageableDefault(size = 20, sort = "nome") Pageable pageable,
+            @ParameterObject @PageableDefault(size = 20, sort = "nome") Pageable pageable,
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) String email) {
         return usuarioService.findAll(pageable, nome, email);

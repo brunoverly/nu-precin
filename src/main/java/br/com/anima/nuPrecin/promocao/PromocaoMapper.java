@@ -9,6 +9,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface PromocaoMapper {
 
+    @Mapping(target = "ultimaConfirmacaoEm", ignore = true)
     @Mapping(target = "idProduto", ignore = true)
     @Mapping(target = "produto", ignore = true)
     @Mapping(target = "estabelecimento", ignore = true)

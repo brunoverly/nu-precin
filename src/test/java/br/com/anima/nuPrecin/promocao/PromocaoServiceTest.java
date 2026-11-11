@@ -3,6 +3,7 @@ package br.com.anima.nuPrecin.promocao;
 import br.com.anima.nuPrecin.estabelecimento.Estabelecimento;
 import br.com.anima.nuPrecin.estabelecimento.EstabelecimentoRepository;
 import br.com.anima.nuPrecin.produto.Produto;
+import br.com.anima.nuPrecin.preco.PrecoObservadoService;
 import br.com.anima.nuPrecin.produto.ProdutoRepository;
 import br.com.anima.nuPrecin.promocao.dto.PromocaoRequestDto;
 import br.com.anima.nuPrecin.promocao.dto.PromocaoResponseDto;
@@ -38,6 +39,8 @@ class PromocaoServiceTest {
     private PromocaoMapper mapper;
     @Mock
     private CurrentUserService currentUserService;
+    @Mock
+    private PrecoObservadoService historicoPrecos;
     @InjectMocks
     private PromocaoService service;
 
@@ -57,10 +60,11 @@ class PromocaoServiceTest {
                 fim,
                 "789",
                 20L,
-                30L
+                30L,
+                false
         );
 
-        when(produtoRepository.findByCodigoDeBarrasAndAtivoTrue("789"))
+        when(produtoRepository.findByCodigoDeBarrasInAndAtivoTrue(java.util.List.of("789")))
                 .thenReturn(Optional.of(produto));
         when(estabelecimentoRepository.findByIdAndAtivoTrue(20L))
                 .thenReturn(Optional.of(estabelecimento));

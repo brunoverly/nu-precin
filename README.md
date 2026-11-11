@@ -253,6 +253,18 @@ Não recebe corpo e retorna `204 No Content`, mesmo se o vínculo não existir. 
 
 Preferências e favoritos exigem JWT. Usuários comuns acessam apenas os próprios dados; ADMIN pode gerenciar os de outros usuários. O frontend deve usar o `id` retornado no login como `{id}` e o ID da loja como `{idEstabelecimento}`. É possível favoritar uma loja pertencente a outro usuário; o vínculo é pessoal e não interfere nos favoritos dos demais.
 
+### Produtos favoritos
+
+As chamadas exigem JWT e são acessíveis ao próprio usuário ou ADMIN.
+
+| Método | Caminho | Resultado |
+| --- | --- | --- |
+| GET | `/v1/usuarios/{id}/produtos-favoritos` | `200` com um array de produtos ativos, ordenados por nome e ID. Retorna `[]` quando não há favoritos. |
+| PUT | `/v1/usuarios/{id}/produtos-favoritos/{idProduto}` | `204` sem corpo, mesmo se o produto já estiver favoritado. Produto inexistente ou inativo retorna `404`. |
+| DELETE | `/v1/usuarios/{id}/produtos-favoritos/{idProduto}` | `204` sem corpo, mesmo se o vínculo já tiver sido removido. |
+
+O PUT e o DELETE dispensam corpo na requisição. Use o ID do produto cadastrado, retornado no catálogo. A lista contém os mesmos campos da consulta de produto, incluindo a medida da embalagem. A V20 garante um único vínculo por usuário e produto.
+
 ## Imagens
 
 A imagem é opcional nos cadastros. É possível informar uma URL no JSON ou enviar um arquivo depois.
@@ -287,7 +299,7 @@ Se uma URL for enviada no JSON, ela também é salva diretamente. Em atualizaç�
 
 ## Endpoints
 
-Todas as rotas abaixo, exceto `/v1/auth/**`, `/actuator/health` e a documentação OpenAPI, exigem JWT.
+As rotas de negócio e `POST /v1/auth/google/vincular` exigem JWT. As demais rotas de autenticação, `/actuator/health` e a documentação OpenAPI são públicas.
 
 ### Usuários
 
@@ -385,16 +397,74 @@ Latitude deve estar entre -90 e 90, longitude entre -180 e 180, e o raio deve se
 
 ### Produtos
 
+Veja o [guia para o frontend](docs/frontend-produtos-promocoes.md) para os fluxos de cadastro e pesquisa de produtos e promoções.
+
 ```text
 POST   /v1/produtos
 GET    /v1/produtos/{id}
+GET    /v1/produtos/por-codigo/{codigo}
+GET    /v1/produtos/por-qr-code?conteudo=
 GET    /v1/produtos?nome=&marca=&categoria=
 PUT    /v1/produtos/{id}
 DELETE /v1/produtos/{id}
 POST   /v1/produtos/{id}/imagem
 ```
 
+A consulta requer JWT e recebe o texto decodificado pela câmera do aplicativo. Use `GET /v1/produtos/por-codigo/7891000100103` para códigos de barras e `GET /v1/produtos/por-qr-code?conteudo=7891000100103` para QR. Codifique o parâmetro `conteudo` como componente de URL. O QR aceita o conteúdo cadastrado de um produto, um GTIN numérico ou um GS1 Digital Link HTTPS com o identificador `01`. O backend extrai o GTIN do caminho, sem acessar a URL recebida. Importação de notas fiscais não faz parte desse fluxo.
+
+- `200` com `origem: "LOCAL"` e `produto` quando o item está cadastrado. O outro campo, `sugestao`, vem nulo.
+- `200` com `origem: "OPEN_FOOD_FACTS"` e `sugestao` quando o GTIN válido é encontrado externamente. `produto` vem nulo. Revise os dados e preencha campos ausentes antes de enviar ao cadastro manual.
+- `400` para QR incompatível ou parâmetro inválido, `404` para produto não encontrado e `502` para indisponibilidade do provedor ou limite de consultas. O formulário manual permanece disponível.
+
+A sugestão contém código, nome, descrição, marca, categoria, imagem, quantidade informativa e link da fonte, conforme disponibilidade. O usuário responsável pelo cadastro é informado no POST como `idUsuario`, seguindo a autorização existente. O texto `quantidade` e o link `fonte` são informativos na consulta. Quando o Open Food Facts fornece uma medida normalizada válida, a sugestão inclui também `quantidadeEmbalagem` e `unidadeEmbalagem`.
+
+A V19 permite cadastrar a medida total da embalagem como um número positivo e uma unidade `G` (gramas), `ML` (mililitros) ou `UN` (unidades). Envie os dois campos juntos no POST ou PUT. Exemplo para uma garrafa de 2 L: `{"quantidadeEmbalagem":2000,"unidadeEmbalagem":"ML"}`. No PUT, omitir ambos preserva a medida salva. Os produtos anteriores à migration começam com a medida vazia. O produto e o preço da loja continuam com seus contratos próprios. Dados e imagens do provedor têm condições de reutilização próprias. [Licenças do Open Food Facts](https://openfoodfacts.github.io/documentation/docs/Product-Opener/api/tutorials/license-be-on-the-legal-side/)
+
+O Open Food Facts é consultado somente para GTINs válidos ausentes no catálogo local. A instância limita as chamadas a 15 por minuto. Configure `OPEN_FOOD_FACTS_USER_AGENT` para identificar a aplicação e seu contato. A consulta externa dispensa token.
+
+A migration V18 remove espaços nas extremidades e garante unicidade entre códigos de produtos ativos, incluindo representações equivalentes de GTIN preenchidas com zeros. Os códigos continuam sendo armazenados como texto. Se houver duplicatas antigas, a migration falha para que os registros e vínculos sejam revisados. O cadastro aceita `qrCode` opcional e sua unicidade também é garantida entre produtos ativos. No PUT, omitir o campo preserva o QR e enviar vazio o remove.
+
+#### Categorias de supermercado
+
+| Grupo | Valores para o campo `categoria` |
+|---|---|
+| Perecíveis | `CARNES`, `PEIXES_E_FRUTOS_DO_MAR`, `HORTIFRUTI`, `PADARIA`, `FRIOS_E_EMBUTIDOS`, `LATICINIOS_E_OVOS`, `CONGELADOS` |
+| Mercearia | `MERCEARIA`, `DOCES_E_SNACKS`, `CAFES_E_CHAS` |
+| Bebidas | `CERVEJAS`, `VINHOS_E_DESTILADOS`, `REFRIGERANTES`, `SUCOS`, `AGUAS` |
+| Outros departamentos | `LIMPEZA`, `HIGIENE_PESSOAL`, `PET_SHOP`, `ELETRONICO`, `LAZER`, `FERRAMENTA`, `VESTIMENTA`, `OUTRO` |
+| Categorias genéricas | `ALIMENTO`, `BEBIDA` |
+
+Cada produto tem uma categoria. Use `GET /v1/produtos?categoria=REFRIGERANTES` para filtrar por igualdade. O Open Food Facts sugere categorias específicas quando reconhece as tags recebidas. A V24 preserva as classificações existentes, inclusive `ALIMENTO` e `BEBIDA`. Para aparecer em um filtro mais específico, um produto legado pode ser reclassificado pelo PUT do produto.
+
+### Histórico de preços
+
+Use `POST /v1/precos` com JWT para registrar um preço em reais para um produto e uma loja ativos. O autor vem da conta autenticada.
+
+```json
+{
+  "idProduto": 42,
+  "idEstabelecimento": 3,
+  "valor": 8.49,
+  "observadoEm": "2026-11-01T14:30:00-03:00"
+}
+```
+
+O retorno `201 Created` contém a observação, incluindo `idUsuario`, `registradoEm` e `origem: "MANUAL"`. Use uma data ISO 8601 com fuso horário e um valor positivo com até duas casas decimais. Datas futuras e valores inválidos retornam `400`.
+
+Consulte `GET /v1/produtos/{idProduto}/historico-precos` com JWT. Passe `idEstabelecimento` para filtrar por loja e `page` e `size` para paginar. A resposta usa `content` e os metadados de paginação, com ordenação fixa pela data observada decrescente e pelo ID decrescente em caso de empate.
+
+A V21 cria uma tabela dedicada. Cada POST acrescenta um registro e as observações anteriores ficam disponíveis, inclusive após a desativação do produto ou da loja.
+
+O cadastro de uma promoção também grava uma observação automaticamente, na mesma transação. Uma edição que altere o preço, a vigência, o produto ou a loja acrescenta uma versão. Repetir a mesma oferta preserva a versão existente.
+
+Esses registros têm `origem: "PROMOCAO"`, `idPromocao`, `precoOriginal`, `inicioVigencia` e `fimVigencia`. `valor` guarda o preço promocional e `observadoEm` registra quando a versão foi criada. O início e o fim da vigência usam o mesmo formato de data local do cadastro de promoção. Promoções futuras ficam identificadas pela vigência. O histórico registra versões da oferta. Para saber se uma oferta ainda está ativa, consulte o cadastro de promoções.
+
+A V22 vincula as novas observações às promoções. A mudança se aplica aos cadastros e às alterações a partir do deploy.
+
 ### Promoções
+
+Promoções podem ter `enquantoDurarEstoque: true`. Nesse caso, `dataFim` é opcional. Uma oferta já iniciada e sem data final fica no comparativo por 24 horas após `ultimaConfirmacaoEm`. O cadastro registra a primeira confirmação e `POST /v1/promocoes/{id}/confirmar-disponibilidade` renova a janela, sem acrescentar um preço ao histórico. Se a oferta tiver data final, o comparativo respeita a vigência anunciada.
+
 
 ```text
 POST   /v1/promocoes
@@ -439,12 +509,11 @@ GET /v1/votos?agruparPor=promocao&dataInicio=2026-01-01T00:00:00&dataFim=2026-12
 
 O modelo atual representa preço principalmente por `Promocao` e o carrinho por itens de promoção. Ainda estão fora do escopo implementado:
 
-- Integração externa de leitura de código de barras/QR Code.
-- Histórico e contribuição independente de preços.
+- Importação de itens e preços a partir do QR Code de notas fiscais.
 - Lista de compras comparável entre vários estabelecimentos.
 - Cálculo de economia e itens sem preço.
-- Geolocalização, distância e favoritos.
-- Redis, OAuth2, refresh token e observabilidade avançada.
+- Alertas de queda de preço.
+- Redis, refresh token e observabilidade avançada.
 
 ## Migrations
 
@@ -476,3 +545,21 @@ src/main/java/br/com/anima/nuPrecin
 ```
 
 Os testes usam H2 em memória no perfil `test`, incluindo teste de carregamento do contexto e validação do contrato OpenAPI. O banco remoto não é usado pelos testes padrão.
+
+### Comparativo de preços entre supermercados
+
+Consulte `GET /v1/produtos/{idProduto}/comparativo-precos` com JWT. A resposta lista a promoção vigente de menor preço por estabelecimento ativo, do menor para o maior preço. Cada item inclui o ID e o nome do estabelecimento, o ID da promoção, o preço original, o preço promocional e o período de vigência.
+
+O comparativo interpreta as datas de vigência no horário de Brasília (`America/Sao_Paulo`). Uma promoção em vigor pode ter o preço editado mantendo a data original de início.
+
+Um produto ativo sem ofertas vigentes retorna `[]`. Um produto ausente ou inativo retorna `404`. O comparativo usa as promoções cadastradas, inclusive as anteriores à implantação do histórico.
+
+### Login com Google
+
+O JWT do NuPrecin identifica a conta pelo ID interno. Após implantar esta versão, sessões emitidas pela versão anterior precisam fazer login novamente.
+
+Configure `GOOGLE_CLIENT_ID` no backend com o OAuth Client ID usado para emitir o ID token. O backend valida a assinatura, o emissor, a validade e a audiência do token. Veja a [documentação do Google](https://developers.google.com/identity/gsi/web/guides/verify-google-id-token).
+
+Envie `{"idToken":"<ID token do Google>"}` para `POST /v1/auth/google`. A resposta `200` segue o login por senha e inclui `id`, `nome`, `email`, `token` e `raioBuscaKm`.
+
+O primeiro login vincula automaticamente uma conta ativa quando o NuPrecin tem confirmação registrada para o e-mail atual e o Google é autoridade sobre o endereço verificado (Gmail ou Google Workspace). Para endereços de terceiros e contas antigas sem esse registro, entre primeiro no NuPrecin e envie o mesmo corpo para `POST /v1/auth/google/vincular` com o JWT do NuPrecin. O e-mail verificado precisa coincidir com o da conta e o sucesso retorna `204`. Os próximos logins identificam a conta pelo identificador estável do Google. Novos usuários concluem o cadastro com confirmação de e-mail antes de usar o login com Google.

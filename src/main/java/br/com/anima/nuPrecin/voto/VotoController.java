@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -52,7 +53,7 @@ public class VotoController {
     @GetMapping
     @Operation(summary = "Listar votos ou consultar ranking", description = "Sem `agruparPor`, retorna votos paginados. Com `agruparPor=promocao`, exige dataInicio/dataFim e retorna o ranking de promoções.")
     public ResponseEntity<?> findAll(
-            @PageableDefault(size = 20, sort = "dataVoto", direction = Sort.Direction.DESC) Pageable pageable,
+            @ParameterObject @PageableDefault(size = 20, sort = "dataVoto", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(required = false) Long idPromocao,
             @RequestParam(required = false) Long idUsuario,
             @RequestParam(required = false) LocalDateTime dataInicio,

@@ -34,6 +34,10 @@ public class AuthService {
             throw new CredenciaisInvalidasException("Credenciais inválidas");
         }
 
+        return resposta(usuario);
+    }
+
+    LoginResponseDto resposta(Usuario usuario) {
         return new LoginResponseDto(usuario.getId(), usuario.getNome(), usuario.getEmail(), jwtService.generateToken(usuario), usuario.getRaioBuscaKm());
     }
 }

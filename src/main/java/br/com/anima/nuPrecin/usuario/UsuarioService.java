@@ -100,7 +100,7 @@ public class UsuarioService {
     @Transactional
     public UsuarioResponseDto update(Long id, @Valid AtualizarUsuarioRequestDto dto) {
         currentUserService.ensureCanManageUser(id);
-        Usuario usuario = usuarioRepository.findByIdAndAtivoTrue(id)
+        Usuario usuario = usuarioRepository.buscarAtivoParaAlteracao(id)
                 .orElseThrow(() -> new EntityNotFoundException("usuário com id {" + id + "} não localizado no banco"));
 
         if (!passwordEncoder.matches(dto.senhaAtual(), usuario.getSenha())) {
@@ -112,6 +112,9 @@ public class UsuarioService {
             throw new DadosDuplicadosException("E-mail já cadastrado.");
         }
 
+        if (!email.equalsIgnoreCase(usuario.getEmail())) {
+            usuario.setEmailConfirmado(false);
+        }
         usuarioMapper.updateEntityFromDto(dto, usuario);
         usuario.setEmail(email);
         usuario.setSenha(passwordEncoder.encode(dto.novaSenha()));

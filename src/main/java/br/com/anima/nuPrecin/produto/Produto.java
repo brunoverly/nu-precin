@@ -4,6 +4,8 @@ import br.com.anima.nuPrecin.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,6 +27,11 @@ public class Produto {
     @Enumerated(EnumType.STRING)
     private ProdutoEnum categoria;
     private boolean ativo;
+    @Column(precision = 15, scale = 3)
+    private BigDecimal quantidadeEmbalagem;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 3)
+    private UnidadeEmbalagem unidadeEmbalagem;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario")

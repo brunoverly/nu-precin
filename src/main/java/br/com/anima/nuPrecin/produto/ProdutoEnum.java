@@ -1,6 +1,23 @@
 package br.com.anima.nuPrecin.produto;
 
 public enum ProdutoEnum {
+    CARNES,
+    PEIXES_E_FRUTOS_DO_MAR,
+    HORTIFRUTI,
+    PADARIA,
+    FRIOS_E_EMBUTIDOS,
+    LATICINIOS_E_OVOS,
+    MERCEARIA,
+    DOCES_E_SNACKS,
+    CONGELADOS,
+    CERVEJAS,
+    VINHOS_E_DESTILADOS,
+    REFRIGERANTES,
+    SUCOS,
+    AGUAS,
+    CAFES_E_CHAS,
+    HIGIENE_PESSOAL,
+    PET_SHOP,
     BEBIDA,
     ALIMENTO,
     LIMPEZA,

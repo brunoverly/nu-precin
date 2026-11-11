@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 
 @Service
 public class CarrinhoService {
@@ -113,9 +112,7 @@ public class CarrinhoService {
         Promocao promocao = promocaoRepository.findByIdAndAtivoTrue(idPromocao)
                 .orElseThrow(() -> new EntityNotFoundException("promoção com id {" + idPromocao + "} não localizada no banco"));
 
-        LocalDateTime agora = LocalDateTime.now();
-        if ((promocao.getDataInicio() != null && agora.isBefore(promocao.getDataInicio()))
-                || (promocao.getDataFim() != null && agora.isAfter(promocao.getDataFim()))) {
+        if (!promocao.estaVigente(Promocao.agoraNaVigencia())) {
             throw new IllegalArgumentException("promoção fora do período de validade");
         }
 
