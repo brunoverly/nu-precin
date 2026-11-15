@@ -171,3 +171,8 @@ Alertas de queda de preço seguem pendentes. Integre primeiro sessão e catálog
 ## Consulta comunitária de preços comuns
 
 Implemente `loadRegularPrices()` com `GET /v1/precos/atuais`, seguindo o [contrato de preços comuns](frontend-precos-comuns.md). Essa rota usa a última observação manual por produto e loja ativos dentro de sete dias. `GET /v1/precos` fornece o histórico geral. O comparativo existente usa promoções vigentes.
+
+
+## Identificação pública dos contribuidores
+
+Nos retornos de preços, use `autor.id`, `autor.nome` e `autor.foto` para apresentar o contribuinte. Uma foto nula permite usar a inicial do nome. Contas inativas ou indisponíveis retornam o nome “Usuário indisponível” e foto nula. O autor já acompanha cada item, inclusive na consulta de preços atuais e no histórico por produto.

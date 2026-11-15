@@ -55,6 +55,11 @@ Exemplo ilustrativo, com uma observação considerada recente no momento da cons
       "idProduto": 2,
       "idEstabelecimento": 497,
       "idUsuario": 12,
+      "autor": {
+        "id": 12,
+        "nome": "Bruno",
+        "foto": "https://example.com/perfil.jpg"
+      },
       "valor": 8.49,
       "observadoEm": "2026-11-15T15:00:00Z",
       "registradoEm": "2026-11-15T15:01:00Z",
@@ -105,3 +110,10 @@ Carregue `/v1/precos/atuais` para o preço comum e consulte o comparativo para p
 Implemente `loadRegularPrices()` usando `GET /v1/precos/atuais` e percorra as páginas até `last: true`. Depois de cadastrar um preço, recarregue a referência do par produto/loja, pois uma contribuição com data antiga pode não substituir o valor atual.
 
 Os horários `observadoEm` e `registradoEm` incluem fuso. Preserve isso ao enviar e ler esses campos. Os preços comuns podem ser recuperados em nova sessão e em outro dispositivo autenticado.
+
+
+## Autor público
+
+Cada registro retornado por GET /v1/precos, GET /v1/precos/atuais, pelo histórico por produto e pelo POST de preço inclui `autor: {id, nome, foto}`. O ID corresponde a `idUsuario`. A foto pode ser nula. Use o nome e a foto retornados para representar o contribuinte, com a inicial como alternativa à foto.
+
+Contas inativas ou indisponíveis retornam `{"id":12,"nome":"Usuário indisponível","foto":null}`. Nome e foto refletem o perfil atual. Os autores são consultados em lote por página, somente com seus campos públicos. A paginação e os demais campos mantêm o contrato existente.

@@ -35,7 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PrecoObservadoTest {
     @Autowired private MockMvc mvc;
     @Autowired private PrecoObservadoRepository precos;
-    @Autowired private UsuarioRepository usuarios;
+    @org.springframework.test.context.bean.override.mockito.MockitoSpyBean
+    private UsuarioRepository usuarios;
     @Autowired private ProdutoRepository produtos;
     @Autowired private EstabelecimentoRepository lojas;
     @Autowired private EntityManager entityManager;
@@ -289,6 +290,50 @@ class PrecoObservadoTest {
         produtos.flush();
         mvc.perform(get("/v1/precos/atuais").with(user(leitor)).param("idProduto", produto.getId().toString()))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.totalElements").value(0));
+    }
+
+    @Test
+    void retornaAutoresPublicosEmLoteEPreservaAnonimatoDeContasInativas() throws Exception {
+        var autor = usuarios.saveAndFlush(Usuario.builder().nome("Bruno").email("autor-publico@example.com")
+                .senha("hash").foto("https://example.com/bruno.jpg").build());
+        var outro = usuarios.saveAndFlush(Usuario.builder().nome("Maria").email("autora-sem-foto@example.com").senha("hash").build());
+        var produto = produtos.saveAndFlush(Produto.builder().nome("Leite").descricao("Integral")
+                .marca("Exemplo").categoria(ProdutoEnum.ALIMENTO).codigoDeBarras("7891000100103").usuario(autor).build());
+        var loja = loja(autor, "Loja");
+        registrar(autor, dados(produto, loja, "8.49", Instant.now().minusSeconds(3600)))
+                .andExpect(jsonPath("$.autor.id").value(autor.getId()))
+                .andExpect(jsonPath("$.autor.nome").value("Bruno"))
+                .andExpect(jsonPath("$.autor.foto").value("https://example.com/bruno.jpg"))
+                .andExpect(jsonPath("$.autor.email").doesNotExist());
+        registrar(autor, dados(produto, loja, "8.39", Instant.now().minusSeconds(1800)));
+        registrar(outro, dados(produto, loja, "8.29", Instant.now().minusSeconds(900)));
+        org.mockito.Mockito.clearInvocations(usuarios);
+
+        mvc.perform(get("/v1/precos").with(user(outro)).param("idProduto", produto.getId().toString()))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.totalElements").value(3))
+                .andExpect(jsonPath("$.content[0].autor.nome").value("Maria"))
+                .andExpect(jsonPath("$.content[0].autor.foto").doesNotExist())
+                .andExpect(jsonPath("$.content[1].autor.nome").value("Bruno"))
+                .andExpect(jsonPath("$.content[1].autor.email").doesNotExist())
+                .andExpect(jsonPath("$.content[1].autor.raioBuscaKm").doesNotExist());
+        org.mockito.Mockito.verify(usuarios, org.mockito.Mockito.times(1))
+                .buscarAutoresPublicos(org.mockito.ArgumentMatchers.anyCollection());
+
+        autor.setAtivo(false);
+        usuarios.flush();
+        mvc.perform(get("/v1/produtos/{id}/historico-precos", produto.getId()).with(user(outro)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[1].idUsuario").value(autor.getId()))
+                .andExpect(jsonPath("$.content[1].autor.id").value(autor.getId()))
+                .andExpect(jsonPath("$.content[1].autor.nome").value("Usuário indisponível"))
+                .andExpect(jsonPath("$.content[1].autor.foto").doesNotExist());
+        outro.setAtivo(false);
+        usuarios.flush();
+        var leitor = usuarios.saveAndFlush(Usuario.builder().nome("Leitor").email("leitor-publico@example.com").senha("hash").build());
+        mvc.perform(get("/v1/precos/atuais").with(user(leitor)).param("idProduto", produto.getId().toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].autor.nome").value("Usuário indisponível"))
+                .andExpect(jsonPath("$.content[0].autor.foto").doesNotExist());
     }
 
     private Promocao oferta(Produto produto, Estabelecimento loja, Usuario usuario, String valor,
