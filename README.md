@@ -438,6 +438,8 @@ Cada produto tem uma categoria. Use `GET /v1/produtos?categoria=REFRIGERANTES` p
 
 ### Histórico de preços
 
+Consulte o [contrato de preços comuns para o frontend](docs/frontend-precos-comuns.md). `GET /v1/precos` consulta o histórico geral e `GET /v1/precos/atuais` retorna a última observação manual dos últimos sete dias por produto e loja ativos.
+
 Use `POST /v1/precos` com JWT para registrar um preço em reais para um produto e uma loja ativos. O autor vem da conta autenticada.
 
 ```json

@@ -1,0 +1,191 @@
+[
+  {
+    "categoria": "CARNES",
+    "consulta": "patinho",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=patinho&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "CARNES",
+    "consulta": "frango",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=frango&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "PEIXES_E_FRUTOS_DO_MAR",
+    "consulta": "tilápia",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=til%C3%A1pia&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "HORTIFRUTI",
+    "consulta": "banana",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=banana&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "HORTIFRUTI",
+    "consulta": "tomate",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=tomate&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "PADARIA",
+    "consulta": "pão",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=p%C3%A3o&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "FRIOS_E_EMBUTIDOS",
+    "consulta": "presunto",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=presunto&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "FRIOS_E_EMBUTIDOS",
+    "consulta": "salame",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=salame&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "LATICINIOS_E_OVOS",
+    "consulta": "leite",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=leite&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "LATICINIOS_E_OVOS",
+    "consulta": "iogurte",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=iogurte&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "MERCEARIA",
+    "consulta": "arroz",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=arroz&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "MERCEARIA",
+    "consulta": "feijão",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=feij%C3%A3o&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "MERCEARIA",
+    "consulta": "macarrão",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=macarr%C3%A3o&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "DOCES_E_SNACKS",
+    "consulta": "chocolate",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=chocolate&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "DOCES_E_SNACKS",
+    "consulta": "biscoito",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=biscoito&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "CONGELADOS",
+    "consulta": "pizza",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=pizza&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "CERVEJAS",
+    "consulta": "cerveja",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=cerveja&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "VINHOS_E_DESTILADOS",
+    "consulta": "vinho",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=vinho&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "REFRIGERANTES",
+    "consulta": "refrigerante",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=refrigerante&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "SUCOS",
+    "consulta": "suco",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=suco&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "AGUAS",
+    "consulta": "água",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=%C3%A1gua&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "CAFES_E_CHAS",
+    "consulta": "café",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=caf%C3%A9&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "HIGIENE_PESSOAL",
+    "consulta": "sabonete",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=sabonete&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "HIGIENE_PESSOAL",
+    "consulta": "dental",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=dental&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "PET_SHOP",
+    "consulta": "ração",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=ra%C3%A7%C3%A3o&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "LIMPEZA",
+    "consulta": "detergente",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=detergente&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  },
+  {
+    "categoria": "LIMPEZA",
+    "consulta": "amaciante",
+    "url": "https://www.supernosso.com/api/catalog_system/pub/products/search?ft=amaciante&_from=0&_to=19",
+    "consultadoEm": "2026-11-15T18:25:57-03:00",
+    "erro": null
+  }
+]

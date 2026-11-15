@@ -34,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 class PrecoObservadoTest {
     @Autowired private MockMvc mvc;
+    @Autowired private PrecoObservadoRepository precos;
     @Autowired private UsuarioRepository usuarios;
     @Autowired private ProdutoRepository produtos;
     @Autowired private EstabelecimentoRepository lojas;
@@ -220,6 +221,74 @@ class PrecoObservadoTest {
         mvc.perform(post("/v1/promocoes").with(user(usuario)).contentType(MediaType.APPLICATION_JSON)
                         .content(dados.replace("true", "false")))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void consultaComunitariaSeparaHistoricoDaReferenciaMaisRecente() throws Exception {
+        var autor = usuarios.saveAndFlush(Usuario.builder().nome("Autor").email("autor-preco@example.com").senha("hash").build());
+        var leitor = usuarios.saveAndFlush(Usuario.builder().nome("Leitor").email("leitor-preco@example.com").senha("hash").build());
+        var produto = produtos.saveAndFlush(Produto.builder().nome("Leite").descricao("Integral")
+                .marca("Exemplo").categoria(ProdutoEnum.ALIMENTO).codigoDeBarras("7891000100103").usuario(autor).build());
+        var loja = loja(autor, "Loja A");
+        var outra = loja(autor, "Loja B");
+        Instant agora = Instant.now();
+        Instant data = agora.minusSeconds(3600);
+        precos.save(new PrecoObservado(produto.getId(), loja.getId(), autor.getId(),
+                new java.math.BigDecimal("2.00"), data, agora));
+        var vencedor = precos.save(new PrecoObservado(produto.getId(), loja.getId(), leitor.getId(),
+                new java.math.BigDecimal("8.49"), data, agora));
+        // A contribuição enviada depois com data antiga não substitui a referência.
+        precos.save(new PrecoObservado(produto.getId(), loja.getId(), autor.getId(),
+                new java.math.BigDecimal("1.00"), agora.minusSeconds(7200), agora));
+        precos.save(new PrecoObservado(produto.getId(), outra.getId(), autor.getId(),
+                new java.math.BigDecimal("5.00"), agora.minusSeconds(8 * 86400), agora));
+        var promocao = oferta(produto, loja, autor, "3.99",
+                Promocao.agoraNaVigencia().minusDays(1), Promocao.agoraNaVigencia().plusDays(1));
+        entityManager.flush();
+        precos.save(new PrecoObservado(promocao, autor.getId(), agora));
+
+        mvc.perform(get("/v1/precos").with(user(leitor)).param("idProduto", produto.getId().toString())
+                        .param("origem", "MANUAL").param("size", "2"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.totalElements").value(4))
+                .andExpect(jsonPath("$.content[0].id").value(vencedor.getId()));
+        mvc.perform(get("/v1/precos").with(user(leitor)).param("idProduto", produto.getId().toString())
+                        .param("origem", "MANUAL").param("size", "2").param("page", "1"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.content[0].valor").value(1.00));
+        mvc.perform(get("/v1/precos/atuais").with(user(autor)).param("idProduto", produto.getId().toString()))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.content[0].id").value(vencedor.getId()))
+                .andExpect(jsonPath("$.content[0].origem").value("MANUAL"));
+        mvc.perform(get("/v1/precos/atuais").with(user(leitor)).param("idProduto", produto.getId().toString())
+                        .param("idUsuario", autor.getId().toString()))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.content.length()").value(0));
+        mvc.perform(get("/v1/precos/atuais").with(user(leitor)).param("origem", "PROMOCAO"))
+                .andExpect(status().isBadRequest());
+        mvc.perform(get("/v1/precos").with(user(leitor)).param("origem", "CUPOM"))
+                .andExpect(status().isBadRequest());
+        mvc.perform(get("/v1/precos").with(user(leitor)).param("size", "101"))
+                .andExpect(status().isBadRequest());
+        mvc.perform(get("/v1/precos").with(user(leitor)).param("page", "-1"))
+                .andExpect(status().isBadRequest());
+        mvc.perform(get("/v1/precos").with(user(leitor)).param("idProduto", "0"))
+                .andExpect(status().isBadRequest());
+        mvc.perform(get("/v1/precos")).andExpect(status().isUnauthorized());
+        mvc.perform(get("/v1/precos/atuais")).andExpect(status().isUnauthorized());
+        mvc.perform(get("/v1/precos/atuais").with(user(leitor)).param("idProduto", Long.toString(Long.MAX_VALUE)))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.empty").value(true));
+
+        loja.setAtivo(false);
+        lojas.flush();
+        mvc.perform(get("/v1/precos/atuais").with(user(leitor)).param("idProduto", produto.getId().toString()))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.totalElements").value(0));
+        mvc.perform(get("/v1/precos").with(user(leitor)).param("idProduto", produto.getId().toString()))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.totalElements").value(5));
+
+        loja.setAtivo(true);
+        lojas.flush();
+        produto.setAtivo(false);
+        produtos.flush();
+        mvc.perform(get("/v1/precos/atuais").with(user(leitor)).param("idProduto", produto.getId().toString()))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.totalElements").value(0));
     }
 
     private Promocao oferta(Produto produto, Estabelecimento loja, Usuario usuario, String valor,

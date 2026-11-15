@@ -1,0 +1,52 @@
+{
+  "geradoEm": "2026-11-15T18:25:57-03:00",
+  "tipo": "MOCK_PARA_TESTES_VISUAIS",
+  "totalProdutos": 212,
+  "totalPromocoes": 1060,
+  "categorias": {
+    "CARNES": 12,
+    "CONGELADOS": 12,
+    "FRIOS_E_EMBUTIDOS": 15,
+    "PEIXES_E_FRUTOS_DO_MAR": 8,
+    "HORTIFRUTI": 11,
+    "LATICINIOS_E_OVOS": 14,
+    "DOCES_E_SNACKS": 20,
+    "MERCEARIA": 25,
+    "PADARIA": 9,
+    "CERVEJAS": 8,
+    "VINHOS_E_DESTILADOS": 8,
+    "REFRIGERANTES": 8,
+    "SUCOS": 8,
+    "AGUAS": 6,
+    "CAFES_E_CHAS": 8,
+    "HIGIENE_PESSOAL": 16,
+    "PET_SHOP": 8,
+    "LIMPEZA": 16
+  },
+  "cenarios": {
+    "estoque_sem_data_final": 606,
+    "oferta_futura": 352,
+    "estoque_com_data_final": 102
+  },
+  "mapeamentoPendente": {
+    "idUsuario": null,
+    "estabelecimentos": {
+      "loja_01": null,
+      "loja_02": null,
+      "loja_03": null,
+      "loja_04": null,
+      "loja_05": null
+    }
+  },
+  "observacoes": [
+    "IDs null precisam ser preenchidos antes de qualquer POST.",
+    "Os códigos MOCK-NUPRECIN são sintéticos e exclusivos desta fixture, sem equivalência GTIN.",
+    "Preços base e imagens vieram de consultas públicas ao Supernosso online.",
+    "Descontos e associações às cinco lojas são simulados, sem atribuição de oferta real.",
+    "Datas precisam ser recalculadas a partir do momento de cadastro futuro.",
+    "Produtos existentes com o mesmo código devem ser reutilizados para evitar duplicação.",
+    "Produtos vendidos por peso usam quantidade de referência da descrição, sem suporte a preço por kg no contrato.",
+    "A base não inclui observações históricas artificiais. Cada POST de promoção gerará o histórico real.",
+    "Categorias revisadas pelo tipo do produto. Dois preços com unidade de venda ambígua foram excluídos."
+  ]
+}

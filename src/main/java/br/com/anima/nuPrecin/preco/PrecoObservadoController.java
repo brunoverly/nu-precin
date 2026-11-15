@@ -38,6 +38,40 @@ public class PrecoObservadoController {
         return service.registrar(dto);
     }
 
+    @GetMapping("/precos")
+    @Operation(summary = "Consultar observações comunitárias de preços",
+            description = "Histórico geral, incluindo registros MANUAL e PROMOCAO, disponível a qualquer usuário autenticado. Filtros por igualdade. Inclui produtos e lojas inativos. Ordenação fixa por observadoEm e id decrescentes. page inicia em 0 e size aceita 1 a 100. IDs inexistentes retornam lista vazia.")
+    @ApiResponse(responseCode = "200", description = "Lista paginada, inclusive vazia")
+    @ApiResponse(responseCode = "400", description = "Filtro ou paginação inválidos")
+    @ApiResponse(responseCode = "401", description = "JWT ausente ou inválido")
+    public Page<PrecoObservadoResponseDto> listar(
+            @RequestParam(required = false) Long idProduto,
+            @RequestParam(required = false) Long idEstabelecimento,
+            @RequestParam(required = false) Long idUsuario,
+            @Parameter(schema = @Schema(allowableValues = {"MANUAL", "PROMOCAO"}))
+            @RequestParam(required = false) String origem,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        return service.listar(idProduto, idEstabelecimento, idUsuario, origem, page, size, false);
+    }
+
+    @GetMapping("/precos/atuais")
+    @Operation(summary = "Consultar preços comuns de referência para o catálogo",
+            description = "Uma observação MANUAL por produto e loja ativos, observada nos últimos 7 dias (168 horas). Seleciona maior observadoEm e desempata por maior id. idUsuario filtra o autor da observação vencedora. Exclui snapshots de promoções. Não altera o comparativo de promoções. Ordenação fixa por observadoEm e id decrescentes. page inicia em 0 e size aceita 1 a 100. Ignora sort. IDs inexistentes retornam lista vazia.")
+    @ApiResponse(responseCode = "200", description = "Lista paginada, inclusive vazia")
+    @ApiResponse(responseCode = "400", description = "Filtro ou paginação inválidos")
+    @ApiResponse(responseCode = "401", description = "JWT ausente ou inválido")
+    public Page<PrecoObservadoResponseDto> atuais(
+            @RequestParam(required = false) Long idProduto,
+            @RequestParam(required = false) Long idEstabelecimento,
+            @RequestParam(required = false) Long idUsuario,
+            @Parameter(schema = @Schema(allowableValues = {"MANUAL"}))
+            @RequestParam(required = false) String origem,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        return service.listar(idProduto, idEstabelecimento, idUsuario, origem, page, size, true);
+    }
+
     @GetMapping("/produtos/{idProduto}/historico-precos")
     @Operation(summary = "Consultar histórico de preços de um produto",
             description = "Lista paginada com ordenação fixa pela data da observação e pelo ID, ambos decrescentes. Permite filtrar por estabelecimento.",

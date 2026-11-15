@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.annotation.Propagation;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Set;
 
 @Service
 public class PrecoObservadoService {
@@ -66,6 +68,37 @@ public class PrecoObservadoService {
         }
         return precos.findByIdProdutoAndIdEstabelecimentoOrderByObservadoEmDescIdDesc(
                 idProduto, idEstabelecimento, pagina).map(this::resposta);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PrecoObservadoResponseDto> listar(Long idProduto, Long idEstabelecimento, Long idUsuario,
+                                                 String origem, int page, int size, boolean atuais) {
+        validarId(idProduto);
+        validarId(idEstabelecimento);
+        validarId(idUsuario);
+        if (page < 0 || size < 1 || size > 100) {
+            throw new IllegalArgumentException("Informe page >= 0 e size entre 1 e 100.");
+        }
+        if (origem != null && !Set.of("MANUAL", "PROMOCAO").contains(origem)) {
+            throw new IllegalArgumentException("Origem inválida. Use MANUAL ou PROMOCAO.");
+        }
+        var pagina = PageRequest.of(page, size);
+        if (atuais) {
+            if (origem != null && !"MANUAL".equals(origem)) {
+                throw new IllegalArgumentException("Preços atuais aceitam somente origem MANUAL.");
+            }
+            Instant agora = Instant.now();
+            return precos.listarAtuais(idProduto, idEstabelecimento, idUsuario,
+                    agora.minus(7, ChronoUnit.DAYS), agora, pagina).map(this::resposta);
+        }
+        return precos.listarObservacoes(idProduto, idEstabelecimento, idUsuario, origem, pagina)
+                .map(this::resposta);
+    }
+
+    private void validarId(Long id) {
+        if (id != null && id <= 0) {
+            throw new IllegalArgumentException("Os filtros de ID precisam ser positivos.");
+        }
     }
 
     private PrecoObservadoResponseDto resposta(PrecoObservado preco) {

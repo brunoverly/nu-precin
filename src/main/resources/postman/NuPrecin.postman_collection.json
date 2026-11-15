@@ -3992,6 +3992,106 @@
       "name": "Preços",
       "item": [
         {
+          "name": "Consultar preços comuns atuais",
+          "request": {
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": [],
+            "url": "https://nu-precin.onrender.com/v1/precos/atuais?page=0&size=100",
+            "description": "Uma referência MANUAL dos últimos 7 dias por produto e loja ativos. Maior observadoEm e maior id em empate. idUsuario filtra o autor do vencedor. Filtros opcionais idProduto, idEstabelecimento e idUsuario. page >= 0, size entre 1 e 100. Ordenação fixa por observadoEm e id decrescentes."
+          },
+          "response": [
+            {
+              "name": "Página de preços",
+              "originalRequest": {
+                "method": "GET",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "header": [],
+                "url": "https://nu-precin.onrender.com/v1/precos/atuais?page=0&size=100",
+                "description": "Uma referência MANUAL dos últimos 7 dias por produto e loja ativos. Maior observadoEm e maior id em empate. idUsuario filtra o autor do vencedor. Filtros opcionais idProduto, idEstabelecimento e idUsuario. page >= 0, size entre 1 e 100. Ordenação fixa por observadoEm e id decrescentes."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"content\": [\n    {\n      \"id\": 123,\n      \"idProduto\": 2,\n      \"idEstabelecimento\": 497,\n      \"idUsuario\": 12,\n      \"valor\": 8.49,\n      \"observadoEm\": \"2026-11-15T15:00:00Z\",\n      \"registradoEm\": \"2026-11-15T15:01:00Z\",\n      \"origem\": \"MANUAL\",\n      \"idPromocao\": null,\n      \"precoOriginal\": null,\n      \"inicioVigencia\": null,\n      \"fimVigencia\": null,\n      \"enquantoDurarEstoque\": false\n    }\n  ],\n  \"pageable\": {\n    \"pageNumber\": 0,\n    \"pageSize\": 100,\n    \"sort\": {\n      \"empty\": true,\n      \"sorted\": false,\n      \"unsorted\": true\n    },\n    \"offset\": 0,\n    \"paged\": true,\n    \"unpaged\": false\n  },\n  \"totalElements\": 1,\n  \"totalPages\": 1,\n  \"last\": true,\n  \"size\": 100,\n  \"number\": 0,\n  \"sort\": {\n    \"empty\": true,\n    \"sorted\": false,\n    \"unsorted\": true\n  },\n  \"first\": true,\n  \"numberOfElements\": 1,\n  \"empty\": false\n}"
+            }
+          ]
+        },
+        {
+          "name": "Consultar histórico geral de preços",
+          "request": {
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": [],
+            "url": "https://nu-precin.onrender.com/v1/precos?page=0&size=100",
+            "description": "Histórico comunitário geral. Aceita origem MANUAL ou PROMOCAO, inclui entidades inativas e múltiplos registros do mesmo produto e loja. Filtros opcionais idProduto, idEstabelecimento e idUsuario. page >= 0, size entre 1 e 100. Ordenação fixa por observadoEm e id decrescentes."
+          },
+          "response": [
+            {
+              "name": "Página de preços",
+              "originalRequest": {
+                "method": "GET",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "header": [],
+                "url": "https://nu-precin.onrender.com/v1/precos?page=0&size=100",
+                "description": "Histórico comunitário geral. Aceita origem MANUAL ou PROMOCAO, inclui entidades inativas e múltiplos registros do mesmo produto e loja. Filtros opcionais idProduto, idEstabelecimento e idUsuario. page >= 0, size entre 1 e 100. Ordenação fixa por observadoEm e id decrescentes."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"content\": [\n    {\n      \"id\": 123,\n      \"idProduto\": 2,\n      \"idEstabelecimento\": 497,\n      \"idUsuario\": 12,\n      \"valor\": 8.49,\n      \"observadoEm\": \"2026-11-15T15:00:00Z\",\n      \"registradoEm\": \"2026-11-15T15:01:00Z\",\n      \"origem\": \"MANUAL\",\n      \"idPromocao\": null,\n      \"precoOriginal\": null,\n      \"inicioVigencia\": null,\n      \"fimVigencia\": null,\n      \"enquantoDurarEstoque\": false\n    }\n  ],\n  \"pageable\": {\n    \"pageNumber\": 0,\n    \"pageSize\": 100,\n    \"sort\": {\n      \"empty\": true,\n      \"sorted\": false,\n      \"unsorted\": true\n    },\n    \"offset\": 0,\n    \"paged\": true,\n    \"unpaged\": false\n  },\n  \"totalElements\": 1,\n  \"totalPages\": 1,\n  \"last\": true,\n  \"size\": 100,\n  \"number\": 0,\n  \"sort\": {\n    \"empty\": true,\n    \"sorted\": false,\n    \"unsorted\": true\n  },\n  \"first\": true,\n  \"numberOfElements\": 1,\n  \"empty\": false\n}"
+            }
+          ]
+        },
+        {
           "name": "Registrar preço observado",
           "request": {
             "method": "POST",
