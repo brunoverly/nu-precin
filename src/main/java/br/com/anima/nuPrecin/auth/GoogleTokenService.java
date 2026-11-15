@@ -43,15 +43,22 @@ class GoogleTokenService {
         var payload = token.getPayload();
         String sub = payload.getSubject();
         String email = payload.getEmail();
-        if (sub == null || sub.isBlank() || sub.length() > 255 || email == null || email.isBlank()
+        if (sub == null || sub.isBlank() || sub.length() > 255 || email == null || email.isBlank() || email.length() > 250
                 || !Boolean.TRUE.equals(payload.getEmailVerified())) {
             throw new CredenciaisInvalidasException("Identidade do Google sem e-mail verificado.");
         }
         email = email.toLowerCase(Locale.ROOT);
         String dominioWorkspace = payload.getHostedDomain();
         return new Identidade(sub, email, email.endsWith("@gmail.com")
-                || (dominioWorkspace != null && !dominioWorkspace.isBlank()));
+                || (dominioWorkspace != null && !dominioWorkspace.isBlank()),
+                textoPerfil(payload.get("name"), 250), textoPerfil(payload.get("picture"), 500));
     }
 
-    record Identidade(String sub, String email, boolean emailSobAutoridadeGoogle) {}
+    private String textoPerfil(Object valor, int limite) {
+        if (!(valor instanceof String texto) || texto.isBlank()) return null;
+        return texto.strip().substring(0, Math.min(texto.strip().length(), limite));
+    }
+
+    record Identidade(String sub, String email, boolean emailSobAutoridadeGoogle, String nome, String foto) {}
+
 }

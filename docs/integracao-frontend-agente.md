@@ -162,7 +162,7 @@ Estabelecimentos favoritos usam o mesmo fluxo em `/v1/usuarios/{id}/favoritos/{i
 
 ## Google e estados da interface
 
-A integração Google depende de criar o OAuth Client ID. Quando configurada, envie `{"idToken":"..."}` para `POST /v1/auth/google`. O retorno segue o login por senha. O vínculo automático exige e-mail local confirmado sob autoridade do Google. Para uma conta que precise de vínculo manual, faça login no NuPrecin e envie o mesmo corpo para `POST /v1/auth/google/vincular` com JWT, retorno 204.
+A integração Google depende de criar o OAuth Client ID. Quando configurada, envie `{"idToken":"..."}` para `POST /v1/auth/google`. O retorno segue o login por senha. Quando o e-mail ainda não existe, a API cria a conta com nome e foto fornecidos pelo Google e retorna ID e JWT em HTTP 200. A foto é importada somente na criação. Logins e vínculos de contas existentes preservam a foto salva. Para exibi-la, consulte `GET /v1/usuarios/{id}`. O vínculo automático exige e-mail local confirmado sob autoridade do Google. Para uma conta que precise de vínculo manual, faça login no NuPrecin e envie o mesmo corpo para `POST /v1/auth/google/vincular` com JWT, retorno 204.
 
 Trate carregamento, formulário inválido, resultados vazios e falha de rede. Em respostas 204, finalize a operação sem tentar ler JSON. Nas listas paginadas, use `content` e os metadados. Em erros, use `message` quando disponível e preserve o formulário. Consulte o contrato da rota para diferenciar 401 de sessão inválida de 401 de falha de autenticação Google.
 

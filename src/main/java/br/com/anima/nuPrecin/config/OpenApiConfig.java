@@ -49,7 +49,8 @@ import java.util.List;
 
                         ## Login com Google
 
-                        - `POST /v1/auth/google` valida o ID token e retorna o ID da conta e o JWT do NuPrecin.
+                        - `POST /v1/auth/google` valida o ID token, cria a conta se o e-mail ainda não existir e retorna o ID da conta e o JWT do NuPrecin.
+                        - Nome e foto do Google são salvos somente na criação da conta. A foto de contas existentes é preservada.
                         - O vínculo automático exige confirmação local do e-mail atual e verificação sob autoridade do Google.
                         - `POST /v1/auth/google/vincular` exige sessão NuPrecin e ID token com o mesmo e-mail verificado.
 

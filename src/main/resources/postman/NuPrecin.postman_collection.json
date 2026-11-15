@@ -46,7 +46,8 @@
                 }
               }
             },
-            "url": "https://nu-precin.onrender.com/v1/auth/google"
+            "url": "https://nu-precin.onrender.com/v1/auth/google",
+            "description": "Valida o ID token. Se o e-mail ainda não existir, cria a conta com nome e foto do Google. Retorna 200 com id e token. A foto é importada somente na criação. Contas existentes preservam a foto atual. Consulte GET /v1/usuarios/{id} para obter foto."
           },
           "response": [
             {

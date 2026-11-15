@@ -60,7 +60,7 @@ public class AuthController {
 
     @PostMapping("google")
     @Operation(summary = "Autenticar com Google",
-            description = "Valida o ID token do Google e retorna o mesmo contrato do login por senha. Vincula automaticamente contas ativas com e-mail confirmado sob autoridade do Google.")
+            description = "Valida o ID token do Google, cria uma conta se o e-mail ainda não existir e retorna o mesmo contrato do login por senha. O primeiro acesso retorna 200 com ID e JWT e salva o nome e a foto fornecidos pelo Google. A foto é importada somente na criação e pode ser lida no perfil do usuário. Vincula automaticamente contas ativas com e-mail confirmado sob autoridade do Google.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Login realizado"),
             @ApiResponse(responseCode = "400", description = "Payload inválido"),
